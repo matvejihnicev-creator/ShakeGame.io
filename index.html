@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Змейка • Плавная • Русская раскладка</title>
+  <title>Змейка • Плавная • Русская раскладка • Пауза-меню</title>
   <style>
     * {
       margin: 0;
@@ -279,6 +279,7 @@
       box-shadow: 0 25px 50px rgba(0,0,0,0.8);
       min-width: 380px;
       max-width: 450px;
+      max-height: 85vh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -287,8 +288,14 @@
     .menu-panel h2 {
       color: #f7e05e;
       font-size: 2.4rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       text-shadow: 0 4px 10px black;
+    }
+
+    .menu-subtitle {
+      color: #b9dbb0;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .menu-buttons {
@@ -310,10 +317,10 @@
       background: #152b1f;
       border-radius: 2rem;
       padding: 1.5rem;
-      margin: 1.5rem 0;
+      margin: 1rem 0;
       text-align: left;
       width: 100%;
-      max-height: 60vh;
+      max-height: 50vh;
       overflow-y: auto;
     }
 
@@ -496,7 +503,7 @@
     </div>
   </div>
 
-  <!-- Меню -->
+  <!-- Главное меню -->
   <div id="mainMenu" class="menu-overlay">
     <div class="menu-panel">
       <h2>🐍 <span id="menuTitle">ЗМЕЙКА</span></h2>
@@ -507,7 +514,70 @@
     </div>
   </div>
 
-  <!-- Настройки -->
+  <!-- Меню паузы (с настройками) -->
+  <div id="pauseMenu" class="menu-overlay hidden">
+    <div class="menu-panel">
+      <h2>⏸ <span id="pauseTitle">ПАУЗА</span></h2>
+      <div class="menu-subtitle" id="pauseSubtitle">Игра приостановлена</div>
+      
+      <div class="settings-group">
+        <label id="pauseNicknameLabel">👤 Никнейм</label>
+        <div class="nickname-section">
+          <input type="text" id="pauseNicknameInput" placeholder="Введите никнейм" maxlength="15" autocomplete="off">
+          <button id="pauseSaveNicknameBtn">✓</button>
+        </div>
+        <div class="error-msg hidden" id="pauseNicknameError"></div>
+
+        <label for="pauseSoundSelect" id="pauseSoundLabel">🔊 Звук сбора</label>
+        <select id="pauseSoundSelect">
+          <option value="0">Классический</option>
+          <option value="1">Весёлый день</option>
+          <option value="2">Глубокий хлопок</option>
+        </select>
+        <button id="pausePreviewSound" class="preview-btn">▶ Прослушать</button>
+
+        <label for="pauseVolumeSlider">🔈 <span id="pauseVolumeLabel">Громкость</span>: <span id="pauseVolumeValue">70</span>%</label>
+        <input type="range" id="pauseVolumeSlider" min="0" max="100" value="70">
+
+        <label for="pauseFruitSelect" id="pauseFruitLabel">🍎 Фрукт</label>
+        <select id="pauseFruitSelect">
+          <option value="0">Яблоко</option>
+          <option value="1">Банан</option>
+          <option value="2">Слива</option>
+        </select>
+
+        <label for="pauseFieldDesignSelect" id="pauseFieldDesignLabel">🎨 Дизайн поля</label>
+        <select id="pauseFieldDesignSelect">
+          <option value="0">Классический тёмный</option>
+          <option value="1">Лесной</option>
+          <option value="2">Пустынный</option>
+          <option value="3">Зимний</option>
+          <option value="4">Свой фон</option>
+        </select>
+        <input type="file" id="pauseCustomBgInput" accept="image/*">
+
+        <label for="pauseGridSizeSelect" id="pauseGridSizeLabel">📐 Размер поля</label>
+        <select id="pauseGridSizeSelect">
+          <option value="10">10x10</option>
+          <option value="20" selected>20x20</option>
+        </select>
+
+        <label for="pauseLanguageSelect" id="pauseLanguageLabel">🌐 Язык</label>
+        <select id="pauseLanguageSelect">
+          <option value="ru">Русский</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      
+      <div class="menu-buttons">
+        <button id="resumeButton" class="menu-btn">▶ <span id="resumeText">ПРОДОЛЖИТЬ</span></button>
+        <button id="pauseRestartButton" class="menu-btn">↺ <span id="pauseRestartText">НОВАЯ ИГРА</span></button>
+        <button id="pauseMainMenuButton" class="menu-btn">🏠 <span id="pauseMainMenuText">ГЛАВНОЕ МЕНЮ</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Обычное меню настроек (из главного меню) -->
   <div id="settingsMenu" class="menu-overlay hidden">
     <div class="menu-panel">
       <h2>⚙ <span id="settingsTitle">НАСТРОЙКИ</span></h2>
@@ -580,12 +650,18 @@
     const syncStatus = document.getElementById('syncStatus');
     const pauseOverlay = document.getElementById('pauseOverlay');
 
-    // Меню элементы
+    // Меню
     const mainMenu = document.getElementById('mainMenu');
     const settingsMenu = document.getElementById('settingsMenu');
+    const pauseMenu = document.getElementById('pauseMenu');
     const playButton = document.getElementById('playButton');
     const settingsButton = document.getElementById('settingsButton');
     const backFromSettings = document.getElementById('backFromSettings');
+    const resumeButton = document.getElementById('resumeButton');
+    const pauseRestartButton = document.getElementById('pauseRestartButton');
+    const pauseMainMenuButton = document.getElementById('pauseMainMenuButton');
+
+    // Основные настройки
     const soundSelect = document.getElementById('soundSelect');
     const volumeSlider = document.getElementById('volumeSlider');
     const volumeValue = document.getElementById('volumeValue');
@@ -598,6 +674,20 @@
     const nicknameInput = document.getElementById('nicknameInput');
     const saveNicknameBtn = document.getElementById('saveNicknameBtn');
     const nicknameError = document.getElementById('nicknameError');
+
+    // Настройки в меню паузы
+    const pauseSoundSelect = document.getElementById('pauseSoundSelect');
+    const pauseVolumeSlider = document.getElementById('pauseVolumeSlider');
+    const pauseVolumeValue = document.getElementById('pauseVolumeValue');
+    const pausePreviewSound = document.getElementById('pausePreviewSound');
+    const pauseFruitSelect = document.getElementById('pauseFruitSelect');
+    const pauseFieldDesignSelect = document.getElementById('pauseFieldDesignSelect');
+    const pauseCustomBgInput = document.getElementById('pauseCustomBgInput');
+    const pauseGridSizeSelect = document.getElementById('pauseGridSizeSelect');
+    const pauseLanguageSelect = document.getElementById('pauseLanguageSelect');
+    const pauseNicknameInput = document.getElementById('pauseNicknameInput');
+    const pauseSaveNicknameBtn = document.getElementById('pauseSaveNicknameBtn');
+    const pauseNicknameError = document.getElementById('pauseNicknameError');
 
     // ==================== ОБЛАЧНЫЙ ЛИДЕРБОРД ====================
     let leaderboard = { '10': [], '20': [] };
@@ -630,7 +720,6 @@
         syncStatus.textContent = '✅ Загружено';
         return true;
       } catch (e) {
-        console.warn('Ошибка загрузки лидерборда:', e);
         syncStatus.textContent = '⚠️ Ошибка загрузки';
         return false;
       }
@@ -644,7 +733,6 @@
         window.dispatchEvent(new Event('leaderboardUpdated'));
         return true;
       } catch (e) {
-        console.warn('Ошибка сохранения лидерборда:', e);
         syncStatus.textContent = '⚠️ Ошибка сохранения';
         return false;
       }
@@ -705,9 +793,7 @@
       });
     }
 
-    window.addEventListener('leaderboardUpdated', () => {
-      loadLeaderboard();
-    });
+    window.addEventListener('leaderboardUpdated', loadLeaderboard);
 
     function startCloudSync() {
       loadLeaderboard();
@@ -721,66 +807,48 @@
     // ==================== ЛОКАЛИЗАЦИЯ ====================
     const translations = {
       ru: {
-        menuTitle: 'ЗМЕЙКА',
-        play: 'ИГРАТЬ',
-        settings: 'НАСТРОЙКИ',
-        settingsTitle: 'НАСТРОЙКИ',
-        soundLabel: '🔊 Звук сбора',
-        volumeLabel: 'Громкость',
-        fruitLabel: '🍎 Фрукт',
-        fieldDesignLabel: '🎨 Дизайн поля',
-        gridSizeLabel: '📐 Размер поля',
-        languageLabel: '🌐 Язык',
-        nicknameLabel: '👤 Никнейм',
-        back: 'НАЗАД',
-        preview: '▶ Прослушать',
-        currentScore: '🍎 Текущий',
-        highScore: '🏆 Общий рекорд',
-        colorLabel: '🐍 Цвет',
-        restart: 'Новая игра',
-        playing: '▶ Игра идёт',
-        paused: '⏸ Пауза',
-        gameOver: '💔 Игра окончена',
-        win: '🏆 Поле заполнено! Победа!',
+        menuTitle: 'ЗМЕЙКА', play: 'ИГРАТЬ', settings: 'НАСТРОЙКИ',
+        settingsTitle: 'НАСТРОЙКИ', soundLabel: '🔊 Звук сбора',
+        volumeLabel: 'Громкость', fruitLabel: '🍎 Фрукт',
+        fieldDesignLabel: '🎨 Дизайн поля', gridSizeLabel: '📐 Размер поля',
+        languageLabel: '🌐 Язык', nicknameLabel: '👤 Никнейм',
+        back: 'НАЗАД', preview: '▶ Прослушать',
+        currentScore: '🍎 Текущий', highScore: '🏆 Общий рекорд',
+        colorLabel: '🐍 Цвет', restart: 'Новая игра',
+        playing: '▶ Игра идёт', paused: '⏸ Пауза',
+        gameOver: '💔 Игра окончена', win: '🏆 Поле заполнено! Победа!',
         leaderboardTitle: '🏆 ТАБЛИЦА ЛИДЕРОВ',
         soundNames: ['Классический', 'Весёлый день', 'Глубокий хлопок'],
         fruitNames: ['Яблоко', 'Банан', 'Слива'],
         fieldNames: ['Классический тёмный', 'Лесной', 'Пустынный', 'Зимний', 'Свой фон'],
         nicknamePlaceholder: 'Введите никнейм',
         nicknameTaken: 'Этот никнейм уже занят другим игроком!',
-        nicknameSaved: 'Никнейм сохранён!',
-        noNickname: 'Аноним'
+        nicknameSaved: 'Никнейм сохранён!', noNickname: 'Аноним',
+        pauseTitle: 'ПАУЗА', pauseSubtitle: 'Игра приостановлена',
+        resume: 'ПРОДОЛЖИТЬ', pauseRestart: 'НОВАЯ ИГРА',
+        pauseMainMenu: 'ГЛАВНОЕ МЕНЮ'
       },
       en: {
-        menuTitle: 'SNAKE',
-        play: 'PLAY',
-        settings: 'SETTINGS',
-        settingsTitle: 'SETTINGS',
-        soundLabel: '🔊 Collect sound',
-        volumeLabel: 'Volume',
-        fruitLabel: '🍎 Fruit',
-        fieldDesignLabel: '🎨 Field design',
-        gridSizeLabel: '📐 Field size',
-        languageLabel: '🌐 Language',
-        nicknameLabel: '👤 Nickname',
-        back: 'BACK',
-        preview: '▶ Preview',
-        currentScore: '🍎 Current',
-        highScore: '🏆 High Score',
-        colorLabel: '🐍 Color',
-        restart: 'New Game',
-        playing: '▶ Playing',
-        paused: '⏸ Paused',
-        gameOver: '💔 Game Over',
-        win: '🏆 Field full! You win!',
+        menuTitle: 'SNAKE', play: 'PLAY', settings: 'SETTINGS',
+        settingsTitle: 'SETTINGS', soundLabel: '🔊 Collect sound',
+        volumeLabel: 'Volume', fruitLabel: '🍎 Fruit',
+        fieldDesignLabel: '🎨 Field design', gridSizeLabel: '📐 Field size',
+        languageLabel: '🌐 Language', nicknameLabel: '👤 Nickname',
+        back: 'BACK', preview: '▶ Preview',
+        currentScore: '🍎 Current', highScore: '🏆 High Score',
+        colorLabel: '🐍 Color', restart: 'New Game',
+        playing: '▶ Playing', paused: '⏸ Paused',
+        gameOver: '💔 Game Over', win: '🏆 Field full! You win!',
         leaderboardTitle: '🏆 LEADERBOARD',
         soundNames: ['Classic', 'Happy Day', 'Deep Pop'],
         fruitNames: ['Apple', 'Banana', 'Plum'],
         fieldNames: ['Classic Dark', 'Forest', 'Desert', 'Winter', 'Custom BG'],
         nicknamePlaceholder: 'Enter nickname',
         nicknameTaken: 'This nickname is already taken!',
-        nicknameSaved: 'Nickname saved!',
-        noNickname: 'Anonymous'
+        nicknameSaved: 'Nickname saved!', noNickname: 'Anonymous',
+        pauseTitle: 'PAUSED', pauseSubtitle: 'Game is paused',
+        resume: 'RESUME', pauseRestart: 'NEW GAME',
+        pauseMainMenu: 'MAIN MENU'
       }
     };
 
@@ -790,41 +858,50 @@
       return translations[currentLang][key] || key;
     }
 
-    // ==================== НАСТРОЙКИ ====================
-    const defaultSettings = {
-      language: 'ru',
-      soundType: 0,
-      volume: 70,
-      fruitType: 0,
-      fieldDesign: 0,
-      gridSize: 20,
-      snakeColor: '#6fbf4c',
-      nickname: ''
-    };
-
-    function loadSettings() {
-      try {
-        const saved = localStorage.getItem('snakeSettings');
-        return saved ? JSON.parse(saved) : {};
-      } catch (e) {
-        return {};
-      }
+    // ==================== СИНХРОНИЗАЦИЯ НАСТРОЕК МЕЖДУ МЕНЮ ====================
+    function syncSettingsToPauseMenu() {
+      pauseSoundSelect.value = currentSoundType;
+      pauseVolumeSlider.value = Math.round(soundVolume * 100);
+      pauseVolumeValue.textContent = Math.round(soundVolume * 100);
+      pauseFruitSelect.value = fruitType;
+      pauseFieldDesignSelect.value = fieldDesign;
+      pauseGridSizeSelect.value = GRID_SIZE;
+      pauseLanguageSelect.value = currentLang;
+      pauseNicknameInput.value = '';
+      pauseNicknameError.classList.add('hidden');
+      
+      // Обновляем названия в меню паузы
+      updatePauseMenuLanguage();
     }
 
-    function saveAllSettings() {
-      const settings = {
-        language: currentLang,
-        soundType: currentSoundType,
-        volume: Math.round(soundVolume * 100),
-        fruitType: fruitType,
-        fieldDesign: fieldDesign,
-        gridSize: GRID_SIZE,
-        snakeColor: snakeColor,
-        nickname: playerNickname
-      };
-      try {
-        localStorage.setItem('snakeSettings', JSON.stringify(settings));
-      } catch (e) {}
+    function updatePauseMenuLanguage() {
+      document.getElementById('pauseTitle').textContent = t('pauseTitle');
+      document.getElementById('pauseSubtitle').textContent = t('pauseSubtitle');
+      document.getElementById('resumeText').textContent = t('resume');
+      document.getElementById('pauseRestartText').textContent = t('pauseRestart');
+      document.getElementById('pauseMainMenuText').textContent = t('pauseMainMenu');
+      document.getElementById('pauseSoundLabel').textContent = t('soundLabel');
+      document.getElementById('pauseVolumeLabel').textContent = t('volumeLabel');
+      document.getElementById('pauseFruitLabel').textContent = t('fruitLabel');
+      document.getElementById('pauseFieldDesignLabel').textContent = t('fieldDesignLabel');
+      document.getElementById('pauseGridSizeLabel').textContent = t('gridSizeLabel');
+      document.getElementById('pauseLanguageLabel').textContent = t('languageLabel');
+      document.getElementById('pauseNicknameLabel').textContent = t('nicknameLabel');
+      document.getElementById('pausePreviewSound').textContent = t('preview');
+      pauseNicknameInput.placeholder = t('nicknamePlaceholder');
+
+      const soundNames = t('soundNames');
+      for (let i = 0; i < pauseSoundSelect.options.length; i++) {
+        pauseSoundSelect.options[i].textContent = soundNames[i];
+      }
+      const fruitNames = t('fruitNames');
+      for (let i = 0; i < pauseFruitSelect.options.length; i++) {
+        pauseFruitSelect.options[i].textContent = fruitNames[i];
+      }
+      const fieldNames = t('fieldNames');
+      for (let i = 0; i < pauseFieldDesignSelect.options.length; i++) {
+        pauseFieldDesignSelect.options[i].textContent = fieldNames[i];
+      }
     }
 
     function updateUILanguage() {
@@ -852,17 +929,16 @@
       for (let i = 0; i < soundSelect.options.length; i++) {
         soundSelect.options[i].textContent = soundNames[i];
       }
-
       const fruitNames = t('fruitNames');
       for (let i = 0; i < fruitSelect.options.length; i++) {
         fruitSelect.options[i].textContent = fruitNames[i];
       }
-
       const fieldNames = t('fieldNames');
       for (let i = 0; i < fieldDesignSelect.options.length; i++) {
         fieldDesignSelect.options[i].textContent = fieldNames[i];
       }
 
+      updatePauseMenuLanguage();
       updateGameStatus();
     }
 
@@ -880,6 +956,30 @@
         gameStatusDiv.textContent = t('gameOver');
         gameStatusDiv.style.color = '#ff8a7a';
       }
+    }
+
+    // ==================== НАСТРОЙКИ ====================
+    const defaultSettings = {
+      language: 'ru', soundType: 0, volume: 70,
+      fruitType: 0, fieldDesign: 0, gridSize: 20,
+      snakeColor: '#6fbf4c', nickname: ''
+    };
+
+    function loadSettings() {
+      try {
+        const saved = localStorage.getItem('snakeSettings');
+        return saved ? JSON.parse(saved) : {};
+      } catch (e) { return {}; }
+    }
+
+    function saveAllSettings() {
+      const settings = {
+        language: currentLang, soundType: currentSoundType,
+        volume: Math.round(soundVolume * 100), fruitType: fruitType,
+        fieldDesign: fieldDesign, gridSize: GRID_SIZE,
+        snakeColor: snakeColor, nickname: playerNickname
+      };
+      try { localStorage.setItem('snakeSettings', JSON.stringify(settings)); } catch (e) {}
     }
 
     // ==================== ИГРОВЫЕ ПЕРЕМЕННЫЕ ====================
@@ -901,12 +1001,11 @@
 
     let gameLoopInterval = null;
     let animationFrameId = null;
-    const MOVE_INTERVAL_MS = 120; // Быстрее для более плавной анимации
+    const MOVE_INTERVAL_MS = 120;
 
-    // Плавное движение
     let lastMoveTime = 0;
     let animationProgress = 0;
-    let prevSnake = []; // Предыдущее положение для интерполяции
+    let prevSnake = [];
 
     let fieldDesign = 0;
     let customBgImage = null;
@@ -928,11 +1027,7 @@
     // ==================== АУДИО ====================
     function initAudio() {
       if (audioCtx) return;
-      try {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      } catch (e) {
-        console.warn('Web Audio API не поддерживается');
-      }
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
     }
 
     function playAppleSound() {
@@ -1013,9 +1108,7 @@
       try {
         const saved = localStorage.getItem('snakeHighScore');
         highScore = saved !== null && !isNaN(parseInt(saved, 10)) ? parseInt(saved, 10) : 0;
-      } catch (e) {
-        highScore = 0;
-      }
+      } catch (e) { highScore = 0; }
       highScoreSpan.textContent = highScore;
     }
 
@@ -1023,19 +1116,13 @@
       if (score > highScore) {
         highScore = score;
         highScoreSpan.textContent = highScore;
-        try {
-          localStorage.setItem('snakeHighScore', highScore);
-        } catch (e) {}
+        try { localStorage.setItem('snakeHighScore', highScore); } catch (e) {}
       }
     }
 
     function getInitSnake() {
       const mid = Math.floor(GRID_SIZE / 2);
-      return [
-        {x: mid, y: mid},
-        {x: mid - 1, y: mid},
-        {x: mid - 2, y: mid}
-      ];
+      return [{x: mid, y: mid}, {x: mid - 1, y: mid}, {x: mid - 2, y: mid}];
     }
 
     function generateRandomFood() {
@@ -1058,31 +1145,21 @@
     function moveSnake() {
       if (!gameActive || isPaused) return;
 
-      // Сохраняем предыдущее положение для анимации
       prevSnake = snake.map(seg => ({...seg}));
-      
       direction = {...nextDirection};
       const head = snake[0];
-      const newHead = {
-        x: head.x + direction.x,
-        y: head.y + direction.y
-      };
-
+      const newHead = { x: head.x + direction.x, y: head.y + direction.y };
       const foodEaten = (newHead.x === food.x && newHead.y === food.y);
       let newSnake = foodEaten ? [newHead, ...snake] : [newHead, ...snake.slice(0, -1)];
       const bodyForCollision = newSnake.slice(1);
 
       if (checkCollision(newHead, bodyForCollision)) {
-        gameActive = false;
-        gameOverFlag = true;
-        winFlag = false;
-        updateGameStatus();
-        clearGameLoop();
+        gameActive = false; gameOverFlag = true; winFlag = false;
+        updateGameStatus(); clearGameLoop();
         saveHighScore(currentScore);
         addToLeaderboard(playerNickname, currentScore, GRID_SIZE);
         playGameOverSound();
-        animationProgress = 1;
-        drawBoard();
+        animationProgress = 1; drawBoard();
         return;
       }
 
@@ -1093,20 +1170,15 @@
         currentScoreSpan.textContent = currentScore;
         saveHighScore(currentScore);
         playAppleSound();
-        // При поедании еды сбрасываем предыдущее положение для корректной анимации
         prevSnake = snake.map(seg => ({...seg}));
 
         if (!generateRandomFood()) {
-          gameActive = false;
-          gameOverFlag = false;
-          winFlag = true;
-          updateGameStatus();
-          clearGameLoop();
+          gameActive = false; gameOverFlag = false; winFlag = true;
+          updateGameStatus(); clearGameLoop();
           saveHighScore(currentScore);
           addToLeaderboard(playerNickname, currentScore, GRID_SIZE);
           playWinSound();
-          animationProgress = 1;
-          drawBoard();
+          animationProgress = 1; drawBoard();
           return;
         }
       }
@@ -1123,8 +1195,11 @@
       if (isPaused) {
         pauseOverlay.classList.remove('hidden');
         clearGameLoop();
+        syncSettingsToPauseMenu();
+        pauseMenu.classList.remove('hidden');
       } else {
         pauseOverlay.classList.add('hidden');
+        pauseMenu.classList.add('hidden');
         lastMoveTime = performance.now();
         animationProgress = 1;
         startGameLoop();
@@ -1132,19 +1207,46 @@
       updateGameStatus();
     }
 
+    function resumeGame() {
+      if (!isPaused) return;
+      isPaused = false;
+      pauseOverlay.classList.add('hidden');
+      pauseMenu.classList.add('hidden');
+      lastMoveTime = performance.now();
+      animationProgress = 1;
+      updateGameStatus();
+      startGameLoop();
+    }
+
+    function restartFromPause() {
+      pauseMenu.classList.add('hidden');
+      pauseOverlay.classList.add('hidden');
+      isPaused = false;
+      resetGame();
+    }
+
+    function goToMainMenu() {
+      clearGameLoop();
+      pauseMenu.classList.add('hidden');
+      pauseOverlay.classList.add('hidden');
+      isPaused = false;
+      gameActive = false;
+      gameOverFlag = false;
+      winFlag = false;
+      updateGameStatus();
+      showMainMenu();
+    }
+
     function applyGridSize() {
       GRID_SIZE = parseInt(gridSizeSelect.value, 10);
       CELL_SIZE = canvas.width / GRID_SIZE;
       currentLeaderboardSize = GRID_SIZE.toString();
+      pauseGridSizeSelect.value = GRID_SIZE;
       snake = getInitSnake();
       prevSnake = snake.map(seg => ({...seg}));
-      direction = {x: 1, y: 0};
-      nextDirection = {x: 1, y: 0};
-      currentScore = 0;
-      currentScoreSpan.textContent = '0';
-      gameActive = true;
-      gameOverFlag = false;
-      winFlag = false;
+      direction = {x: 1, y: 0}; nextDirection = {x: 1, y: 0};
+      currentScore = 0; currentScoreSpan.textContent = '0';
+      gameActive = true; gameOverFlag = false; winFlag = false;
       isPaused = false;
       pauseOverlay.classList.add('hidden');
       updateGameStatus();
@@ -1153,8 +1255,7 @@
       }
       clearGameLoop();
       updateLeaderboardUI();
-      animationProgress = 1;
-      drawBoard();
+      animationProgress = 1; drawBoard();
       startGameLoop();
       saveAllSettings();
     }
@@ -1163,21 +1264,15 @@
       clearGameLoop();
       snake = getInitSnake();
       prevSnake = snake.map(seg => ({...seg}));
-      direction = {x: 1, y: 0};
-      nextDirection = {x: 1, y: 0};
-      gameActive = true;
-      gameOverFlag = false;
-      winFlag = false;
-      isPaused = false;
-      currentScore = 0;
+      direction = {x: 1, y: 0}; nextDirection = {x: 1, y: 0};
+      gameActive = true; gameOverFlag = false; winFlag = false;
+      isPaused = false; currentScore = 0;
       currentScoreSpan.textContent = '0';
       pauseOverlay.classList.add('hidden');
       updateGameStatus();
-
       if (!generateRandomFood()) {
         food = {x: Math.floor(GRID_SIZE/2) + 2, y: Math.floor(GRID_SIZE/2)};
       }
-
       animationProgress = 1;
       lastMoveTime = performance.now();
       drawBoard();
@@ -1188,7 +1283,6 @@
     function startGameLoop() {
       if (gameLoopInterval) clearInterval(gameLoopInterval);
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      
       if (gameActive && !isPaused) {
         gameLoopInterval = setInterval(moveSnake, MOVE_INTERVAL_MS);
         animationFrameId = requestAnimationFrame(animateLoop);
@@ -1196,46 +1290,31 @@
     }
 
     function clearGameLoop() {
-      if (gameLoopInterval) {
-        clearInterval(gameLoopInterval);
-        gameLoopInterval = null;
-      }
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-        animationFrameId = null;
-      }
+      if (gameLoopInterval) { clearInterval(gameLoopInterval); gameLoopInterval = null; }
+      if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
     }
 
-    // Основной цикл анимации
     function animateLoop(timestamp) {
-      if (!gameActive || isPaused) {
-        animationFrameId = null;
-        return;
-      }
-
-      // Вычисляем прогресс анимации на основе времени
+      if (!gameActive || isPaused) { animationFrameId = null; return; }
       const elapsed = timestamp - lastMoveTime;
       animationProgress = Math.min(1, elapsed / MOVE_INTERVAL_MS);
-      
       drawBoard();
-      
-      if (animationProgress < 1) {
-        animationFrameId = requestAnimationFrame(animateLoop);
-      } else {
-        animationFrameId = requestAnimationFrame(animateLoop);
-      }
+      animationFrameId = requestAnimationFrame(animateLoop);
     }
 
-    // ==================== ОБРАБОТКА КЛАВИШ С ПОДДЕРЖКОЙ РУССКОЙ РАСКЛАДКИ ====================
+    // ==================== ОБРАБОТКА КЛАВИШ ====================
     function handleKeyDown(e) {
       const key = e.key;
       const code = e.code;
 
-      // Если фокус на поле ввода
-      if (document.activeElement === nicknameInput) {
+      // Если фокус на любом поле ввода
+      if (document.activeElement === nicknameInput || 
+          document.activeElement === pauseNicknameInput) {
         if (key === 'Escape' || code === 'Escape') {
           e.preventDefault();
-          if (!settingsMenu.classList.contains('hidden')) {
+          if (!pauseMenu.classList.contains('hidden')) {
+            resumeGame();
+          } else if (!settingsMenu.classList.contains('hidden')) {
             settingsMenu.classList.add('hidden');
             mainMenu.classList.remove('hidden');
           } else if (!mainMenu.classList.contains('hidden')) {
@@ -1245,33 +1324,44 @@
         return;
       }
 
-      // Esc - пауза или меню
+      // Esc - пауза/меню
       if (key === 'Escape' || code === 'Escape') {
         e.preventDefault();
-        if (gameActive && !gameOverFlag && !winFlag) {
-          if (!mainMenu.classList.contains('hidden') || !settingsMenu.classList.contains('hidden')) {
-            hideAllMenus();
-          } else {
-            togglePause();
-          }
-        } else if (!mainMenu.classList.contains('hidden') || !settingsMenu.classList.contains('hidden')) {
+        
+        // Если открыто меню паузы - продолжаем игру
+        if (!pauseMenu.classList.contains('hidden')) {
+          resumeGame();
+          return;
+        }
+        
+        // Если открыто меню настроек - возвращаемся в главное меню
+        if (!settingsMenu.classList.contains('hidden')) {
+          settingsMenu.classList.add('hidden');
+          mainMenu.classList.remove('hidden');
+          return;
+        }
+        
+        // Если открыто главное меню - закрываем его
+        if (!mainMenu.classList.contains('hidden')) {
           hideAllMenus();
+          return;
+        }
+        
+        // Если игра идёт - ставим на паузу и открываем меню паузы
+        if (gameActive && !gameOverFlag && !winFlag) {
+          togglePause();
         } else {
           showMainMenu();
         }
         return;
       }
 
-      // Проверяем физический код клавиши (работает независимо от раскладки)
       let newDir = null;
-
-      // Физические коды клавиш (не зависят от раскладки)
       if (code === 'ArrowUp' || code === 'KeyW') newDir = {x: 0, y: -1};
       else if (code === 'ArrowDown' || code === 'KeyS') newDir = {x: 0, y: 1};
       else if (code === 'ArrowLeft' || code === 'KeyA') newDir = {x: -1, y: 0};
       else if (code === 'ArrowRight' || code === 'KeyD') newDir = {x: 1, y: 0};
 
-      // Также проверяем русские буквы (Ц, Ы, Ф, В)
       if (!newDir) {
         if (key === 'ц' || key === 'Ц' || key === 'w' || key === 'W') newDir = {x: 0, y: -1};
         else if (key === 'ы' || key === 'Ы' || key === 's' || key === 'S') newDir = {x: 0, y: 1};
@@ -1282,7 +1372,6 @@
       if (newDir) {
         e.preventDefault();
         if (!gameActive || isPaused) return;
-        // Защита от разворота на 180
         if (direction.x === -newDir.x && direction.y === -newDir.y) return;
         nextDirection = newDir;
       }
@@ -1299,13 +1388,11 @@
         ctx.beginPath();
         ctx.arc(fx + CELL_SIZE/2, fy + CELL_SIZE/2, size, 0, Math.PI*2);
         ctx.fill();
-        ctx.fillStyle = '#8bc34a';
-        ctx.shadowBlur = 6;
+        ctx.fillStyle = '#8bc34a'; ctx.shadowBlur = 6;
         ctx.beginPath();
         ctx.ellipse(fx + CELL_SIZE/1.8, fy + CELL_SIZE/3.5, CELL_SIZE/8, CELL_SIZE/5.5, 0.4, 0, Math.PI*2);
         ctx.fill();
-        ctx.strokeStyle = '#5d8233';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#5d8233'; ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(fx + CELL_SIZE/1.9, fy + CELL_SIZE/3.2);
         ctx.lineTo(fx + CELL_SIZE/1.55, fy + CELL_SIZE/4.5);
@@ -1328,8 +1415,7 @@
         ctx.beginPath();
         ctx.arc(fx + CELL_SIZE/2.5, fy + CELL_SIZE/2.5, size * 0.3, 0, Math.PI*2);
         ctx.fill();
-        ctx.strokeStyle = '#5d8233';
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = '#5d8233'; ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(fx + CELL_SIZE/2, fy + CELL_SIZE/3.5);
         ctx.lineTo(fx + CELL_SIZE/1.8, fy + CELL_SIZE/5);
@@ -1348,99 +1434,58 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
-      ctx.strokeStyle = design.grid;
-      ctx.lineWidth = 0.6;
+      ctx.strokeStyle = design.grid; ctx.lineWidth = 0.6;
       for (let i = 0; i <= GRID_SIZE; i++) {
         ctx.beginPath();
-        ctx.moveTo(i * CELL_SIZE, 0);
-        ctx.lineTo(i * CELL_SIZE, canvas.height);
-        ctx.stroke();
-        ctx.moveTo(0, i * CELL_SIZE);
-        ctx.lineTo(canvas.width, i * CELL_SIZE);
-        ctx.stroke();
+        ctx.moveTo(i * CELL_SIZE, 0); ctx.lineTo(i * CELL_SIZE, canvas.height); ctx.stroke();
+        ctx.moveTo(0, i * CELL_SIZE); ctx.lineTo(canvas.width, i * CELL_SIZE); ctx.stroke();
       }
 
-      if (food) {
-        const fx = food.x * CELL_SIZE, fy = food.y * CELL_SIZE;
-        drawFruit(fx, fy);
-      }
+      if (food) { const fx = food.x * CELL_SIZE, fy = food.y * CELL_SIZE; drawFruit(fx, fy); }
 
-      ctx.shadowColor = 'transparent';
-      ctx.shadowBlur = 0;
-
-      // Плавная интерполяция всей змейки
+      ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
       const progress = Math.min(1, Math.max(0, animationProgress));
-      
+
       for (let i = snake.length - 1; i >= 0; i--) {
         const seg = snake[i];
         let drawX = seg.x * CELL_SIZE;
         let drawY = seg.y * CELL_SIZE;
 
-        // Интерполируем положение между предыдущим и текущим
         if (prevSnake[i] && progress < 1 && gameActive && !isPaused) {
           drawX = prevSnake[i].x * CELL_SIZE + (seg.x - prevSnake[i].x) * CELL_SIZE * progress;
           drawY = prevSnake[i].y * CELL_SIZE + (seg.y - prevSnake[i].y) * CELL_SIZE * progress;
         }
 
         const radius = (CELL_SIZE/2) - (i === 0 ? CELL_SIZE/10 : CELL_SIZE/6);
-        
-        // Градиент для объёма
         const gradient = ctx.createRadialGradient(drawX + 4, drawY + 4, 2, drawX + CELL_SIZE/2, drawY + CELL_SIZE/2, CELL_SIZE/1.5);
         gradient.addColorStop(0, snakeColor);
         gradient.addColorStop(0.7, '#1e3b1a');
-        
         ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.arc(drawX + CELL_SIZE/2, drawY + CELL_SIZE/2, radius, 0, 2 * Math.PI);
         ctx.fill();
 
-        // Глаза для головы
         if (i === 0 && CELL_SIZE > 10) {
           const eyeOffset = CELL_SIZE / 6;
-          
-          // Определяем смещение глаз в зависимости от направления
-          let eyeShiftX = 0, eyeShiftY = 0;
-          if (progress < 1 && gameActive && !isPaused) {
-            eyeShiftX = direction.x * CELL_SIZE * progress;
-            eyeShiftY = direction.y * CELL_SIZE * progress;
-          }
-          
           ctx.fillStyle = 'white';
-          ctx.beginPath();
-          ctx.arc(drawX + CELL_SIZE/1.7, drawY + CELL_SIZE/3, eyeOffset, 0, Math.PI*2);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(drawX + CELL_SIZE/2.5, drawY + CELL_SIZE/3, eyeOffset, 0, Math.PI*2);
-          ctx.fill();
-          
+          ctx.beginPath(); ctx.arc(drawX + CELL_SIZE/1.7, drawY + CELL_SIZE/3, eyeOffset, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(drawX + CELL_SIZE/2.5, drawY + CELL_SIZE/3, eyeOffset, 0, Math.PI*2); ctx.fill();
           ctx.fillStyle = '#0a0f0a';
-          ctx.beginPath();
-          ctx.arc(drawX + CELL_SIZE/1.7 + eyeOffset/3, drawY + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(drawX + CELL_SIZE/2.5 + eyeOffset/3, drawY + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2);
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(drawX + CELL_SIZE/1.7 + eyeOffset/3, drawY + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(drawX + CELL_SIZE/2.5 + eyeOffset/3, drawY + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2); ctx.fill();
         }
       }
 
-      // Оверлей для окончания игры
       if (!gameActive && !isPaused) {
-        ctx.globalAlpha = 0.7;
-        ctx.fillStyle = '#0a140e';
+        ctx.globalAlpha = 0.7; ctx.fillStyle = '#0a140e';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = 1;
-        ctx.font = 'bold 20px "Segoe UI", Inter';
-        ctx.fillStyle = '#f9e7b3';
-        ctx.shadowColor = '#000';
-        ctx.shadowBlur = 14;
+        ctx.font = 'bold 20px "Segoe UI", Inter'; ctx.fillStyle = '#f9e7b3';
+        ctx.shadowColor = '#000'; ctx.shadowBlur = 14;
         ctx.textAlign = 'center';
-        if (winFlag) {
-          ctx.fillText(t('win'), canvas.width/2, canvas.height/2-10);
-        } else if (gameOverFlag) {
-          ctx.fillText(t('gameOver'), canvas.width/2, canvas.height/2-10);
-        }
-        ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
+        if (winFlag) ctx.fillText(t('win'), canvas.width/2, canvas.height/2-10);
+        else if (gameOverFlag) ctx.fillText(t('gameOver'), canvas.width/2, canvas.height/2-10);
+        ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
       }
     }
 
@@ -1456,37 +1501,44 @@
     }
 
     function saveNickname() {
-      const newNick = nicknameInput.value.trim();
+      const inputEl = document.activeElement === pauseNicknameInput ? pauseNicknameInput : nicknameInput;
+      const errorEl = document.activeElement === pauseNicknameInput ? pauseNicknameError : nicknameError;
+      const newNick = inputEl.value.trim();
+      
       if (!newNick) {
-        nicknameError.textContent = '';
-        nicknameError.classList.add('hidden');
+        errorEl.textContent = '';
+        errorEl.classList.add('hidden');
         return;
       }
       if (isNicknameTakenGlobally(newNick) && newNick.toLowerCase() !== playerNickname.toLowerCase()) {
-        nicknameError.textContent = t('nicknameTaken');
-        nicknameError.classList.remove('hidden');
+        errorEl.textContent = t('nicknameTaken');
+        errorEl.classList.remove('hidden');
         return;
       }
-      nicknameError.classList.add('hidden');
+      errorEl.classList.add('hidden');
       playerNickname = newNick;
       updateNicknameDisplay();
-      nicknameInput.value = '';
+      inputEl.value = '';
       saveAllSettings();
     }
 
     function showMainMenu() {
       mainMenu.classList.remove('hidden');
       settingsMenu.classList.add('hidden');
+      pauseMenu.classList.add('hidden');
+      pauseOverlay.classList.add('hidden');
     }
 
     function hideAllMenus() {
       mainMenu.classList.add('hidden');
       settingsMenu.classList.add('hidden');
+      pauseMenu.classList.add('hidden');
     }
 
     function showSettings() {
       mainMenu.classList.add('hidden');
       settingsMenu.classList.remove('hidden');
+      pauseMenu.classList.add('hidden');
       nicknameError.classList.add('hidden');
     }
 
@@ -1499,11 +1551,8 @@
 
       playButton.addEventListener('click', () => {
         initAudio();
-        if (!gameActive) {
-          resetGame();
-        } else if (isPaused) {
-          togglePause();
-        }
+        if (!gameActive) { resetGame(); }
+        else if (isPaused) { resumeGame(); }
         hideAllMenus();
       });
 
@@ -1513,30 +1562,38 @@
         mainMenu.classList.remove('hidden');
       });
 
+      // Кнопки меню паузы
+      resumeButton.addEventListener('click', resumeGame);
+      pauseRestartButton.addEventListener('click', restartFromPause);
+      pauseMainMenuButton.addEventListener('click', goToMainMenu);
+
+      // Обработчики для обычных настроек
       soundSelect.addEventListener('change', (e) => {
         currentSoundType = parseInt(e.target.value, 10);
+        pauseSoundSelect.value = currentSoundType;
         saveAllSettings();
       });
 
-      previewSoundBtn.addEventListener('click', () => {
-        initAudio();
-        playAppleSound();
-      });
+      previewSoundBtn.addEventListener('click', () => { initAudio(); playAppleSound(); });
 
       volumeSlider.addEventListener('input', (e) => {
         soundVolume = parseInt(e.target.value, 10) / 100;
         volumeValue.textContent = e.target.value;
+        pauseVolumeSlider.value = e.target.value;
+        pauseVolumeValue.textContent = e.target.value;
         saveAllSettings();
       });
 
       fruitSelect.addEventListener('change', (e) => {
         fruitType = parseInt(e.target.value, 10);
+        pauseFruitSelect.value = fruitType;
         drawBoard();
         saveAllSettings();
       });
 
       fieldDesignSelect.addEventListener('change', (e) => {
         fieldDesign = parseInt(e.target.value, 10);
+        pauseFieldDesignSelect.value = fieldDesign;
         drawBoard();
         saveAllSettings();
       });
@@ -1547,31 +1604,92 @@
           const reader = new FileReader();
           reader.onload = function(ev) {
             const img = new Image();
-            img.onload = function() {
-              customBgImage = img;
-              if (fieldDesign === 4) drawBoard();
-            };
+            img.onload = function() { customBgImage = img; if (fieldDesign === 4) drawBoard(); };
             img.src = ev.target.result;
           };
           reader.readAsDataURL(file);
         }
       });
 
-      gridSizeSelect.addEventListener('change', () => {
-        applyGridSize();
-      });
+      gridSizeSelect.addEventListener('change', () => { applyGridSize(); });
 
       languageSelect.addEventListener('change', (e) => {
         currentLang = e.target.value;
+        pauseLanguageSelect.value = currentLang;
         updateUILanguage();
         drawBoard();
         saveAllSettings();
       });
 
       saveNicknameBtn.addEventListener('click', saveNickname);
-      nicknameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') saveNickname();
+      nicknameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') saveNickname(); });
+
+      // Обработчики для настроек в меню паузы
+      pauseSoundSelect.addEventListener('change', (e) => {
+        currentSoundType = parseInt(e.target.value, 10);
+        soundSelect.value = currentSoundType;
+        saveAllSettings();
       });
+
+      pausePreviewSound.addEventListener('click', () => { initAudio(); playAppleSound(); });
+
+      pauseVolumeSlider.addEventListener('input', (e) => {
+        soundVolume = parseInt(e.target.value, 10) / 100;
+        pauseVolumeValue.textContent = e.target.value;
+        volumeSlider.value = e.target.value;
+        volumeValue.textContent = e.target.value;
+        saveAllSettings();
+      });
+
+      pauseFruitSelect.addEventListener('change', (e) => {
+        fruitType = parseInt(e.target.value, 10);
+        fruitSelect.value = fruitType;
+        drawBoard();
+        saveAllSettings();
+      });
+
+      pauseFieldDesignSelect.addEventListener('change', (e) => {
+        fieldDesign = parseInt(e.target.value, 10);
+        fieldDesignSelect.value = fieldDesign;
+        drawBoard();
+        saveAllSettings();
+      });
+
+      pauseCustomBgInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(ev) {
+            const img = new Image();
+            img.onload = function() { customBgImage = img; if (fieldDesign === 4) drawBoard(); };
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      pauseGridSizeSelect.addEventListener('change', () => {
+        GRID_SIZE = parseInt(pauseGridSizeSelect.value, 10);
+        gridSizeSelect.value = GRID_SIZE;
+        applyGridSize();
+      });
+
+      pauseLanguageSelect.addEventListener('change', (e) => {
+        currentLang = e.target.value;
+        languageSelect.value = currentLang;
+        updateUILanguage();
+        drawBoard();
+        saveAllSettings();
+      });
+
+      pauseSaveNicknameBtn.addEventListener('click', () => {
+        const tempActive = document.activeElement;
+        pauseNicknameInput.focus();
+        saveNickname();
+        if (tempActive) tempActive.focus();
+      });
+
+      pauseNicknameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') saveNickname(); });
 
       document.querySelectorAll('.leaderboard-tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -1581,14 +1699,15 @@
       });
 
       pauseOverlay.addEventListener('click', () => {
-        if (isPaused) togglePause();
+        if (isPaused && pauseMenu.classList.contains('hidden')) {
+          togglePause();
+        }
       });
     }
 
     // ==================== ИНИЦИАЛИЗАЦИЯ ====================
     function initialStart() {
       loadHighScore();
-
       const savedSettings = loadSettings();
       const mergedSettings = { ...defaultSettings, ...savedSettings };
 
@@ -1615,28 +1734,17 @@
       bindEvents();
       updateUILanguage();
       updateNicknameDisplay();
-      
       loadLeaderboard();
-      
       animationProgress = 1;
       drawBoard();
       gameActive = false;
       showMainMenu();
       saveAllSettings();
-
       startCloudSync();
     }
 
-    window.addEventListener('beforeunload', () => {
-      clearGameLoop();
-      saveAllSettings();
-    });
-
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'snakeGlobalLeaderboard') {
-        loadLeaderboard();
-      }
-    });
+    window.addEventListener('beforeunload', () => { clearGameLoop(); saveAllSettings(); });
+    window.addEventListener('storage', (e) => { if (e.key === 'snakeGlobalLeaderboard') loadLeaderboard(); });
 
     initialStart();
   })();
