@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Змейка • Меню • Звуки • Языки • Дизайн • Лидеры</title>
+  <title>Змейка • Плавная • Русская раскладка</title>
   <style>
     * {
       margin: 0;
@@ -169,7 +169,7 @@
       border-radius: 2rem;
       padding: 1.5rem;
       border: 2px solid #4f6b4a;
-      min-width: 280px;
+      min-width: 300px;
       box-shadow: 0 15px 25px rgba(0,0,0,0.5);
     }
 
@@ -177,8 +177,33 @@
       color: #f7e05e;
       text-align: center;
       font-size: 1.3rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       text-shadow: 0 2px 5px black;
+    }
+
+    .leaderboard-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      justify-content: center;
+    }
+
+    .leaderboard-tab {
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      background: #0d1f15;
+      border: 1px solid #4a6b4a;
+      color: #b9dbb0;
+      cursor: pointer;
+      border-radius: 1rem;
+      transition: all 0.2s;
+    }
+
+    .leaderboard-tab.active {
+      background: #3a6b4a;
+      color: #f5ffdd;
+      border-color: #7bbf6a;
+      box-shadow: 0 0 10px rgba(123, 191, 106, 0.3);
     }
 
     .leaderboard-list {
@@ -202,7 +227,7 @@
     .leaderboard-list .rank {
       color: #f7e05e;
       font-weight: bold;
-      min-width: 25px;
+      min-width: 30px;
     }
 
     .leaderboard-list .name {
@@ -361,6 +386,36 @@
       font-size: 0.9rem;
       display: flex;
       gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pause-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 1.8rem;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .pause-text {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #f7e05e;
+      text-shadow: 0 0 20px rgba(247, 224, 94, 0.5);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
     @media (max-width: 800px) {
@@ -392,8 +447,11 @@
 <body>
 <div class="game-wrapper">
   <div class="main-layout">
-    <div class="game-container">
+    <div class="game-container" id="gameContainer">
       <canvas id="gameCanvas" width="400" height="400"></canvas>
+      <div class="pause-overlay hidden" id="pauseOverlay">
+        <div class="pause-text">⏸ ПАУЗА</div>
+      </div>
 
       <div class="info-panel">
         <div class="score-block">
@@ -417,7 +475,8 @@
         </button>
       </div>
       <div class="controls-hint">
-        <span>⬆⬇⬅➡ / WASD</span>
+        <span>⬆⬇⬅➡ / WASD / ЦФЫВ</span>
+        <span>Esc - пауза</span>
         <span id="gameStatus" style="color:#f7da7c;">▶ Игра идёт</span>
         <span class="nickname-display" id="nicknameDisplay"></span>
       </div>
@@ -426,6 +485,10 @@
     <!-- Таблица лидеров -->
     <div class="leaderboard" id="leaderboardPanel">
       <h3 id="leaderboardTitle">🏆 ТАБЛИЦА ЛИДЕРОВ</h3>
+      <div class="leaderboard-tabs">
+        <button class="leaderboard-tab active" data-size="10">10×10</button>
+        <button class="leaderboard-tab" data-size="20">20×20</button>
+      </div>
       <ul class="leaderboard-list" id="leaderboardList">
         <li><span class="rank">-</span><span class="name">Загрузка...</span><span class="score">-</span></li>
       </ul>
@@ -514,8 +577,8 @@
     const gameStatusDiv = document.getElementById('gameStatus');
     const nicknameDisplay = document.getElementById('nicknameDisplay');
     const leaderboardList = document.getElementById('leaderboardList');
-    const leaderboardTitle = document.getElementById('leaderboardTitle');
     const syncStatus = document.getElementById('syncStatus');
+    const pauseOverlay = document.getElementById('pauseOverlay');
 
     // Меню элементы
     const mainMenu = document.getElementById('mainMenu');
@@ -537,19 +600,11 @@
     const nicknameError = document.getElementById('nicknameError');
 
     // ==================== ОБЛАЧНЫЙ ЛИДЕРБОРД ====================
-    // Используем jsonbin.io - бесплатный сервис для хранения JSON
-    const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/67a1c3e1e41b4d34e47e3d8e';
-    const JSONBIN_KEY = '$2a$10$YQ8zV9X1qF3kL7mN5pR2tO'; // Публичный ключ (замените на свой)
-    
-    // Для демонстрации используем localStorage с эмуляцией облака
-    // В реальном проекте нужно зарегистрироваться на jsonbin.io и получить свой ключ
-    const USE_REAL_CLOUD = false; // Поставьте true если есть свой JSONBin ключ
-    
-    let leaderboard = [];
+    let leaderboard = { '10': [], '20': [] };
+    let currentLeaderboardSize = '20';
     let lastSyncTime = 0;
-    const SYNC_INTERVAL = 3000; // Синхронизация каждые 3 секунды
+    const SYNC_INTERVAL = 5000;
 
-    // Функция для генерации уникального ID устройства
     function getDeviceId() {
       let deviceId = localStorage.getItem('snakeDeviceId');
       if (!deviceId) {
@@ -561,119 +616,79 @@
 
     const deviceId = getDeviceId();
 
-    // Загрузка лидерборда из облака
-    async function loadLeaderboardFromCloud() {
+    function loadLeaderboard() {
       try {
-        if (USE_REAL_CLOUD) {
-          const response = await fetch(JSONBIN_URL, {
-            headers: { 'X-Master-Key': JSONBIN_KEY }
-          });
-          if (response.ok) {
-            const data = await response.json();
-            leaderboard = data.record.leaderboard || [];
+        const saved = localStorage.getItem('snakeGlobalLeaderboard');
+        if (saved) {
+          const data = JSON.parse(saved);
+          if (data['10'] && data['20']) {
+            leaderboard = data;
           }
-        } else {
-          // Эмуляция облака через localStorage с общим ключом
-          const saved = localStorage.getItem('snakeGlobalLeaderboard');
-          leaderboard = saved ? JSON.parse(saved) : [];
         }
         lastSyncTime = Date.now();
         updateLeaderboardUI();
-        syncStatus.textContent = '✅ Синхронизировано';
+        syncStatus.textContent = '✅ Загружено';
         return true;
       } catch (e) {
         console.warn('Ошибка загрузки лидерборда:', e);
-        syncStatus.textContent = '⚠️ Автономный режим';
-        // Загружаем локальную копию
-        const saved = localStorage.getItem('snakeGlobalLeaderboard');
-        leaderboard = saved ? JSON.parse(saved) : [];
-        updateLeaderboardUI();
+        syncStatus.textContent = '⚠️ Ошибка загрузки';
         return false;
       }
     }
 
-    // Сохранение лидерборда в облако
-    async function saveLeaderboardToCloud() {
+    function saveLeaderboard() {
       try {
-        if (USE_REAL_CLOUD) {
-          await fetch(JSONBIN_URL, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Master-Key': JSONBIN_KEY
-            },
-            body: JSON.stringify({ leaderboard })
-          });
-        } else {
-          // Эмуляция облака через localStorage
-          localStorage.setItem('snakeGlobalLeaderboard', JSON.stringify(leaderboard));
-        }
+        localStorage.setItem('snakeGlobalLeaderboard', JSON.stringify(leaderboard));
         lastSyncTime = Date.now();
         syncStatus.textContent = '✅ Сохранено';
+        window.dispatchEvent(new Event('leaderboardUpdated'));
         return true;
       } catch (e) {
         console.warn('Ошибка сохранения лидерборда:', e);
-        syncStatus.textContent = '⚠️ Локальное сохранение';
-        localStorage.setItem('snakeGlobalLeaderboard', JSON.stringify(leaderboard));
+        syncStatus.textContent = '⚠️ Ошибка сохранения';
         return false;
       }
     }
 
-    // Добавление результата в глобальный лидерборд
-    function addToLeaderboard(nickname, score) {
+    function addToLeaderboard(nickname, score, gridSize) {
       if (!nickname || score === 0) return;
-
-      // Ищем существующую запись по никнейму
-      const existingIndex = leaderboard.findIndex(e => e.nickname === nickname);
-      
+      const sizeKey = gridSize.toString();
+      if (!leaderboard[sizeKey]) leaderboard[sizeKey] = [];
+      const board = leaderboard[sizeKey];
+      const existingIndex = board.findIndex(e => e.nickname === nickname);
       if (existingIndex >= 0) {
-        // Обновляем только если новый счёт больше
-        if (score > leaderboard[existingIndex].score) {
-          leaderboard[existingIndex].score = score;
-          leaderboard[existingIndex].deviceId = deviceId;
-          leaderboard[existingIndex].timestamp = Date.now();
+        if (score > board[existingIndex].score) {
+          board[existingIndex].score = score;
+          board[existingIndex].deviceId = deviceId;
+          board[existingIndex].timestamp = Date.now();
         }
       } else {
-        // Добавляем новую запись
-        leaderboard.push({
-          nickname,
-          score,
-          deviceId,
-          timestamp: Date.now()
-        });
+        board.push({ nickname, score, deviceId, timestamp: Date.now() });
       }
-
-      // Сортируем по убыванию счёта
-      leaderboard.sort((a, b) => b.score - a.score);
-      
-      // Оставляем только топ-50
-      leaderboard = leaderboard.slice(0, 50);
-      
-      // Сохраняем в облако
-      saveLeaderboardToCloud();
+      board.sort((a, b) => b.score - a.score);
+      leaderboard[sizeKey] = board.slice(0, 50);
+      saveLeaderboard();
       updateLeaderboardUI();
     }
 
-    // Проверка занятости никнейма (среди ВСЕХ игроков)
     function isNicknameTakenGlobally(nickname) {
       if (!nickname) return false;
-      return leaderboard.some(e => 
+      const allPlayers = [...(leaderboard['10'] || []), ...(leaderboard['20'] || [])];
+      return allPlayers.some(e => 
         e.nickname.toLowerCase() === nickname.toLowerCase() && 
-        e.deviceId !== deviceId // Не считаем свой никнейм занятым
+        e.deviceId !== deviceId
       );
     }
 
-    // Обновление UI лидерборда
     function updateLeaderboardUI() {
+      const board = leaderboard[currentLeaderboardSize] || [];
       leaderboardList.innerHTML = '';
-      const display = leaderboard.slice(0, 10);
-      
-      if (display.length === 0) {
+      if (board.length === 0) {
         const li = document.createElement('li');
         li.innerHTML = '<span class="rank">-</span><span class="name">Нет записей</span><span class="score">-</span>';
         leaderboardList.appendChild(li);
       } else {
-        display.forEach((entry, index) => {
+        board.slice(0, 10).forEach((entry, index) => {
           const li = document.createElement('li');
           const isCurrentPlayer = entry.nickname === playerNickname && entry.deviceId === deviceId;
           li.style.background = isCurrentPlayer ? 'rgba(247, 224, 94, 0.1)' : 'transparent';
@@ -685,15 +700,20 @@
           leaderboardList.appendChild(li);
         });
       }
+      document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.size === currentLeaderboardSize);
+      });
     }
 
-    // Периодическая синхронизация
+    window.addEventListener('leaderboardUpdated', () => {
+      loadLeaderboard();
+    });
+
     function startCloudSync() {
-      loadLeaderboardFromCloud();
-      
-      setInterval(async () => {
+      loadLeaderboard();
+      setInterval(() => {
         if (Date.now() - lastSyncTime > SYNC_INTERVAL) {
-          await loadLeaderboardFromCloud();
+          loadLeaderboard();
         }
       }, SYNC_INTERVAL);
     }
@@ -719,18 +739,17 @@
         colorLabel: '🐍 Цвет',
         restart: 'Новая игра',
         playing: '▶ Игра идёт',
+        paused: '⏸ Пауза',
         gameOver: '💔 Игра окончена',
         win: '🏆 Поле заполнено! Победа!',
-        leaderboardTitle: '🏆 МИРОВОЙ РЕЙТИНГ',
+        leaderboardTitle: '🏆 ТАБЛИЦА ЛИДЕРОВ',
         soundNames: ['Классический', 'Весёлый день', 'Глубокий хлопок'],
         fruitNames: ['Яблоко', 'Банан', 'Слива'],
         fieldNames: ['Классический тёмный', 'Лесной', 'Пустынный', 'Зимний', 'Свой фон'],
         nicknamePlaceholder: 'Введите никнейм',
         nicknameTaken: 'Этот никнейм уже занят другим игроком!',
         nicknameSaved: 'Никнейм сохранён!',
-        noNickname: 'Аноним',
-        syncOk: '✅ Синхронизировано',
-        syncError: '⚠️ Автономный режим'
+        noNickname: 'Аноним'
       },
       en: {
         menuTitle: 'SNAKE',
@@ -751,18 +770,17 @@
         colorLabel: '🐍 Color',
         restart: 'New Game',
         playing: '▶ Playing',
+        paused: '⏸ Paused',
         gameOver: '💔 Game Over',
         win: '🏆 Field full! You win!',
-        leaderboardTitle: '🏆 GLOBAL RANKING',
+        leaderboardTitle: '🏆 LEADERBOARD',
         soundNames: ['Classic', 'Happy Day', 'Deep Pop'],
         fruitNames: ['Apple', 'Banana', 'Plum'],
         fieldNames: ['Classic Dark', 'Forest', 'Desert', 'Winter', 'Custom BG'],
         nicknamePlaceholder: 'Enter nickname',
         nicknameTaken: 'This nickname is already taken!',
         nicknameSaved: 'Nickname saved!',
-        noNickname: 'Anonymous',
-        syncOk: '✅ Synchronized',
-        syncError: '⚠️ Offline mode'
+        noNickname: 'Anonymous'
       }
     };
 
@@ -845,12 +863,22 @@
         fieldDesignSelect.options[i].textContent = fieldNames[i];
       }
 
-      if (gameActive) {
+      updateGameStatus();
+    }
+
+    function updateGameStatus() {
+      if (isPaused) {
+        gameStatusDiv.textContent = t('paused');
+        gameStatusDiv.style.color = '#ffd966';
+      } else if (gameActive) {
         gameStatusDiv.textContent = t('playing');
+        gameStatusDiv.style.color = '#f7da7c';
       } else if (winFlag) {
         gameStatusDiv.textContent = t('win');
+        gameStatusDiv.style.color = '#ffd966';
       } else if (gameOverFlag) {
         gameStatusDiv.textContent = t('gameOver');
+        gameStatusDiv.style.color = '#ff8a7a';
       }
     }
 
@@ -865,13 +893,20 @@
     let gameActive = false;
     let gameOverFlag = false;
     let winFlag = false;
+    let isPaused = false;
 
     let currentScore = 0;
     let highScore = 0;
     let snakeColor = snakeColorPicker.value;
 
     let gameLoopInterval = null;
-    const MOVE_INTERVAL_MS = 130;
+    let animationFrameId = null;
+    const MOVE_INTERVAL_MS = 120; // Быстрее для более плавной анимации
+
+    // Плавное движение
+    let lastMoveTime = 0;
+    let animationProgress = 0;
+    let prevSnake = []; // Предыдущее положение для интерполяции
 
     let fieldDesign = 0;
     let customBgImage = null;
@@ -901,7 +936,7 @@
     }
 
     function playAppleSound() {
-      if (!audioCtx) return;
+      if (!audioCtx || soundVolume === 0) return;
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const now = audioCtx.currentTime;
       const vol = soundVolume;
@@ -940,7 +975,7 @@
     }
 
     function playGameOverSound() {
-      if (!audioCtx) return;
+      if (!audioCtx || soundVolume === 0) return;
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const now = audioCtx.currentTime;
       const vol = soundVolume;
@@ -956,7 +991,7 @@
     }
 
     function playWinSound() {
-      if (!audioCtx) return;
+      if (!audioCtx || soundVolume === 0) return;
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const now = audioCtx.currentTime;
       const vol = soundVolume;
@@ -1021,8 +1056,11 @@
     }
 
     function moveSnake() {
-      if (!gameActive) return;
+      if (!gameActive || isPaused) return;
 
+      // Сохраняем предыдущее положение для анимации
+      prevSnake = snake.map(seg => ({...seg}));
+      
       direction = {...nextDirection};
       const head = snake[0];
       const newHead = {
@@ -1038,12 +1076,12 @@
         gameActive = false;
         gameOverFlag = true;
         winFlag = false;
-        gameStatusDiv.textContent = t('gameOver');
-        gameStatusDiv.style.color = '#ff8a7a';
+        updateGameStatus();
         clearGameLoop();
         saveHighScore(currentScore);
-        addToLeaderboard(playerNickname, currentScore);
+        addToLeaderboard(playerNickname, currentScore, GRID_SIZE);
         playGameOverSound();
+        animationProgress = 1;
         drawBoard();
         return;
       }
@@ -1055,29 +1093,51 @@
         currentScoreSpan.textContent = currentScore;
         saveHighScore(currentScore);
         playAppleSound();
+        // При поедании еды сбрасываем предыдущее положение для корректной анимации
+        prevSnake = snake.map(seg => ({...seg}));
 
         if (!generateRandomFood()) {
           gameActive = false;
           gameOverFlag = false;
           winFlag = true;
-          gameStatusDiv.textContent = t('win');
-          gameStatusDiv.style.color = '#ffd966';
+          updateGameStatus();
           clearGameLoop();
           saveHighScore(currentScore);
-          addToLeaderboard(playerNickname, currentScore);
+          addToLeaderboard(playerNickname, currentScore, GRID_SIZE);
           playWinSound();
+          animationProgress = 1;
           drawBoard();
           return;
         }
       }
 
+      animationProgress = 0;
+      lastMoveTime = performance.now();
       drawBoard();
+    }
+
+    function togglePause() {
+      if (!gameActive || gameOverFlag || winFlag) return;
+      
+      isPaused = !isPaused;
+      if (isPaused) {
+        pauseOverlay.classList.remove('hidden');
+        clearGameLoop();
+      } else {
+        pauseOverlay.classList.add('hidden');
+        lastMoveTime = performance.now();
+        animationProgress = 1;
+        startGameLoop();
+      }
+      updateGameStatus();
     }
 
     function applyGridSize() {
       GRID_SIZE = parseInt(gridSizeSelect.value, 10);
       CELL_SIZE = canvas.width / GRID_SIZE;
+      currentLeaderboardSize = GRID_SIZE.toString();
       snake = getInitSnake();
+      prevSnake = snake.map(seg => ({...seg}));
       direction = {x: 1, y: 0};
       nextDirection = {x: 1, y: 0};
       currentScore = 0;
@@ -1085,12 +1145,15 @@
       gameActive = true;
       gameOverFlag = false;
       winFlag = false;
-      gameStatusDiv.textContent = t('playing');
-      gameStatusDiv.style.color = '#f7da7c';
+      isPaused = false;
+      pauseOverlay.classList.add('hidden');
+      updateGameStatus();
       if (!generateRandomFood()) {
         food = {x: Math.floor(GRID_SIZE/2) + 2, y: Math.floor(GRID_SIZE/2)};
       }
       clearGameLoop();
+      updateLeaderboardUI();
+      animationProgress = 1;
       drawBoard();
       startGameLoop();
       saveAllSettings();
@@ -1099,20 +1162,24 @@
     function resetGame() {
       clearGameLoop();
       snake = getInitSnake();
+      prevSnake = snake.map(seg => ({...seg}));
       direction = {x: 1, y: 0};
       nextDirection = {x: 1, y: 0};
       gameActive = true;
       gameOverFlag = false;
       winFlag = false;
+      isPaused = false;
       currentScore = 0;
       currentScoreSpan.textContent = '0';
-      gameStatusDiv.textContent = t('playing');
-      gameStatusDiv.style.color = '#f7da7c';
+      pauseOverlay.classList.add('hidden');
+      updateGameStatus();
 
       if (!generateRandomFood()) {
         food = {x: Math.floor(GRID_SIZE/2) + 2, y: Math.floor(GRID_SIZE/2)};
       }
 
+      animationProgress = 1;
+      lastMoveTime = performance.now();
       drawBoard();
       startGameLoop();
       hideAllMenus();
@@ -1120,8 +1187,11 @@
 
     function startGameLoop() {
       if (gameLoopInterval) clearInterval(gameLoopInterval);
-      if (gameActive) {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      
+      if (gameActive && !isPaused) {
         gameLoopInterval = setInterval(moveSnake, MOVE_INTERVAL_MS);
+        animationFrameId = requestAnimationFrame(animateLoop);
       }
     }
 
@@ -1130,13 +1200,40 @@
         clearInterval(gameLoopInterval);
         gameLoopInterval = null;
       }
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
     }
 
+    // Основной цикл анимации
+    function animateLoop(timestamp) {
+      if (!gameActive || isPaused) {
+        animationFrameId = null;
+        return;
+      }
+
+      // Вычисляем прогресс анимации на основе времени
+      const elapsed = timestamp - lastMoveTime;
+      animationProgress = Math.min(1, elapsed / MOVE_INTERVAL_MS);
+      
+      drawBoard();
+      
+      if (animationProgress < 1) {
+        animationFrameId = requestAnimationFrame(animateLoop);
+      } else {
+        animationFrameId = requestAnimationFrame(animateLoop);
+      }
+    }
+
+    // ==================== ОБРАБОТКА КЛАВИШ С ПОДДЕРЖКОЙ РУССКОЙ РАСКЛАДКИ ====================
     function handleKeyDown(e) {
       const key = e.key;
+      const code = e.code;
 
+      // Если фокус на поле ввода
       if (document.activeElement === nicknameInput) {
-        if (key === 'Escape') {
+        if (key === 'Escape' || code === 'Escape') {
           e.preventDefault();
           if (!settingsMenu.classList.contains('hidden')) {
             settingsMenu.classList.add('hidden');
@@ -1148,9 +1245,16 @@
         return;
       }
 
-      if (key === 'Escape') {
+      // Esc - пауза или меню
+      if (key === 'Escape' || code === 'Escape') {
         e.preventDefault();
-        if (!mainMenu.classList.contains('hidden') || !settingsMenu.classList.contains('hidden')) {
+        if (gameActive && !gameOverFlag && !winFlag) {
+          if (!mainMenu.classList.contains('hidden') || !settingsMenu.classList.contains('hidden')) {
+            hideAllMenus();
+          } else {
+            togglePause();
+          }
+        } else if (!mainMenu.classList.contains('hidden') || !settingsMenu.classList.contains('hidden')) {
           hideAllMenus();
         } else {
           showMainMenu();
@@ -1158,24 +1262,30 @@
         return;
       }
 
-      if (key.startsWith('Arrow') || key === ' ' || key === 'Space' ||
-          key === 'w' || key === 'a' || key === 's' || key === 'd' ||
-          key === 'W' || key === 'A' || key === 'S' || key === 'D') {
-        e.preventDefault();
+      // Проверяем физический код клавиши (работает независимо от раскладки)
+      let newDir = null;
+
+      // Физические коды клавиш (не зависят от раскладки)
+      if (code === 'ArrowUp' || code === 'KeyW') newDir = {x: 0, y: -1};
+      else if (code === 'ArrowDown' || code === 'KeyS') newDir = {x: 0, y: 1};
+      else if (code === 'ArrowLeft' || code === 'KeyA') newDir = {x: -1, y: 0};
+      else if (code === 'ArrowRight' || code === 'KeyD') newDir = {x: 1, y: 0};
+
+      // Также проверяем русские буквы (Ц, Ы, Ф, В)
+      if (!newDir) {
+        if (key === 'ц' || key === 'Ц' || key === 'w' || key === 'W') newDir = {x: 0, y: -1};
+        else if (key === 'ы' || key === 'Ы' || key === 's' || key === 'S') newDir = {x: 0, y: 1};
+        else if (key === 'ф' || key === 'Ф' || key === 'a' || key === 'A') newDir = {x: -1, y: 0};
+        else if (key === 'в' || key === 'В' || key === 'd' || key === 'D') newDir = {x: 1, y: 0};
       }
 
-      if (!gameActive) return;
-
-      let newDir = null;
-      if (key === 'ArrowUp' || key === 'w' || key === 'W') newDir = {x: 0, y: -1};
-      else if (key === 'ArrowDown' || key === 's' || key === 'S') newDir = {x: 0, y: 1};
-      else if (key === 'ArrowLeft' || key === 'a' || key === 'A') newDir = {x: -1, y: 0};
-      else if (key === 'ArrowRight' || key === 'd' || key === 'D') newDir = {x: 1, y: 0};
-
-      if (!newDir) return;
-      if (direction.x === -newDir.x && direction.y === -newDir.y) return;
-
-      nextDirection = newDir;
+      if (newDir) {
+        e.preventDefault();
+        if (!gameActive || isPaused) return;
+        // Защита от разворота на 180
+        if (direction.x === -newDir.x && direction.y === -newDir.y) return;
+        nextDirection = newDir;
+      }
     }
 
     // ==================== ОТРИСОВКА ====================
@@ -1258,38 +1368,63 @@
       ctx.shadowColor = 'transparent';
       ctx.shadowBlur = 0;
 
-      for (let i = 0; i < snake.length; i++) {
+      // Плавная интерполяция всей змейки
+      const progress = Math.min(1, Math.max(0, animationProgress));
+      
+      for (let i = snake.length - 1; i >= 0; i--) {
         const seg = snake[i];
-        const sx = seg.x * CELL_SIZE, sy = seg.y * CELL_SIZE;
+        let drawX = seg.x * CELL_SIZE;
+        let drawY = seg.y * CELL_SIZE;
+
+        // Интерполируем положение между предыдущим и текущим
+        if (prevSnake[i] && progress < 1 && gameActive && !isPaused) {
+          drawX = prevSnake[i].x * CELL_SIZE + (seg.x - prevSnake[i].x) * CELL_SIZE * progress;
+          drawY = prevSnake[i].y * CELL_SIZE + (seg.y - prevSnake[i].y) * CELL_SIZE * progress;
+        }
+
         const radius = (CELL_SIZE/2) - (i === 0 ? CELL_SIZE/10 : CELL_SIZE/6);
-        const gradient = ctx.createRadialGradient(sx + 4, sy + 4, 2, sx + CELL_SIZE/2, sy + CELL_SIZE/2, CELL_SIZE/1.5);
+        
+        // Градиент для объёма
+        const gradient = ctx.createRadialGradient(drawX + 4, drawY + 4, 2, drawX + CELL_SIZE/2, drawY + CELL_SIZE/2, CELL_SIZE/1.5);
         gradient.addColorStop(0, snakeColor);
         gradient.addColorStop(0.7, '#1e3b1a');
+        
         ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(sx + CELL_SIZE/2, sy + CELL_SIZE/2, radius, 0, 2 * Math.PI);
+        ctx.arc(drawX + CELL_SIZE/2, drawY + CELL_SIZE/2, radius, 0, 2 * Math.PI);
         ctx.fill();
 
+        // Глаза для головы
         if (i === 0 && CELL_SIZE > 10) {
           const eyeOffset = CELL_SIZE / 6;
+          
+          // Определяем смещение глаз в зависимости от направления
+          let eyeShiftX = 0, eyeShiftY = 0;
+          if (progress < 1 && gameActive && !isPaused) {
+            eyeShiftX = direction.x * CELL_SIZE * progress;
+            eyeShiftY = direction.y * CELL_SIZE * progress;
+          }
+          
           ctx.fillStyle = 'white';
           ctx.beginPath();
-          ctx.arc(sx + CELL_SIZE/1.7, sy + CELL_SIZE/3, eyeOffset, 0, Math.PI*2);
+          ctx.arc(drawX + CELL_SIZE/1.7, drawY + CELL_SIZE/3, eyeOffset, 0, Math.PI*2);
           ctx.fill();
           ctx.beginPath();
-          ctx.arc(sx + CELL_SIZE/2.5, sy + CELL_SIZE/3, eyeOffset, 0, Math.PI*2);
+          ctx.arc(drawX + CELL_SIZE/2.5, drawY + CELL_SIZE/3, eyeOffset, 0, Math.PI*2);
           ctx.fill();
+          
           ctx.fillStyle = '#0a0f0a';
           ctx.beginPath();
-          ctx.arc(sx + CELL_SIZE/1.7 + eyeOffset/3, sy + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2);
+          ctx.arc(drawX + CELL_SIZE/1.7 + eyeOffset/3, drawY + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2);
           ctx.fill();
           ctx.beginPath();
-          ctx.arc(sx + CELL_SIZE/2.5 + eyeOffset/3, sy + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2);
+          ctx.arc(drawX + CELL_SIZE/2.5 + eyeOffset/3, drawY + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2);
           ctx.fill();
         }
       }
 
-      if (!gameActive) {
+      // Оверлей для окончания игры
+      if (!gameActive && !isPaused) {
         ctx.globalAlpha = 0.7;
         ctx.fillStyle = '#0a140e';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1366,9 +1501,10 @@
         initAudio();
         if (!gameActive) {
           resetGame();
-        } else {
-          hideAllMenus();
+        } else if (isPaused) {
+          togglePause();
         }
+        hideAllMenus();
       });
 
       settingsButton.addEventListener('click', showSettings);
@@ -1436,6 +1572,17 @@
       nicknameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') saveNickname();
       });
+
+      document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          currentLeaderboardSize = tab.dataset.size;
+          updateLeaderboardUI();
+        });
+      });
+
+      pauseOverlay.addEventListener('click', () => {
+        if (isPaused) togglePause();
+      });
     }
 
     // ==================== ИНИЦИАЛИЗАЦИЯ ====================
@@ -1447,6 +1594,7 @@
 
       GRID_SIZE = mergedSettings.gridSize;
       CELL_SIZE = canvas.width / GRID_SIZE;
+      currentLeaderboardSize = GRID_SIZE.toString();
       snakeColor = mergedSettings.snakeColor;
       snakeColorPicker.value = snakeColor;
       fieldDesign = mergedSettings.fieldDesign;
@@ -1463,21 +1611,31 @@
       playerNickname = mergedSettings.nickname || '';
 
       snake = getInitSnake();
+      prevSnake = snake.map(seg => ({...seg}));
       bindEvents();
       updateUILanguage();
       updateNicknameDisplay();
+      
+      loadLeaderboard();
+      
+      animationProgress = 1;
       drawBoard();
       gameActive = false;
       showMainMenu();
       saveAllSettings();
 
-      // Запускаем облачную синхронизацию
       startCloudSync();
     }
 
     window.addEventListener('beforeunload', () => {
       clearGameLoop();
       saveAllSettings();
+    });
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'snakeGlobalLeaderboard') {
+        loadLeaderboard();
+      }
     });
 
     initialStart();
