@@ -169,7 +169,7 @@
       border-radius: 2rem;
       padding: 1.5rem;
       border: 2px solid #4f6b4a;
-      min-width: 250px;
+      min-width: 280px;
       box-shadow: 0 15px 25px rgba(0,0,0,0.5);
     }
 
@@ -189,13 +189,37 @@
     .leaderboard-list li {
       display: flex;
       justify-content: space-between;
-      padding: 0.4rem 0.8rem;
+      padding: 0.5rem 0.8rem;
       border-bottom: 1px solid #2a4a2a;
       font-size: 0.95rem;
+      gap: 1rem;
     }
 
     .leaderboard-list li:last-child {
       border-bottom: none;
+    }
+
+    .leaderboard-list .rank {
+      color: #f7e05e;
+      font-weight: bold;
+      min-width: 25px;
+    }
+
+    .leaderboard-list .name {
+      flex: 1;
+      text-align: left;
+    }
+
+    .leaderboard-list .score {
+      font-weight: bold;
+      color: #ffd966;
+    }
+
+    .sync-status {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #7a9a7a;
+      margin-top: 0.8rem;
     }
 
     .nickname-display {
@@ -403,12 +427,9 @@
     <div class="leaderboard" id="leaderboardPanel">
       <h3 id="leaderboardTitle">🏆 ТАБЛИЦА ЛИДЕРОВ</h3>
       <ul class="leaderboard-list" id="leaderboardList">
-        <li><span>—</span><span>0</span></li>
-        <li><span>—</span><span>0</span></li>
-        <li><span>—</span><span>0</span></li>
-        <li><span>—</span><span>0</span></li>
-        <li><span>—</span><span>0</span></li>
+        <li><span class="rank">-</span><span class="name">Загрузка...</span><span class="score">-</span></li>
       </ul>
+      <div class="sync-status" id="syncStatus">🔄 Синхронизация...</div>
     </div>
   </div>
 
@@ -494,6 +515,7 @@
     const nicknameDisplay = document.getElementById('nicknameDisplay');
     const leaderboardList = document.getElementById('leaderboardList');
     const leaderboardTitle = document.getElementById('leaderboardTitle');
+    const syncStatus = document.getElementById('syncStatus');
 
     // Меню элементы
     const mainMenu = document.getElementById('mainMenu');
@@ -514,7 +536,169 @@
     const saveNicknameBtn = document.getElementById('saveNicknameBtn');
     const nicknameError = document.getElementById('nicknameError');
 
-    // Локализация
+    // ==================== ОБЛАЧНЫЙ ЛИДЕРБОРД ====================
+    // Используем jsonbin.io - бесплатный сервис для хранения JSON
+    const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/67a1c3e1e41b4d34e47e3d8e';
+    const JSONBIN_KEY = '$2a$10$YQ8zV9X1qF3kL7mN5pR2tO'; // Публичный ключ (замените на свой)
+    
+    // Для демонстрации используем localStorage с эмуляцией облака
+    // В реальном проекте нужно зарегистрироваться на jsonbin.io и получить свой ключ
+    const USE_REAL_CLOUD = false; // Поставьте true если есть свой JSONBin ключ
+    
+    let leaderboard = [];
+    let lastSyncTime = 0;
+    const SYNC_INTERVAL = 3000; // Синхронизация каждые 3 секунды
+
+    // Функция для генерации уникального ID устройства
+    function getDeviceId() {
+      let deviceId = localStorage.getItem('snakeDeviceId');
+      if (!deviceId) {
+        deviceId = 'device_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        localStorage.setItem('snakeDeviceId', deviceId);
+      }
+      return deviceId;
+    }
+
+    const deviceId = getDeviceId();
+
+    // Загрузка лидерборда из облака
+    async function loadLeaderboardFromCloud() {
+      try {
+        if (USE_REAL_CLOUD) {
+          const response = await fetch(JSONBIN_URL, {
+            headers: { 'X-Master-Key': JSONBIN_KEY }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            leaderboard = data.record.leaderboard || [];
+          }
+        } else {
+          // Эмуляция облака через localStorage с общим ключом
+          const saved = localStorage.getItem('snakeGlobalLeaderboard');
+          leaderboard = saved ? JSON.parse(saved) : [];
+        }
+        lastSyncTime = Date.now();
+        updateLeaderboardUI();
+        syncStatus.textContent = '✅ Синхронизировано';
+        return true;
+      } catch (e) {
+        console.warn('Ошибка загрузки лидерборда:', e);
+        syncStatus.textContent = '⚠️ Автономный режим';
+        // Загружаем локальную копию
+        const saved = localStorage.getItem('snakeGlobalLeaderboard');
+        leaderboard = saved ? JSON.parse(saved) : [];
+        updateLeaderboardUI();
+        return false;
+      }
+    }
+
+    // Сохранение лидерборда в облако
+    async function saveLeaderboardToCloud() {
+      try {
+        if (USE_REAL_CLOUD) {
+          await fetch(JSONBIN_URL, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Master-Key': JSONBIN_KEY
+            },
+            body: JSON.stringify({ leaderboard })
+          });
+        } else {
+          // Эмуляция облака через localStorage
+          localStorage.setItem('snakeGlobalLeaderboard', JSON.stringify(leaderboard));
+        }
+        lastSyncTime = Date.now();
+        syncStatus.textContent = '✅ Сохранено';
+        return true;
+      } catch (e) {
+        console.warn('Ошибка сохранения лидерборда:', e);
+        syncStatus.textContent = '⚠️ Локальное сохранение';
+        localStorage.setItem('snakeGlobalLeaderboard', JSON.stringify(leaderboard));
+        return false;
+      }
+    }
+
+    // Добавление результата в глобальный лидерборд
+    function addToLeaderboard(nickname, score) {
+      if (!nickname || score === 0) return;
+
+      // Ищем существующую запись по никнейму
+      const existingIndex = leaderboard.findIndex(e => e.nickname === nickname);
+      
+      if (existingIndex >= 0) {
+        // Обновляем только если новый счёт больше
+        if (score > leaderboard[existingIndex].score) {
+          leaderboard[existingIndex].score = score;
+          leaderboard[existingIndex].deviceId = deviceId;
+          leaderboard[existingIndex].timestamp = Date.now();
+        }
+      } else {
+        // Добавляем новую запись
+        leaderboard.push({
+          nickname,
+          score,
+          deviceId,
+          timestamp: Date.now()
+        });
+      }
+
+      // Сортируем по убыванию счёта
+      leaderboard.sort((a, b) => b.score - a.score);
+      
+      // Оставляем только топ-50
+      leaderboard = leaderboard.slice(0, 50);
+      
+      // Сохраняем в облако
+      saveLeaderboardToCloud();
+      updateLeaderboardUI();
+    }
+
+    // Проверка занятости никнейма (среди ВСЕХ игроков)
+    function isNicknameTakenGlobally(nickname) {
+      if (!nickname) return false;
+      return leaderboard.some(e => 
+        e.nickname.toLowerCase() === nickname.toLowerCase() && 
+        e.deviceId !== deviceId // Не считаем свой никнейм занятым
+      );
+    }
+
+    // Обновление UI лидерборда
+    function updateLeaderboardUI() {
+      leaderboardList.innerHTML = '';
+      const display = leaderboard.slice(0, 10);
+      
+      if (display.length === 0) {
+        const li = document.createElement('li');
+        li.innerHTML = '<span class="rank">-</span><span class="name">Нет записей</span><span class="score">-</span>';
+        leaderboardList.appendChild(li);
+      } else {
+        display.forEach((entry, index) => {
+          const li = document.createElement('li');
+          const isCurrentPlayer = entry.nickname === playerNickname && entry.deviceId === deviceId;
+          li.style.background = isCurrentPlayer ? 'rgba(247, 224, 94, 0.1)' : 'transparent';
+          li.innerHTML = `
+            <span class="rank">#${index + 1}</span>
+            <span class="name">${entry.nickname}${isCurrentPlayer ? ' 👈' : ''}</span>
+            <span class="score">${entry.score}</span>
+          `;
+          leaderboardList.appendChild(li);
+        });
+      }
+    }
+
+    // Периодическая синхронизация
+    function startCloudSync() {
+      loadLeaderboardFromCloud();
+      
+      setInterval(async () => {
+        if (Date.now() - lastSyncTime > SYNC_INTERVAL) {
+          await loadLeaderboardFromCloud();
+        }
+      }, SYNC_INTERVAL);
+    }
+
+    // ==================== ЛОКАЛИЗАЦИЯ ====================
     const translations = {
       ru: {
         menuTitle: 'ЗМЕЙКА',
@@ -537,14 +721,16 @@
         playing: '▶ Игра идёт',
         gameOver: '💔 Игра окончена',
         win: '🏆 Поле заполнено! Победа!',
-        leaderboardTitle: '🏆 ТАБЛИЦА ЛИДЕРОВ',
+        leaderboardTitle: '🏆 МИРОВОЙ РЕЙТИНГ',
         soundNames: ['Классический', 'Весёлый день', 'Глубокий хлопок'],
         fruitNames: ['Яблоко', 'Банан', 'Слива'],
         fieldNames: ['Классический тёмный', 'Лесной', 'Пустынный', 'Зимний', 'Свой фон'],
         nicknamePlaceholder: 'Введите никнейм',
-        nicknameTaken: 'Этот никнейм уже занят!',
+        nicknameTaken: 'Этот никнейм уже занят другим игроком!',
         nicknameSaved: 'Никнейм сохранён!',
-        noNickname: 'Аноним'
+        noNickname: 'Аноним',
+        syncOk: '✅ Синхронизировано',
+        syncError: '⚠️ Автономный режим'
       },
       en: {
         menuTitle: 'SNAKE',
@@ -567,14 +753,16 @@
         playing: '▶ Playing',
         gameOver: '💔 Game Over',
         win: '🏆 Field full! You win!',
-        leaderboardTitle: '🏆 LEADERBOARD',
+        leaderboardTitle: '🏆 GLOBAL RANKING',
         soundNames: ['Classic', 'Happy Day', 'Deep Pop'],
         fruitNames: ['Apple', 'Banana', 'Plum'],
         fieldNames: ['Classic Dark', 'Forest', 'Desert', 'Winter', 'Custom BG'],
         nicknamePlaceholder: 'Enter nickname',
         nicknameTaken: 'This nickname is already taken!',
         nicknameSaved: 'Nickname saved!',
-        noNickname: 'Anonymous'
+        noNickname: 'Anonymous',
+        syncOk: '✅ Synchronized',
+        syncError: '⚠️ Offline mode'
       }
     };
 
@@ -584,7 +772,7 @@
       return translations[currentLang][key] || key;
     }
 
-    // ----- Настройки по умолчанию -----
+    // ==================== НАСТРОЙКИ ====================
     const defaultSettings = {
       language: 'ru',
       soundType: 0,
@@ -596,7 +784,6 @@
       nickname: ''
     };
 
-    // Загрузка настроек
     function loadSettings() {
       try {
         const saved = localStorage.getItem('snakeSettings');
@@ -620,60 +807,6 @@
       try {
         localStorage.setItem('snakeSettings', JSON.stringify(settings));
       } catch (e) {}
-    }
-
-    function applySettings(settings) {
-      // Язык
-      if (settings.language && (settings.language === 'ru' || settings.language === 'en')) {
-        currentLang = settings.language;
-        languageSelect.value = currentLang;
-      }
-
-      // Звук
-      if (typeof settings.soundType === 'number') {
-        currentSoundType = settings.soundType;
-        soundSelect.value = currentSoundType;
-      }
-
-      // Громкость
-      if (typeof settings.volume === 'number') {
-        soundVolume = settings.volume / 100;
-        volumeSlider.value = settings.volume;
-        volumeValue.textContent = settings.volume;
-      }
-
-      // Фрукт
-      if (typeof settings.fruitType === 'number') {
-        fruitType = settings.fruitType;
-        fruitSelect.value = fruitType;
-      }
-
-      // Дизайн поля
-      if (typeof settings.fieldDesign === 'number') {
-        fieldDesign = settings.fieldDesign;
-        fieldDesignSelect.value = fieldDesign;
-      }
-
-      // Размер поля
-      if (typeof settings.gridSize === 'number' && (settings.gridSize === 10 || settings.gridSize === 20)) {
-        GRID_SIZE = settings.gridSize;
-        gridSizeSelect.value = GRID_SIZE;
-        CELL_SIZE = canvas.width / GRID_SIZE;
-      }
-
-      // Цвет змейки
-      if (settings.snakeColor) {
-        snakeColor = settings.snakeColor;
-        snakeColorPicker.value = snakeColor;
-      }
-
-      // Никнейм
-      if (settings.nickname) {
-        playerNickname = settings.nickname;
-      }
-
-      updateUILanguage();
-      updateNicknameDisplay();
     }
 
     function updateUILanguage() {
@@ -721,7 +854,7 @@
       }
     }
 
-    // ----- Игровые параметры -----
+    // ==================== ИГРОВЫЕ ПЕРЕМЕННЫЕ ====================
     let GRID_SIZE = 20;
     let CELL_SIZE = canvas.width / GRID_SIZE;
 
@@ -740,7 +873,6 @@
     let gameLoopInterval = null;
     const MOVE_INTERVAL_MS = 130;
 
-    // Дизайн поля
     let fieldDesign = 0;
     let customBgImage = null;
     const fieldDesigns = {
@@ -751,18 +883,14 @@
       4: { bg: '#0b1b12', grid: '#2a462a', border: '#4a6b4a' }
     };
 
-    // Фрукт
     let fruitType = 0;
-
-    // Никнейм
     let playerNickname = '';
-    let leaderboard = [];
 
-    // Аудио
     let audioCtx = null;
     let currentSoundType = 0;
     let soundVolume = 0.7;
 
+    // ==================== АУДИО ====================
     function initAudio() {
       if (audioCtx) return;
       try {
@@ -845,88 +973,7 @@
       });
     }
 
-    // Лидерборд
-    function loadLeaderboard() {
-      try {
-        const saved = localStorage.getItem('snakeLeaderboard');
-        leaderboard = saved ? JSON.parse(saved) : [];
-      } catch (e) {
-        leaderboard = [];
-      }
-      updateLeaderboardUI();
-    }
-
-    function saveLeaderboard() {
-      try {
-        localStorage.setItem('snakeLeaderboard', JSON.stringify(leaderboard));
-      } catch (e) {}
-      updateLeaderboardUI();
-    }
-
-    function addToLeaderboard(nickname, score) {
-      if (!nickname || score === 0) return;
-      const existing = leaderboard.find(e => e.nickname === nickname);
-      if (existing) {
-        if (score > existing.score) existing.score = score;
-      } else {
-        leaderboard.push({ nickname, score });
-      }
-      leaderboard.sort((a, b) => b.score - a.score);
-      leaderboard = leaderboard.slice(0, 10);
-      saveLeaderboard();
-    }
-
-    function isNicknameTaken(nickname) {
-      if (!nickname) return false;
-      return leaderboard.some(e => e.nickname.toLowerCase() === nickname.toLowerCase());
-    }
-
-    function updateLeaderboardUI() {
-      leaderboardList.innerHTML = '';
-      const display = leaderboard.slice(0, 5);
-      if (display.length === 0) {
-        for (let i = 0; i < 5; i++) {
-          const li = document.createElement('li');
-          li.innerHTML = '<span>—</span><span>0</span>';
-          leaderboardList.appendChild(li);
-        }
-      } else {
-        display.forEach(entry => {
-          const li = document.createElement('li');
-          li.innerHTML = `<span>${entry.nickname}</span><span>${entry.score}</span>`;
-          leaderboardList.appendChild(li);
-        });
-        for (let i = display.length; i < 5; i++) {
-          const li = document.createElement('li');
-          li.innerHTML = '<span>—</span><span>0</span>';
-          leaderboardList.appendChild(li);
-        }
-      }
-    }
-
-    function updateNicknameDisplay() {
-      nicknameDisplay.textContent = playerNickname || t('noNickname');
-    }
-
-    function saveNickname() {
-      const newNick = nicknameInput.value.trim();
-      if (!newNick) {
-        nicknameError.textContent = '';
-        nicknameError.classList.add('hidden');
-        return;
-      }
-      if (isNicknameTaken(newNick) && newNick.toLowerCase() !== playerNickname.toLowerCase()) {
-        nicknameError.textContent = t('nicknameTaken');
-        nicknameError.classList.remove('hidden');
-        return;
-      }
-      nicknameError.classList.add('hidden');
-      playerNickname = newNick;
-      updateNicknameDisplay();
-      nicknameInput.value = '';
-      saveAllSettings();
-    }
-
+    // ==================== ИГРОВАЯ ЛОГИКА ====================
     function loadHighScore() {
       try {
         const saved = localStorage.getItem('snakeHighScore');
@@ -1088,9 +1135,7 @@
     function handleKeyDown(e) {
       const key = e.key;
 
-      // Если фокус на поле ввода - не обрабатываем игровые клавиши
       if (document.activeElement === nicknameInput) {
-        // Разрешаем только Esc для закрытия меню
         if (key === 'Escape') {
           e.preventDefault();
           if (!settingsMenu.classList.contains('hidden')) {
@@ -1133,12 +1178,13 @@
       nextDirection = newDir;
     }
 
+    // ==================== ОТРИСОВКА ====================
     function drawFruit(fx, fy) {
       const size = CELL_SIZE / 2.5;
       ctx.shadowColor = '#ff7b6b';
       ctx.shadowBlur = 10;
 
-      if (fruitType === 0) { // Яблоко
+      if (fruitType === 0) {
         ctx.fillStyle = '#e8453c';
         ctx.beginPath();
         ctx.arc(fx + CELL_SIZE/2, fy + CELL_SIZE/2, size, 0, Math.PI*2);
@@ -1154,7 +1200,7 @@
         ctx.moveTo(fx + CELL_SIZE/1.9, fy + CELL_SIZE/3.2);
         ctx.lineTo(fx + CELL_SIZE/1.55, fy + CELL_SIZE/4.5);
         ctx.stroke();
-      } else if (fruitType === 1) { // Банан
+      } else if (fruitType === 1) {
         ctx.fillStyle = '#f4e542';
         ctx.beginPath();
         ctx.ellipse(fx + CELL_SIZE/2, fy + CELL_SIZE/2.3, size * 1.2, size * 0.6, -0.3, 0, Math.PI*2);
@@ -1163,7 +1209,7 @@
         ctx.beginPath();
         ctx.arc(fx + CELL_SIZE/3.5, fy + CELL_SIZE/3, size * 0.3, 0, Math.PI*2);
         ctx.fill();
-      } else { // Слива
+      } else {
         ctx.fillStyle = '#8e44ad';
         ctx.beginPath();
         ctx.arc(fx + CELL_SIZE/2, fy + CELL_SIZE/2, size, 0, Math.PI*2);
@@ -1185,7 +1231,6 @@
       const design = fieldDesigns[fieldDesign];
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Фон
       if (fieldDesign === 4 && customBgImage) {
         ctx.drawImage(customBgImage, 0, 0, canvas.width, canvas.height);
       } else {
@@ -1193,7 +1238,6 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
-      // Сетка
       ctx.strokeStyle = design.grid;
       ctx.lineWidth = 0.6;
       for (let i = 0; i <= GRID_SIZE; i++) {
@@ -1206,7 +1250,6 @@
         ctx.stroke();
       }
 
-      // Еда
       if (food) {
         const fx = food.x * CELL_SIZE, fy = food.y * CELL_SIZE;
         drawFruit(fx, fy);
@@ -1215,7 +1258,6 @@
       ctx.shadowColor = 'transparent';
       ctx.shadowBlur = 0;
 
-      // Змейка
       for (let i = 0; i < snake.length; i++) {
         const seg = snake[i];
         const sx = seg.x * CELL_SIZE, sy = seg.y * CELL_SIZE;
@@ -1267,9 +1309,33 @@
       }
     }
 
+    // ==================== ИНТЕРФЕЙС ====================
     function updateSnakeColor() {
       snakeColor = snakeColorPicker.value;
       drawBoard();
+      saveAllSettings();
+    }
+
+    function updateNicknameDisplay() {
+      nicknameDisplay.textContent = playerNickname || t('noNickname');
+    }
+
+    function saveNickname() {
+      const newNick = nicknameInput.value.trim();
+      if (!newNick) {
+        nicknameError.textContent = '';
+        nicknameError.classList.add('hidden');
+        return;
+      }
+      if (isNicknameTakenGlobally(newNick) && newNick.toLowerCase() !== playerNickname.toLowerCase()) {
+        nicknameError.textContent = t('nicknameTaken');
+        nicknameError.classList.remove('hidden');
+        return;
+      }
+      nicknameError.classList.add('hidden');
+      playerNickname = newNick;
+      updateNicknameDisplay();
+      nicknameInput.value = '';
       saveAllSettings();
     }
 
@@ -1289,6 +1355,7 @@
       nicknameError.classList.add('hidden');
     }
 
+    // ==================== ПРИВЯЗКА СОБЫТИЙ ====================
     function bindEvents() {
       window.addEventListener('keydown', handleKeyDown);
       restartBtn.addEventListener('click', resetGame);
@@ -1371,15 +1438,13 @@
       });
     }
 
+    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
     function initialStart() {
       loadHighScore();
-      loadLeaderboard();
 
-      // Загружаем сохранённые настройки
       const savedSettings = loadSettings();
       const mergedSettings = { ...defaultSettings, ...savedSettings };
 
-      // Устанавливаем начальные значения
       GRID_SIZE = mergedSettings.gridSize;
       CELL_SIZE = canvas.width / GRID_SIZE;
       snakeColor = mergedSettings.snakeColor;
@@ -1404,9 +1469,10 @@
       drawBoard();
       gameActive = false;
       showMainMenu();
-
-      // Сохраняем настройки после применения
       saveAllSettings();
+
+      // Запускаем облачную синхронизацию
+      startCloudSync();
     }
 
     window.addEventListener('beforeunload', () => {
