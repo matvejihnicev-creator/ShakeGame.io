@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Змейка • Меню • Звуки • Языки • Дизайн • Лидеры</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #1a2f28 0%, #1e3a2f 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .game-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .main-layout {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .game-container {
+      background: #0f2219;
+      border-radius: 2.5rem;
+      padding: 2rem 2rem 1.8rem;
+      box-shadow: 0 30px 45px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(80, 140, 100, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #3a5a40;
+      position: relative;
+    }
+
+    canvas {
+      display: block;
+      border-radius: 1.8rem;
+      background: #0b1b12;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 20px 30px rgba(0, 0, 0, 0.8);
+      border: 2px solid #4a6b4a;
+      width: 100%;
+      height: auto;
+      max-width: 500px;
+      aspect-ratio: 1 / 1;
+    }
+
+    .info-panel {
+      width: 100%;
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem 1.8rem;
+      background: #1c3526;
+      border-radius: 3rem;
+      padding: 1rem 2rem;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.6), 0 10px 15px rgba(0,0,0,0.5);
+      border: 1px solid #4f6b4a;
+    }
+
+    .score-block {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .score-item {
+      background: #0a1810;
+      padding: 0.5rem 1.5rem;
+      border-radius: 2rem;
+      text-align: center;
+      box-shadow: inset 0 2px 6px black;
+      color: #d4edc9;
+    }
+
+    .score-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      color: #96b98a;
+    }
+
+    .score-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #f5ffdd;
+      text-shadow: 0 0 10px #7bbf6a;
+    }
+
+    .color-picker {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: #0b1f14;
+      padding: 0.4rem 1.2rem;
+      border-radius: 2rem;
+    }
+
+    .color-picker label {
+      color: #b9dbb0;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+    }
+
+    input[type="color"] {
+      width: 38px;
+      height: 38px;
+      border: 2px solid #5e7a5e;
+      border-radius: 50%;
+      cursor: pointer;
+      background: #2b4b2b;
+      padding: 2px;
+      box-shadow: 0 0 12px rgba(100, 200, 100, 0.7);
+    }
+
+    button {
+      background: #f4c542;
+      border: none;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 0.6rem 1.8rem;
+      border-radius: 2.5rem;
+      letter-spacing: 0.5px;
+      background: #e5b93c;
+      color: #1d3320;
+      box-shadow: 0 6px 0 #7a5d2c, 0 8px 18px black;
+      cursor: pointer;
+      transition: all 0.08s ease;
+      border: 1px solid #ffd966;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    button:active {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 #7a5d2c, 0 6px 12px black;
+    }
+
+    /* Таблица лидеров */
+    .leaderboard {
+      background: #1c3526;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      border: 2px solid #4f6b4a;
+      min-width: 250px;
+      box-shadow: 0 15px 25px rgba(0,0,0,0.5);
+    }
+
+    .leaderboard h3 {
+      color: #f7e05e;
+      text-align: center;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 5px black;
+    }
+
+    .leaderboard-list {
+      list-style: none;
+      color: #d4edc9;
+    }
+
+    .leaderboard-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0.8rem;
+      border-bottom: 1px solid #2a4a2a;
+      font-size: 0.95rem;
+    }
+
+    .leaderboard-list li:last-child {
+      border-bottom: none;
+    }
+
+    .nickname-display {
+      background: #0a1810;
+      padding: 0.3rem 1rem;
+      border-radius: 1rem;
+      color: #ffd966;
+      font-weight: bold;
+    }
+
+    /* Меню */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      backdrop-filter: blur(6px);
+    }
+
+    .menu-panel {
+      background: #1e3a2f;
+      border: 2px solid #5e8c5e;
+      border-radius: 3rem;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+      min-width: 380px;
+      max-width: 450px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .menu-panel h2 {
+      color: #f7e05e;
+      font-size: 2.4rem;
+      margin-bottom: 2rem;
+      text-shadow: 0 4px 10px black;
+    }
+
+    .menu-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .menu-btn {
+      margin: 0;
+      padding: 0.9rem 2rem;
+      font-size: 1.2rem;
+      width: 80%;
+    }
+
+    .settings-group {
+      background: #152b1f;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: left;
+      width: 100%;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .settings-group label {
+      color: #cfebc3;
+      font-weight: 600;
+      display: block;
+      margin: 0.8rem 0 0.3rem;
+      font-size: 0.9rem;
+    }
+
+    select, input[type="range"], input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 1.5rem;
+      background: #0d1f15;
+      border: 1px solid #5b7e5b;
+      color: #e0f0d8;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="file"] {
+      padding: 0.4rem;
+      font-size: 0.85rem;
+    }
+
+    .preview-btn {
+      background: #4a7a5a;
+      color: #e0f0d8;
+      box-shadow: 0 4px 0 #2a4a2a;
+      font-size: 0.85rem;
+      padding: 0.4rem 1.2rem;
+      margin-top: 0.3rem;
+      width: auto;
+    }
+
+    .nickname-section {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .nickname-section input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .nickname-section button {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .error-msg {
+      color: #ff8a7a;
+      font-size: 0.8rem;
+      margin-top: -0.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .controls-hint {
+      color: #b9cfaa;
+      margin-top: 0.7rem;
+      font-size: 0.9rem;
+      display: flex;
+      gap: 2rem;
+    }
+
+    @media (max-width: 800px) {
+      .main-layout {
+        flex-direction: column;
+        align-items: center;
+      }
+      .leaderboard {
+        width: 100%;
+        max-width: 500px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .info-panel {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .score-block {
+        gap: 1rem;
+      }
+      .menu-panel {
+        min-width: 300px;
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="game-wrapper">
+  <div class="main-layout">
+    <div class="game-container">
+      <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+      <div class="info-panel">
+        <div class="score-block">
+          <div class="score-item">
+            <div class="score-label" id="currentScoreLabel">🍎 Текущий</div>
+            <div class="score-value" id="currentScoreDisplay">0</div>
+          </div>
+          <div class="score-item">
+            <div class="score-label" id="highScoreLabel">🏆 Общий рекорд</div>
+            <div class="score-value" id="highScoreDisplay">0</div>
+          </div>
+        </div>
+
+        <div class="color-picker">
+          <label for="snakeColorPicker" id="colorLabel">🐍 Цвет</label>
+          <input type="color" id="snakeColorPicker" value="#6fbf4c">
+        </div>
+
+        <button id="restartButton">
+          <span>↺</span> <span id="restartText">Новая игра</span>
+        </button>
+      </div>
+      <div class="controls-hint">
+        <span>⬆⬇⬅➡ / WASD</span>
+        <span id="gameStatus" style="color:#f7da7c;">▶ Игра идёт</span>
+        <span class="nickname-display" id="nicknameDisplay"></span>
+      </div>
+    </div>
+
+    <!-- Таблица лидеров -->
+    <div class="leaderboard" id="leaderboardPanel">
+      <h3 id="leaderboardTitle">🏆 ТАБЛИЦА ЛИДЕРОВ</h3>
+      <ul class="leaderboard-list" id="leaderboardList">
+        <li><span>—</span><span>0</span></li>
+        <li><span>—</span><span>0</span></li>
+        <li><span>—</span><span>0</span></li>
+        <li><span>—</span><span>0</span></li>
+        <li><span>—</span><span>0</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Меню -->
+  <div id="mainMenu" class="menu-overlay">
+    <div class="menu-panel">
+      <h2>🐍 <span id="menuTitle">ЗМЕЙКА</span></h2>
+      <div class="menu-buttons">
+        <button id="playButton" class="menu-btn">▶ <span id="playText">ИГРАТЬ</span></button>
+        <button id="settingsButton" class="menu-btn">⚙ <span id="settingsText">НАСТРОЙКИ</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Настройки -->
+  <div id="settingsMenu" class="menu-overlay hidden">
+    <div class="menu-panel">
+      <h2>⚙ <span id="settingsTitle">НАСТРОЙКИ</span></h2>
+      <div class="settings-group">
+        <label id="nicknameLabel">👤 Никнейм</label>
+        <div class="nickname-section">
+          <input type="text" id="nicknameInput" placeholder="Введите никнейм" maxlength="15" autocomplete="off">
+          <button id="saveNicknameBtn">✓</button>
+        </div>
+        <div class="error-msg hidden" id="nicknameError"></div>
+
+        <label for="soundSelect" id="soundLabel">🔊 Звук сбора</label>
+        <select id="soundSelect">
+          <option value="0">Классический</option>
+          <option value="1">Весёлый день</option>
+          <option value="2">Глубокий хлопок</option>
+        </select>
+        <button id="previewSound" class="preview-btn">▶ Прослушать</button>
+
+        <label for="volumeSlider">🔈 <span id="volumeLabel">Громкость</span>: <span id="volumeValue">70</span>%</label>
+        <input type="range" id="volumeSlider" min="0" max="100" value="70">
+
+        <label for="fruitSelect" id="fruitLabel">🍎 Фрукт</label>
+        <select id="fruitSelect">
+          <option value="0">Яблоко</option>
+          <option value="1">Банан</option>
+          <option value="2">Слива</option>
+        </select>
+
+        <label for="fieldDesignSelect" id="fieldDesignLabel">🎨 Дизайн поля</label>
+        <select id="fieldDesignSelect">
+          <option value="0">Классический тёмный</option>
+          <option value="1">Лесной</option>
+          <option value="2">Пустынный</option>
+          <option value="3">Зимний</option>
+          <option value="4">Свой фон</option>
+        </select>
+        <input type="file" id="customBgInput" accept="image/*">
+
+        <label for="gridSizeSelect" id="gridSizeLabel">📐 Размер поля</label>
+        <select id="gridSizeSelect">
+          <option value="10">10x10</option>
+          <option value="20" selected>20x20</option>
+        </select>
+
+        <label for="languageSelect" id="languageLabel">🌐 Язык</label>
+        <select id="languageSelect">
+          <option value="ru">Русский</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <button id="backFromSettings" class="menu-btn">↩ <span id="backText">НАЗАД</span></button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Элементы интерфейса
+    const currentScoreSpan = document.getElementById('currentScoreDisplay');
+    const highScoreSpan = document.getElementById('highScoreDisplay');
+    const snakeColorPicker = document.getElementById('snakeColorPicker');
+    const restartBtn = document.getElementById('restartButton');
+    const gameStatusDiv = document.getElementById('gameStatus');
+    const nicknameDisplay = document.getElementById('nicknameDisplay');
+    const leaderboardList = document.getElementById('leaderboardList');
+    const leaderboardTitle = document.getElementById('leaderboardTitle');
+
+    // Меню элементы
+    const mainMenu = document.getElementById('mainMenu');
+    const settingsMenu = document.getElementById('settingsMenu');
+    const playButton = document.getElementById('playButton');
+    const settingsButton = document.getElementById('settingsButton');
+    const backFromSettings = document.getElementById('backFromSettings');
+    const soundSelect = document.getElementById('soundSelect');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeValue = document.getElementById('volumeValue');
+    const previewSoundBtn = document.getElementById('previewSound');
+    const fruitSelect = document.getElementById('fruitSelect');
+    const fieldDesignSelect = document.getElementById('fieldDesignSelect');
+    const customBgInput = document.getElementById('customBgInput');
+    const gridSizeSelect = document.getElementById('gridSizeSelect');
+    const languageSelect = document.getElementById('languageSelect');
+    const nicknameInput = document.getElementById('nicknameInput');
+    const saveNicknameBtn = document.getElementById('saveNicknameBtn');
+    const nicknameError = document.getElementById('nicknameError');
+
+    // Локализация
+    const translations = {
+      ru: {
+        menuTitle: 'ЗМЕЙКА',
+        play: 'ИГРАТЬ',
+        settings: 'НАСТРОЙКИ',
+        settingsTitle: 'НАСТРОЙКИ',
+        soundLabel: '🔊 Звук сбора',
+        volumeLabel: 'Громкость',
+        fruitLabel: '🍎 Фрукт',
+        fieldDesignLabel: '🎨 Дизайн поля',
+        gridSizeLabel: '📐 Размер поля',
+        languageLabel: '🌐 Язык',
+        nicknameLabel: '👤 Никнейм',
+        back: 'НАЗАД',
+        preview: '▶ Прослушать',
+        currentScore: '🍎 Текущий',
+        highScore: '🏆 Общий рекорд',
+        colorLabel: '🐍 Цвет',
+        restart: 'Новая игра',
+        playing: '▶ Игра идёт',
+        gameOver: '💔 Игра окончена',
+        win: '🏆 Поле заполнено! Победа!',
+        leaderboardTitle: '🏆 ТАБЛИЦА ЛИДЕРОВ',
+        soundNames: ['Классический', 'Весёлый день', 'Глубокий хлопок'],
+        fruitNames: ['Яблоко', 'Банан', 'Слива'],
+        fieldNames: ['Классический тёмный', 'Лесной', 'Пустынный', 'Зимний', 'Свой фон'],
+        nicknamePlaceholder: 'Введите никнейм',
+        nicknameTaken: 'Этот никнейм уже занят!',
+        nicknameSaved: 'Никнейм сохранён!',
+        noNickname: 'Аноним'
+      },
+      en: {
+        menuTitle: 'SNAKE',
+        play: 'PLAY',
+        settings: 'SETTINGS',
+        settingsTitle: 'SETTINGS',
+        soundLabel: '🔊 Collect sound',
+        volumeLabel: 'Volume',
+        fruitLabel: '🍎 Fruit',
+        fieldDesignLabel: '🎨 Field design',
+        gridSizeLabel: '📐 Field size',
+        languageLabel: '🌐 Language',
+        nicknameLabel: '👤 Nickname',
+        back: 'BACK',
+        preview: '▶ Preview',
+        currentScore: '🍎 Current',
+        highScore: '🏆 High Score',
+        colorLabel: '🐍 Color',
+        restart: 'New Game',
+        playing: '▶ Playing',
+        gameOver: '💔 Game Over',
+        win: '🏆 Field full! You win!',
+        leaderboardTitle: '🏆 LEADERBOARD',
+        soundNames: ['Classic', 'Happy Day', 'Deep Pop'],
+        fruitNames: ['Apple', 'Banana', 'Plum'],
+        fieldNames: ['Classic Dark', 'Forest', 'Desert', 'Winter', 'Custom BG'],
+        nicknamePlaceholder: 'Enter nickname',
+        nicknameTaken: 'This nickname is already taken!',
+        nicknameSaved: 'Nickname saved!',
+        noNickname: 'Anonymous'
+      }
+    };
+
+    let currentLang = 'ru';
+
+    function t(key) {
+      return translations[currentLang][key] || key;
+    }
+
+    // ----- Настройки по умолчанию -----
+    const defaultSettings = {
+      language: 'ru',
+      soundType: 0,
+      volume: 70,
+      fruitType: 0,
+      fieldDesign: 0,
+      gridSize: 20,
+      snakeColor: '#6fbf4c',
+      nickname: ''
+    };
+
+    // Загрузка настроек
+    function loadSettings() {
+      try {
+        const saved = localStorage.getItem('snakeSettings');
+        return saved ? JSON.parse(saved) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveAllSettings() {
+      const settings = {
+        language: currentLang,
+        soundType: currentSoundType,
+        volume: Math.round(soundVolume * 100),
+        fruitType: fruitType,
+        fieldDesign: fieldDesign,
+        gridSize: GRID_SIZE,
+        snakeColor: snakeColor,
+        nickname: playerNickname
+      };
+      try {
+        localStorage.setItem('snakeSettings', JSON.stringify(settings));
+      } catch (e) {}
+    }
+
+    function applySettings(settings) {
+      // Язык
+      if (settings.language && (settings.language === 'ru' || settings.language === 'en')) {
+        currentLang = settings.language;
+        languageSelect.value = currentLang;
+      }
+
+      // Звук
+      if (typeof settings.soundType === 'number') {
+        currentSoundType = settings.soundType;
+        soundSelect.value = currentSoundType;
+      }
+
+      // Громкость
+      if (typeof settings.volume === 'number') {
+        soundVolume = settings.volume / 100;
+        volumeSlider.value = settings.volume;
+        volumeValue.textContent = settings.volume;
+      }
+
+      // Фрукт
+      if (typeof settings.fruitType === 'number') {
+        fruitType = settings.fruitType;
+        fruitSelect.value = fruitType;
+      }
+
+      // Дизайн поля
+      if (typeof settings.fieldDesign === 'number') {
+        fieldDesign = settings.fieldDesign;
+        fieldDesignSelect.value = fieldDesign;
+      }
+
+      // Размер поля
+      if (typeof settings.gridSize === 'number' && (settings.gridSize === 10 || settings.gridSize === 20)) {
+        GRID_SIZE = settings.gridSize;
+        gridSizeSelect.value = GRID_SIZE;
+        CELL_SIZE = canvas.width / GRID_SIZE;
+      }
+
+      // Цвет змейки
+      if (settings.snakeColor) {
+        snakeColor = settings.snakeColor;
+        snakeColorPicker.value = snakeColor;
+      }
+
+      // Никнейм
+      if (settings.nickname) {
+        playerNickname = settings.nickname;
+      }
+
+      updateUILanguage();
+      updateNicknameDisplay();
+    }
+
+    function updateUILanguage() {
+      document.getElementById('menuTitle').textContent = t('menuTitle');
+      document.getElementById('playText').textContent = t('play');
+      document.getElementById('settingsText').textContent = t('settings');
+      document.getElementById('settingsTitle').textContent = t('settingsTitle');
+      document.getElementById('soundLabel').textContent = t('soundLabel');
+      document.getElementById('volumeLabel').textContent = t('volumeLabel');
+      document.getElementById('fruitLabel').textContent = t('fruitLabel');
+      document.getElementById('fieldDesignLabel').textContent = t('fieldDesignLabel');
+      document.getElementById('gridSizeLabel').textContent = t('gridSizeLabel');
+      document.getElementById('languageLabel').textContent = t('languageLabel');
+      document.getElementById('nicknameLabel').textContent = t('nicknameLabel');
+      document.getElementById('backText').textContent = t('back');
+      document.getElementById('previewSound').textContent = t('preview');
+      document.getElementById('currentScoreLabel').textContent = t('currentScore');
+      document.getElementById('highScoreLabel').textContent = t('highScore');
+      document.getElementById('colorLabel').textContent = t('colorLabel');
+      document.getElementById('restartText').textContent = t('restart');
+      document.getElementById('leaderboardTitle').textContent = t('leaderboardTitle');
+      nicknameInput.placeholder = t('nicknamePlaceholder');
+
+      const soundNames = t('soundNames');
+      for (let i = 0; i < soundSelect.options.length; i++) {
+        soundSelect.options[i].textContent = soundNames[i];
+      }
+
+      const fruitNames = t('fruitNames');
+      for (let i = 0; i < fruitSelect.options.length; i++) {
+        fruitSelect.options[i].textContent = fruitNames[i];
+      }
+
+      const fieldNames = t('fieldNames');
+      for (let i = 0; i < fieldDesignSelect.options.length; i++) {
+        fieldDesignSelect.options[i].textContent = fieldNames[i];
+      }
+
+      if (gameActive) {
+        gameStatusDiv.textContent = t('playing');
+      } else if (winFlag) {
+        gameStatusDiv.textContent = t('win');
+      } else if (gameOverFlag) {
+        gameStatusDiv.textContent = t('gameOver');
+      }
+    }
+
+    // ----- Игровые параметры -----
+    let GRID_SIZE = 20;
+    let CELL_SIZE = canvas.width / GRID_SIZE;
+
+    let snake = [];
+    let direction = {x: 1, y: 0};
+    let nextDirection = {x: 1, y: 0};
+    let food = {x: 10, y: 5};
+    let gameActive = false;
+    let gameOverFlag = false;
+    let winFlag = false;
+
+    let currentScore = 0;
+    let highScore = 0;
+    let snakeColor = snakeColorPicker.value;
+
+    let gameLoopInterval = null;
+    const MOVE_INTERVAL_MS = 130;
+
+    // Дизайн поля
+    let fieldDesign = 0;
+    let customBgImage = null;
+    const fieldDesigns = {
+      0: { bg: '#0b1b12', grid: '#2a462a', border: '#4a6b4a' },
+      1: { bg: '#1a2f1a', grid: '#3a5a2a', border: '#5a7a3a' },
+      2: { bg: '#2a2618', grid: '#5a4a2a', border: '#8a7a4a' },
+      3: { bg: '#1a2830', grid: '#3a4a5a', border: '#5a6a7a' },
+      4: { bg: '#0b1b12', grid: '#2a462a', border: '#4a6b4a' }
+    };
+
+    // Фрукт
+    let fruitType = 0;
+
+    // Никнейм
+    let playerNickname = '';
+    let leaderboard = [];
+
+    // Аудио
+    let audioCtx = null;
+    let currentSoundType = 0;
+    let soundVolume = 0.7;
+
+    function initAudio() {
+      if (audioCtx) return;
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) {
+        console.warn('Web Audio API не поддерживается');
+      }
+    }
+
+    function playAppleSound() {
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      const vol = soundVolume;
+
+      if (currentSoundType === 0) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(200, now + 0.15);
+        gain.gain.setValueAtTime(vol * 0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.2);
+      } else if (currentSoundType === 1) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1200, now);
+        osc.frequency.setValueAtTime(1600, now + 0.08);
+        gain.gain.setValueAtTime(vol * 0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.25);
+      } else if (currentSoundType === 2) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.2);
+        gain.gain.setValueAtTime(vol * 0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now); osc.stop(now + 0.3);
+      }
+    }
+
+    function playGameOverSound() {
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      const vol = soundVolume;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(400, now);
+      osc.frequency.exponentialRampToValueAtTime(100, now + 0.5);
+      gain.gain.setValueAtTime(vol * 0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now); osc.stop(now + 0.6);
+    }
+
+    function playWinSound() {
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      const vol = soundVolume;
+      const notes = [523, 659, 784, 1047];
+      notes.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.15);
+        gain.gain.setValueAtTime(vol * 0.3, now + i * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.15 + 0.3);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(now + i * 0.15); osc.stop(now + i * 0.15 + 0.3);
+      });
+    }
+
+    // Лидерборд
+    function loadLeaderboard() {
+      try {
+        const saved = localStorage.getItem('snakeLeaderboard');
+        leaderboard = saved ? JSON.parse(saved) : [];
+      } catch (e) {
+        leaderboard = [];
+      }
+      updateLeaderboardUI();
+    }
+
+    function saveLeaderboard() {
+      try {
+        localStorage.setItem('snakeLeaderboard', JSON.stringify(leaderboard));
+      } catch (e) {}
+      updateLeaderboardUI();
+    }
+
+    function addToLeaderboard(nickname, score) {
+      if (!nickname || score === 0) return;
+      const existing = leaderboard.find(e => e.nickname === nickname);
+      if (existing) {
+        if (score > existing.score) existing.score = score;
+      } else {
+        leaderboard.push({ nickname, score });
+      }
+      leaderboard.sort((a, b) => b.score - a.score);
+      leaderboard = leaderboard.slice(0, 10);
+      saveLeaderboard();
+    }
+
+    function isNicknameTaken(nickname) {
+      if (!nickname) return false;
+      return leaderboard.some(e => e.nickname.toLowerCase() === nickname.toLowerCase());
+    }
+
+    function updateLeaderboardUI() {
+      leaderboardList.innerHTML = '';
+      const display = leaderboard.slice(0, 5);
+      if (display.length === 0) {
+        for (let i = 0; i < 5; i++) {
+          const li = document.createElement('li');
+          li.innerHTML = '<span>—</span><span>0</span>';
+          leaderboardList.appendChild(li);
+        }
+      } else {
+        display.forEach(entry => {
+          const li = document.createElement('li');
+          li.innerHTML = `<span>${entry.nickname}</span><span>${entry.score}</span>`;
+          leaderboardList.appendChild(li);
+        });
+        for (let i = display.length; i < 5; i++) {
+          const li = document.createElement('li');
+          li.innerHTML = '<span>—</span><span>0</span>';
+          leaderboardList.appendChild(li);
+        }
+      }
+    }
+
+    function updateNicknameDisplay() {
+      nicknameDisplay.textContent = playerNickname || t('noNickname');
+    }
+
+    function saveNickname() {
+      const newNick = nicknameInput.value.trim();
+      if (!newNick) {
+        nicknameError.textContent = '';
+        nicknameError.classList.add('hidden');
+        return;
+      }
+      if (isNicknameTaken(newNick) && newNick.toLowerCase() !== playerNickname.toLowerCase()) {
+        nicknameError.textContent = t('nicknameTaken');
+        nicknameError.classList.remove('hidden');
+        return;
+      }
+      nicknameError.classList.add('hidden');
+      playerNickname = newNick;
+      updateNicknameDisplay();
+      nicknameInput.value = '';
+      saveAllSettings();
+    }
+
+    function loadHighScore() {
+      try {
+        const saved = localStorage.getItem('snakeHighScore');
+        highScore = saved !== null && !isNaN(parseInt(saved, 10)) ? parseInt(saved, 10) : 0;
+      } catch (e) {
+        highScore = 0;
+      }
+      highScoreSpan.textContent = highScore;
+    }
+
+    function saveHighScore(score) {
+      if (score > highScore) {
+        highScore = score;
+        highScoreSpan.textContent = highScore;
+        try {
+          localStorage.setItem('snakeHighScore', highScore);
+        } catch (e) {}
+      }
+    }
+
+    function getInitSnake() {
+      const mid = Math.floor(GRID_SIZE / 2);
+      return [
+        {x: mid, y: mid},
+        {x: mid - 1, y: mid},
+        {x: mid - 2, y: mid}
+      ];
+    }
+
+    function generateRandomFood() {
+      for (let attempt = 0; attempt < 2000; attempt++) {
+        const randX = Math.floor(Math.random() * GRID_SIZE);
+        const randY = Math.floor(Math.random() * GRID_SIZE);
+        if (!snake.some(segment => segment.x === randX && segment.y === randY)) {
+          food = {x: randX, y: randY};
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function checkCollision(head, snakeBody) {
+      if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) return true;
+      return snakeBody.some(segment => segment.x === head.x && segment.y === head.y);
+    }
+
+    function moveSnake() {
+      if (!gameActive) return;
+
+      direction = {...nextDirection};
+      const head = snake[0];
+      const newHead = {
+        x: head.x + direction.x,
+        y: head.y + direction.y
+      };
+
+      const foodEaten = (newHead.x === food.x && newHead.y === food.y);
+      let newSnake = foodEaten ? [newHead, ...snake] : [newHead, ...snake.slice(0, -1)];
+      const bodyForCollision = newSnake.slice(1);
+
+      if (checkCollision(newHead, bodyForCollision)) {
+        gameActive = false;
+        gameOverFlag = true;
+        winFlag = false;
+        gameStatusDiv.textContent = t('gameOver');
+        gameStatusDiv.style.color = '#ff8a7a';
+        clearGameLoop();
+        saveHighScore(currentScore);
+        addToLeaderboard(playerNickname, currentScore);
+        playGameOverSound();
+        drawBoard();
+        return;
+      }
+
+      snake = newSnake;
+
+      if (foodEaten) {
+        currentScore++;
+        currentScoreSpan.textContent = currentScore;
+        saveHighScore(currentScore);
+        playAppleSound();
+
+        if (!generateRandomFood()) {
+          gameActive = false;
+          gameOverFlag = false;
+          winFlag = true;
+          gameStatusDiv.textContent = t('win');
+          gameStatusDiv.style.color = '#ffd966';
+          clearGameLoop();
+          saveHighScore(currentScore);
+          addToLeaderboard(playerNickname, currentScore);
+          playWinSound();
+          drawBoard();
+          return;
+        }
+      }
+
+      drawBoard();
+    }
+
+    function applyGridSize() {
+      GRID_SIZE = parseInt(gridSizeSelect.value, 10);
+      CELL_SIZE = canvas.width / GRID_SIZE;
+      snake = getInitSnake();
+      direction = {x: 1, y: 0};
+      nextDirection = {x: 1, y: 0};
+      currentScore = 0;
+      currentScoreSpan.textContent = '0';
+      gameActive = true;
+      gameOverFlag = false;
+      winFlag = false;
+      gameStatusDiv.textContent = t('playing');
+      gameStatusDiv.style.color = '#f7da7c';
+      if (!generateRandomFood()) {
+        food = {x: Math.floor(GRID_SIZE/2) + 2, y: Math.floor(GRID_SIZE/2)};
+      }
+      clearGameLoop();
+      drawBoard();
+      startGameLoop();
+      saveAllSettings();
+    }
+
+    function resetGame() {
+      clearGameLoop();
+      snake = getInitSnake();
+      direction = {x: 1, y: 0};
+      nextDirection = {x: 1, y: 0};
+      gameActive = true;
+      gameOverFlag = false;
+      winFlag = false;
+      currentScore = 0;
+      currentScoreSpan.textContent = '0';
+      gameStatusDiv.textContent = t('playing');
+      gameStatusDiv.style.color = '#f7da7c';
+
+      if (!generateRandomFood()) {
+        food = {x: Math.floor(GRID_SIZE/2) + 2, y: Math.floor(GRID_SIZE/2)};
+      }
+
+      drawBoard();
+      startGameLoop();
+      hideAllMenus();
+    }
+
+    function startGameLoop() {
+      if (gameLoopInterval) clearInterval(gameLoopInterval);
+      if (gameActive) {
+        gameLoopInterval = setInterval(moveSnake, MOVE_INTERVAL_MS);
+      }
+    }
+
+    function clearGameLoop() {
+      if (gameLoopInterval) {
+        clearInterval(gameLoopInterval);
+        gameLoopInterval = null;
+      }
+    }
+
+    function handleKeyDown(e) {
+      const key = e.key;
+
+      // Если фокус на поле ввода - не обрабатываем игровые клавиши
+      if (document.activeElement === nicknameInput) {
+        // Разрешаем только Esc для закрытия меню
+        if (key === 'Escape') {
+          e.preventDefault();
+          if (!settingsMenu.classList.contains('hidden')) {
+            settingsMenu.classList.add('hidden');
+            mainMenu.classList.remove('hidden');
+          } else if (!mainMenu.classList.contains('hidden')) {
+            hideAllMenus();
+          }
+        }
+        return;
+      }
+
+      if (key === 'Escape') {
+        e.preventDefault();
+        if (!mainMenu.classList.contains('hidden') || !settingsMenu.classList.contains('hidden')) {
+          hideAllMenus();
+        } else {
+          showMainMenu();
+        }
+        return;
+      }
+
+      if (key.startsWith('Arrow') || key === ' ' || key === 'Space' ||
+          key === 'w' || key === 'a' || key === 's' || key === 'd' ||
+          key === 'W' || key === 'A' || key === 'S' || key === 'D') {
+        e.preventDefault();
+      }
+
+      if (!gameActive) return;
+
+      let newDir = null;
+      if (key === 'ArrowUp' || key === 'w' || key === 'W') newDir = {x: 0, y: -1};
+      else if (key === 'ArrowDown' || key === 's' || key === 'S') newDir = {x: 0, y: 1};
+      else if (key === 'ArrowLeft' || key === 'a' || key === 'A') newDir = {x: -1, y: 0};
+      else if (key === 'ArrowRight' || key === 'd' || key === 'D') newDir = {x: 1, y: 0};
+
+      if (!newDir) return;
+      if (direction.x === -newDir.x && direction.y === -newDir.y) return;
+
+      nextDirection = newDir;
+    }
+
+    function drawFruit(fx, fy) {
+      const size = CELL_SIZE / 2.5;
+      ctx.shadowColor = '#ff7b6b';
+      ctx.shadowBlur = 10;
+
+      if (fruitType === 0) { // Яблоко
+        ctx.fillStyle = '#e8453c';
+        ctx.beginPath();
+        ctx.arc(fx + CELL_SIZE/2, fy + CELL_SIZE/2, size, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = '#8bc34a';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.ellipse(fx + CELL_SIZE/1.8, fy + CELL_SIZE/3.5, CELL_SIZE/8, CELL_SIZE/5.5, 0.4, 0, Math.PI*2);
+        ctx.fill();
+        ctx.strokeStyle = '#5d8233';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(fx + CELL_SIZE/1.9, fy + CELL_SIZE/3.2);
+        ctx.lineTo(fx + CELL_SIZE/1.55, fy + CELL_SIZE/4.5);
+        ctx.stroke();
+      } else if (fruitType === 1) { // Банан
+        ctx.fillStyle = '#f4e542';
+        ctx.beginPath();
+        ctx.ellipse(fx + CELL_SIZE/2, fy + CELL_SIZE/2.3, size * 1.2, size * 0.6, -0.3, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = '#8b7355';
+        ctx.beginPath();
+        ctx.arc(fx + CELL_SIZE/3.5, fy + CELL_SIZE/3, size * 0.3, 0, Math.PI*2);
+        ctx.fill();
+      } else { // Слива
+        ctx.fillStyle = '#8e44ad';
+        ctx.beginPath();
+        ctx.arc(fx + CELL_SIZE/2, fy + CELL_SIZE/2, size, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = '#6c3483';
+        ctx.beginPath();
+        ctx.arc(fx + CELL_SIZE/2.5, fy + CELL_SIZE/2.5, size * 0.3, 0, Math.PI*2);
+        ctx.fill();
+        ctx.strokeStyle = '#5d8233';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(fx + CELL_SIZE/2, fy + CELL_SIZE/3.5);
+        ctx.lineTo(fx + CELL_SIZE/1.8, fy + CELL_SIZE/5);
+        ctx.stroke();
+      }
+    }
+
+    function drawBoard() {
+      const design = fieldDesigns[fieldDesign];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Фон
+      if (fieldDesign === 4 && customBgImage) {
+        ctx.drawImage(customBgImage, 0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.fillStyle = design.bg;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Сетка
+      ctx.strokeStyle = design.grid;
+      ctx.lineWidth = 0.6;
+      for (let i = 0; i <= GRID_SIZE; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * CELL_SIZE, 0);
+        ctx.lineTo(i * CELL_SIZE, canvas.height);
+        ctx.stroke();
+        ctx.moveTo(0, i * CELL_SIZE);
+        ctx.lineTo(canvas.width, i * CELL_SIZE);
+        ctx.stroke();
+      }
+
+      // Еда
+      if (food) {
+        const fx = food.x * CELL_SIZE, fy = food.y * CELL_SIZE;
+        drawFruit(fx, fy);
+      }
+
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+
+      // Змейка
+      for (let i = 0; i < snake.length; i++) {
+        const seg = snake[i];
+        const sx = seg.x * CELL_SIZE, sy = seg.y * CELL_SIZE;
+        const radius = (CELL_SIZE/2) - (i === 0 ? CELL_SIZE/10 : CELL_SIZE/6);
+        const gradient = ctx.createRadialGradient(sx + 4, sy + 4, 2, sx + CELL_SIZE/2, sy + CELL_SIZE/2, CELL_SIZE/1.5);
+        gradient.addColorStop(0, snakeColor);
+        gradient.addColorStop(0.7, '#1e3b1a');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(sx + CELL_SIZE/2, sy + CELL_SIZE/2, radius, 0, 2 * Math.PI);
+        ctx.fill();
+
+        if (i === 0 && CELL_SIZE > 10) {
+          const eyeOffset = CELL_SIZE / 6;
+          ctx.fillStyle = 'white';
+          ctx.beginPath();
+          ctx.arc(sx + CELL_SIZE/1.7, sy + CELL_SIZE/3, eyeOffset, 0, Math.PI*2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(sx + CELL_SIZE/2.5, sy + CELL_SIZE/3, eyeOffset, 0, Math.PI*2);
+          ctx.fill();
+          ctx.fillStyle = '#0a0f0a';
+          ctx.beginPath();
+          ctx.arc(sx + CELL_SIZE/1.7 + eyeOffset/3, sy + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(sx + CELL_SIZE/2.5 + eyeOffset/3, sy + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2);
+          ctx.fill();
+        }
+      }
+
+      if (!gameActive) {
+        ctx.globalAlpha = 0.7;
+        ctx.fillStyle = '#0a140e';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1;
+        ctx.font = 'bold 20px "Segoe UI", Inter';
+        ctx.fillStyle = '#f9e7b3';
+        ctx.shadowColor = '#000';
+        ctx.shadowBlur = 14;
+        ctx.textAlign = 'center';
+        if (winFlag) {
+          ctx.fillText(t('win'), canvas.width/2, canvas.height/2-10);
+        } else if (gameOverFlag) {
+          ctx.fillText(t('gameOver'), canvas.width/2, canvas.height/2-10);
+        }
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    function updateSnakeColor() {
+      snakeColor = snakeColorPicker.value;
+      drawBoard();
+      saveAllSettings();
+    }
+
+    function showMainMenu() {
+      mainMenu.classList.remove('hidden');
+      settingsMenu.classList.add('hidden');
+    }
+
+    function hideAllMenus() {
+      mainMenu.classList.add('hidden');
+      settingsMenu.classList.add('hidden');
+    }
+
+    function showSettings() {
+      mainMenu.classList.add('hidden');
+      settingsMenu.classList.remove('hidden');
+      nicknameError.classList.add('hidden');
+    }
+
+    function bindEvents() {
+      window.addEventListener('keydown', handleKeyDown);
+      restartBtn.addEventListener('click', resetGame);
+      snakeColorPicker.addEventListener('input', updateSnakeColor);
+      snakeColorPicker.addEventListener('change', updateSnakeColor);
+
+      playButton.addEventListener('click', () => {
+        initAudio();
+        if (!gameActive) {
+          resetGame();
+        } else {
+          hideAllMenus();
+        }
+      });
+
+      settingsButton.addEventListener('click', showSettings);
+      backFromSettings.addEventListener('click', () => {
+        settingsMenu.classList.add('hidden');
+        mainMenu.classList.remove('hidden');
+      });
+
+      soundSelect.addEventListener('change', (e) => {
+        currentSoundType = parseInt(e.target.value, 10);
+        saveAllSettings();
+      });
+
+      previewSoundBtn.addEventListener('click', () => {
+        initAudio();
+        playAppleSound();
+      });
+
+      volumeSlider.addEventListener('input', (e) => {
+        soundVolume = parseInt(e.target.value, 10) / 100;
+        volumeValue.textContent = e.target.value;
+        saveAllSettings();
+      });
+
+      fruitSelect.addEventListener('change', (e) => {
+        fruitType = parseInt(e.target.value, 10);
+        drawBoard();
+        saveAllSettings();
+      });
+
+      fieldDesignSelect.addEventListener('change', (e) => {
+        fieldDesign = parseInt(e.target.value, 10);
+        drawBoard();
+        saveAllSettings();
+      });
+
+      customBgInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(ev) {
+            const img = new Image();
+            img.onload = function() {
+              customBgImage = img;
+              if (fieldDesign === 4) drawBoard();
+            };
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      gridSizeSelect.addEventListener('change', () => {
+        applyGridSize();
+      });
+
+      languageSelect.addEventListener('change', (e) => {
+        currentLang = e.target.value;
+        updateUILanguage();
+        drawBoard();
+        saveAllSettings();
+      });
+
+      saveNicknameBtn.addEventListener('click', saveNickname);
+      nicknameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') saveNickname();
+      });
+    }
+
+    function initialStart() {
+      loadHighScore();
+      loadLeaderboard();
+
+      // Загружаем сохранённые настройки
+      const savedSettings = loadSettings();
+      const mergedSettings = { ...defaultSettings, ...savedSettings };
+
+      // Устанавливаем начальные значения
+      GRID_SIZE = mergedSettings.gridSize;
+      CELL_SIZE = canvas.width / GRID_SIZE;
+      snakeColor = mergedSettings.snakeColor;
+      snakeColorPicker.value = snakeColor;
+      fieldDesign = mergedSettings.fieldDesign;
+      fieldDesignSelect.value = fieldDesign;
+      fruitType = mergedSettings.fruitType;
+      fruitSelect.value = fruitType;
+      currentSoundType = mergedSettings.soundType;
+      soundSelect.value = currentSoundType;
+      soundVolume = mergedSettings.volume / 100;
+      volumeSlider.value = mergedSettings.volume;
+      volumeValue.textContent = mergedSettings.volume;
+      currentLang = mergedSettings.language;
+      languageSelect.value = currentLang;
+      playerNickname = mergedSettings.nickname || '';
+
+      snake = getInitSnake();
+      bindEvents();
+      updateUILanguage();
+      updateNicknameDisplay();
+      drawBoard();
+      gameActive = false;
+      showMainMenu();
+
+      // Сохраняем настройки после применения
+      saveAllSettings();
+    }
+
+    window.addEventListener('beforeunload', () => {
+      clearGameLoop();
+      saveAllSettings();
+    });
+
+    initialStart();
+  })();
+</script>
+</body>
+</html>
