@@ -537,6 +537,12 @@
         </div>
         <div class="error-msg hidden" id="pauseNicknameError"></div>
 
+        <label for="pauseSnakeStyleSelect" id="pauseSnakeStyleLabel">🐍 Стиль змейки</label>
+        <select id="pauseSnakeStyleSelect">
+          <option value="0">Круглая</option>
+          <option value="1">Квадратная</option>
+        </select>
+
         <label for="pauseSoundSelect" id="pauseSoundLabel">🔊 Звук сбора</label>
         <select id="pauseSoundSelect">
           <option value="0">Классический</option>
@@ -598,6 +604,12 @@
         </div>
         <div class="error-msg hidden" id="nicknameError"></div>
 
+        <label for="snakeStyleSelect" id="snakeStyleLabel">🐍 Стиль змейки</label>
+        <select id="snakeStyleSelect">
+          <option value="0">Круглая</option>
+          <option value="1">Квадратная</option>
+        </select>
+
         <label for="soundSelect" id="soundLabel">🔊 Звук сбора</label>
         <select id="soundSelect">
           <option value="0">Классический</option>
@@ -649,7 +661,6 @@
     const JSONBIN_API_KEY = '$2a$10$NUHE1wV1353mVTk4cMX/q.nq7qkpvNs54Sjcx8zrdB7DnxVhs3scG';
     const JSONBIN_BIN_ID = '6a64dabd3919920ec4854d0c';
     const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-    const USE_CLOUD = true; // Включено облачное хранилище
     
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -677,6 +688,7 @@
     const pauseMainMenuButton = document.getElementById('pauseMainMenuButton');
 
     // Настройки
+    const snakeStyleSelect = document.getElementById('snakeStyleSelect');
     const soundSelect = document.getElementById('soundSelect');
     const volumeSlider = document.getElementById('volumeSlider');
     const volumeValue = document.getElementById('volumeValue');
@@ -691,6 +703,7 @@
     const nicknameError = document.getElementById('nicknameError');
 
     // Настройки паузы
+    const pauseSnakeStyleSelect = document.getElementById('pauseSnakeStyleSelect');
     const pauseSoundSelect = document.getElementById('pauseSoundSelect');
     const pauseVolumeSlider = document.getElementById('pauseVolumeSlider');
     const pauseVolumeValue = document.getElementById('pauseVolumeValue');
@@ -708,7 +721,7 @@
     let leaderboard = { '10': [], '20': [] };
     let currentLeaderboardSize = '20';
     let lastSyncTime = 0;
-    const SYNC_INTERVAL = 5000; // Синхронизация каждые 5 секунд
+    const SYNC_INTERVAL = 5000;
     let isOnline = false;
 
     function getDeviceId() {
@@ -722,7 +735,6 @@
 
     const deviceId = getDeviceId();
 
-    // Загрузка лидерборда из облака
     async function loadLeaderboardFromCloud() {
       try {
         syncStatus.textContent = '🔄 Синхронизация...';
@@ -747,11 +759,8 @@
       } catch (e) {
         console.warn('Ошибка загрузки из облака:', e);
         isOnline = false;
-        // Загружаем локальную копию
         const saved = localStorage.getItem('snakeLocalLeaderboard');
-        if (saved) {
-          leaderboard = JSON.parse(saved);
-        }
+        if (saved) leaderboard = JSON.parse(saved);
         updateLeaderboardUI();
         syncStatus.textContent = '⚠️ Офлайн • Локальные данные';
         syncStatus.className = 'sync-status sync-error';
@@ -759,10 +768,8 @@
       }
     }
 
-    // Сохранение лидерборда в облако
     async function saveLeaderboardToCloud() {
       if (!isOnline) {
-        // Сохраняем локально если нет интернета
         localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
         syncStatus.textContent = '⚠️ Офлайн • Сохранено локально';
         syncStatus.className = 'sync-status sync-error';
@@ -786,7 +793,6 @@
           lastSyncTime = Date.now();
           syncStatus.textContent = '✅ Онлайн • Сохранено в облаке';
           syncStatus.className = 'sync-status sync-ok';
-          // Также сохраняем локально как резервную копию
           localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
           return true;
         } else {
@@ -794,7 +800,6 @@
         }
       } catch (e) {
         console.warn('Ошибка сохранения в облако:', e);
-        // Сохраняем локально при ошибке
         localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
         syncStatus.textContent = '⚠️ Ошибка сети • Сохранено локально';
         syncStatus.className = 'sync-status sync-error';
@@ -802,19 +807,13 @@
       }
     }
 
-    // Добавление результата
     async function addToLeaderboard(nickname, score, gridSize) {
       if (!nickname || score === 0) return;
-
-      // Сначала загружаем актуальные данные
       await loadLeaderboardFromCloud();
-
       const sizeKey = gridSize.toString();
       if (!leaderboard[sizeKey]) leaderboard[sizeKey] = [];
-
       const board = leaderboard[sizeKey];
       const existingIndex = board.findIndex(e => e.nickname === nickname);
-
       if (existingIndex >= 0) {
         if (score > board[existingIndex].score) {
           board[existingIndex].score = score;
@@ -824,15 +823,12 @@
       } else {
         board.push({ nickname, score, deviceId, timestamp: Date.now() });
       }
-
       board.sort((a, b) => b.score - a.score);
       leaderboard[sizeKey] = board.slice(0, 50);
-
       updateLeaderboardUI();
       await saveLeaderboardToCloud();
     }
 
-    // Проверка занятости никнейма
     function isNicknameTakenGlobally(nickname) {
       if (!nickname) return false;
       const allPlayers = [...(leaderboard['10'] || []), ...(leaderboard['20'] || [])];
@@ -845,7 +841,6 @@
     function updateLeaderboardUI() {
       const board = leaderboard[currentLeaderboardSize] || [];
       leaderboardList.innerHTML = '';
-
       if (board.length === 0) {
         const li = document.createElement('li');
         li.innerHTML = '<span class="rank">-</span><span class="name">Нет записей</span><span class="score">-</span>';
@@ -863,13 +858,11 @@
           leaderboardList.appendChild(li);
         });
       }
-
       document.querySelectorAll('.leaderboard-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.size === currentLeaderboardSize);
       });
     }
 
-    // Периодическая синхронизация
     function startCloudSync() {
       loadLeaderboardFromCloud();
       setInterval(() => {
@@ -883,16 +876,17 @@
     const translations = {
       ru: {
         menuTitle: 'ЗМЕЙКА', play: 'ИГРАТЬ', settings: 'НАСТРОЙКИ',
-        settingsTitle: 'НАСТРОЙКИ', soundLabel: '🔊 Звук сбора',
-        volumeLabel: 'Громкость', fruitLabel: '🍎 Фрукт',
-        fieldDesignLabel: '🎨 Дизайн поля', gridSizeLabel: '📐 Размер поля',
-        languageLabel: '🌐 Язык', nicknameLabel: '👤 Никнейм',
-        back: 'НАЗАД', preview: '▶ Прослушать',
+        settingsTitle: 'НАСТРОЙКИ', snakeStyleLabel: '🐍 Стиль змейки',
+        soundLabel: '🔊 Звук сбора', volumeLabel: 'Громкость',
+        fruitLabel: '🍎 Фрукт', fieldDesignLabel: '🎨 Дизайн поля',
+        gridSizeLabel: '📐 Размер поля', languageLabel: '🌐 Язык',
+        nicknameLabel: '👤 Никнейм', back: 'НАЗАД', preview: '▶ Прослушать',
         currentScore: '🍎 Текущий', highScore: '🏆 Общий рекорд',
         colorLabel: '🐍 Цвет', restart: 'Новая игра',
         playing: '▶ Игра идёт', paused: '⏸ Пауза',
         gameOver: '💔 Игра окончена', win: '🏆 Поле заполнено! Победа!',
         leaderboardTitle: '🏆 ОНЛАЙН ТАБЛИЦА',
+        snakeStyles: ['Круглая', 'Квадратная'],
         soundNames: ['Классический', 'Весёлый день', 'Глубокий хлопок'],
         fruitNames: ['Яблоко', 'Банан', 'Слива'],
         fieldNames: ['Классический тёмный', 'Лесной', 'Пустынный', 'Зимний', 'Свой фон'],
@@ -905,16 +899,17 @@
       },
       en: {
         menuTitle: 'SNAKE', play: 'PLAY', settings: 'SETTINGS',
-        settingsTitle: 'SETTINGS', soundLabel: '🔊 Collect sound',
-        volumeLabel: 'Volume', fruitLabel: '🍎 Fruit',
-        fieldDesignLabel: '🎨 Field design', gridSizeLabel: '📐 Field size',
-        languageLabel: '🌐 Language', nicknameLabel: '👤 Nickname',
-        back: 'BACK', preview: '▶ Preview',
+        settingsTitle: 'SETTINGS', snakeStyleLabel: '🐍 Snake style',
+        soundLabel: '🔊 Collect sound', volumeLabel: 'Volume',
+        fruitLabel: '🍎 Fruit', fieldDesignLabel: '🎨 Field design',
+        gridSizeLabel: '📐 Field size', languageLabel: '🌐 Language',
+        nicknameLabel: '👤 Nickname', back: 'BACK', preview: '▶ Preview',
         currentScore: '🍎 Current', highScore: '🏆 High Score',
         colorLabel: '🐍 Color', restart: 'New Game',
         playing: '▶ Playing', paused: '⏸ Paused',
         gameOver: '💔 Game Over', win: '🏆 Field full! You win!',
         leaderboardTitle: '🏆 ONLINE LEADERBOARD',
+        snakeStyles: ['Round', 'Square'],
         soundNames: ['Classic', 'Happy Day', 'Deep Pop'],
         fruitNames: ['Apple', 'Banana', 'Plum'],
         fieldNames: ['Classic Dark', 'Forest', 'Desert', 'Winter', 'Custom BG'],
@@ -935,7 +930,7 @@
 
     // ==================== НАСТРОЙКИ ====================
     const defaultSettings = {
-      language: 'ru', soundType: 0, volume: 70,
+      language: 'ru', snakeStyle: 0, soundType: 0, volume: 70,
       fruitType: 0, fieldDesign: 0, gridSize: 20,
       snakeColor: '#6fbf4c', nickname: ''
     };
@@ -949,7 +944,7 @@
 
     function saveAllSettings() {
       const settings = {
-        language: currentLang, soundType: currentSoundType,
+        language: currentLang, snakeStyle: snakeStyle, soundType: currentSoundType,
         volume: Math.round(soundVolume * 100), fruitType: fruitType,
         fieldDesign: fieldDesign, gridSize: GRID_SIZE,
         snakeColor: snakeColor, nickname: playerNickname
@@ -958,6 +953,7 @@
     }
 
     function syncSettingsToPauseMenu() {
+      pauseSnakeStyleSelect.value = snakeStyle;
       pauseSoundSelect.value = currentSoundType;
       pauseVolumeSlider.value = Math.round(soundVolume * 100);
       pauseVolumeValue.textContent = Math.round(soundVolume * 100);
@@ -976,6 +972,7 @@
       document.getElementById('resumeText').textContent = t('resume');
       document.getElementById('pauseRestartText').textContent = t('pauseRestart');
       document.getElementById('pauseMainMenuText').textContent = t('pauseMainMenu');
+      document.getElementById('pauseSnakeStyleLabel').textContent = t('snakeStyleLabel');
       document.getElementById('pauseSoundLabel').textContent = t('soundLabel');
       document.getElementById('pauseVolumeLabel').textContent = t('volumeLabel');
       document.getElementById('pauseFruitLabel').textContent = t('fruitLabel');
@@ -985,6 +982,8 @@
       document.getElementById('pauseNicknameLabel').textContent = t('nicknameLabel');
       document.getElementById('pausePreviewSound').textContent = t('preview');
       pauseNicknameInput.placeholder = t('nicknamePlaceholder');
+      const ss = t('snakeStyles');
+      for (let i = 0; i < pauseSnakeStyleSelect.options.length; i++) pauseSnakeStyleSelect.options[i].textContent = ss[i];
       const sn = t('soundNames');
       for (let i = 0; i < pauseSoundSelect.options.length; i++) pauseSoundSelect.options[i].textContent = sn[i];
       const fn = t('fruitNames');
@@ -998,6 +997,7 @@
       document.getElementById('playText').textContent = t('play');
       document.getElementById('settingsText').textContent = t('settings');
       document.getElementById('settingsTitle').textContent = t('settingsTitle');
+      document.getElementById('snakeStyleLabel').textContent = t('snakeStyleLabel');
       document.getElementById('soundLabel').textContent = t('soundLabel');
       document.getElementById('volumeLabel').textContent = t('volumeLabel');
       document.getElementById('fruitLabel').textContent = t('fruitLabel');
@@ -1013,6 +1013,8 @@
       document.getElementById('restartText').textContent = t('restart');
       document.getElementById('leaderboardTitle').textContent = t('leaderboardTitle');
       nicknameInput.placeholder = t('nicknamePlaceholder');
+      const ss = t('snakeStyles');
+      for (let i = 0; i < snakeStyleSelect.options.length; i++) snakeStyleSelect.options[i].textContent = ss[i];
       const sn = t('soundNames');
       for (let i = 0; i < soundSelect.options.length; i++) soundSelect.options[i].textContent = sn[i];
       const fn = t('fruitNames');
@@ -1043,6 +1045,7 @@
     let gameActive = false, gameOverFlag = false, winFlag = false, isPaused = false;
     let currentScore = 0, highScore = 0;
     let snakeColor = snakeColorPicker.value;
+    let snakeStyle = 0; // 0 - круглая, 1 - квадратная
     let gameLoopInterval = null, animationFrameId = null;
     const MOVE_INTERVAL_MS = 120;
     let lastMoveTime = 0, animationProgress = 0, prevSnake = [];
@@ -1141,12 +1144,23 @@
 
     function moveSnake() {
       if (!gameActive || isPaused) return;
+      
       prevSnake = snake.map(s => ({...s}));
+      
       direction = {...nextDirection};
-      const head = snake[0], nh = {x: head.x + direction.x, y: head.y + direction.y};
+      const head = snake[0];
+      const nh = {x: head.x + direction.x, y: head.y + direction.y};
       const fe = (nh.x === food.x && nh.y === food.y);
-      let ns = fe ? [nh, ...snake] : [nh, ...snake.slice(0, -1)];
+      
+      let ns;
+      if (fe) {
+        ns = [nh, ...snake];
+      } else {
+        ns = [nh, ...snake.slice(0, -1)];
+      }
+      
       const bc = ns.slice(1);
+      
       if (checkCollision(nh, bc)) {
         gameActive = false; gameOverFlag = true; winFlag = false;
         updateGameStatus(); clearGameLoop();
@@ -1154,11 +1168,17 @@
         addToLeaderboard(playerNickname, currentScore, GRID_SIZE);
         playGameOverSound(); animationProgress = 1; drawBoard(); return;
       }
+      
       snake = ns;
+      
       if (fe) {
-        currentScore++; currentScoreSpan.textContent = currentScore;
-        saveHighScore(currentScore); playAppleSound();
-        prevSnake = snake.map(s => ({...s}));
+        currentScore++;
+        currentScoreSpan.textContent = currentScore;
+        saveHighScore(currentScore);
+        playAppleSound();
+        
+        prevSnake = [prevSnake[0], ...prevSnake];
+        
         if (!generateRandomFood()) {
           gameActive = false; gameOverFlag = false; winFlag = true;
           updateGameStatus(); clearGameLoop();
@@ -1167,7 +1187,10 @@
           playWinSound(); animationProgress = 1; drawBoard(); return;
         }
       }
-      animationProgress = 0; lastMoveTime = performance.now(); drawBoard();
+      
+      animationProgress = 0;
+      lastMoveTime = performance.now();
+      drawBoard();
     }
 
     function togglePause() {
@@ -1306,6 +1329,46 @@
       }
     }
 
+    function drawSnakeSegment(x, y, radius, isHead) {
+      if (snakeStyle === 0) {
+        // Круглая змейка
+        const gradient = ctx.createRadialGradient(x + 4, y + 4, 2, x + CELL_SIZE/2, y + CELL_SIZE/2, CELL_SIZE/1.5);
+        gradient.addColorStop(0, snakeColor);
+        gradient.addColorStop(0.7, '#1e3b1a');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x + CELL_SIZE/2, y + CELL_SIZE/2, radius, 0, 2 * Math.PI);
+        ctx.fill();
+      } else {
+        // Квадратная змейка
+        const padding = CELL_SIZE * 0.15;
+        ctx.fillStyle = snakeColor;
+        ctx.fillRect(x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2);
+        ctx.strokeStyle = '#1e3b1a';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2);
+      }
+
+      // Глаза для головы
+      if (isHead && CELL_SIZE > 10) {
+        const eyeOffset = CELL_SIZE / 6;
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(x + CELL_SIZE/1.7, y + CELL_SIZE/3, eyeOffset, 0, Math.PI*2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x + CELL_SIZE/2.5, y + CELL_SIZE/3, eyeOffset, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = '#0a0f0a';
+        ctx.beginPath();
+        ctx.arc(x + CELL_SIZE/1.7 + eyeOffset/3, y + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x + CELL_SIZE/2.5 + eyeOffset/3, y + CELL_SIZE/3 - eyeOffset/3, eyeOffset/2, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+
     function drawBoard() {
       const d = fieldDesigns[fieldDesign];
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1319,26 +1382,21 @@
       if (food) { const fx = food.x*CELL_SIZE, fy = food.y*CELL_SIZE; drawFruit(fx, fy); }
       ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
       const p = Math.min(1, Math.max(0, animationProgress));
-      for (let i = snake.length-1; i >= 0; i--) {
-        const seg = snake[i]; let dx = seg.x*CELL_SIZE, dy = seg.y*CELL_SIZE;
+      
+      for (let i = snake.length - 1; i >= 0; i--) {
+        const seg = snake[i];
+        let dx = seg.x * CELL_SIZE;
+        let dy = seg.y * CELL_SIZE;
+
         if (prevSnake[i] && p < 1 && gameActive && !isPaused) {
-          dx = prevSnake[i].x*CELL_SIZE + (seg.x - prevSnake[i].x)*CELL_SIZE*p;
-          dy = prevSnake[i].y*CELL_SIZE + (seg.y - prevSnake[i].y)*CELL_SIZE*p;
+          dx = prevSnake[i].x * CELL_SIZE + (seg.x - prevSnake[i].x) * CELL_SIZE * p;
+          dy = prevSnake[i].y * CELL_SIZE + (seg.y - prevSnake[i].y) * CELL_SIZE * p;
         }
-        const r = (CELL_SIZE/2) - (i === 0 ? CELL_SIZE/10 : CELL_SIZE/6);
-        const g = ctx.createRadialGradient(dx+4, dy+4, 2, dx+CELL_SIZE/2, dy+CELL_SIZE/2, CELL_SIZE/1.5);
-        g.addColorStop(0, snakeColor); g.addColorStop(0.7, '#1e3b1a');
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(dx+CELL_SIZE/2, dy+CELL_SIZE/2, r, 0, 2*Math.PI); ctx.fill();
-        if (i === 0 && CELL_SIZE > 10) {
-          const eo = CELL_SIZE/6;
-          ctx.fillStyle = 'white';
-          ctx.beginPath(); ctx.arc(dx+CELL_SIZE/1.7, dy+CELL_SIZE/3, eo, 0, Math.PI*2); ctx.fill();
-          ctx.beginPath(); ctx.arc(dx+CELL_SIZE/2.5, dy+CELL_SIZE/3, eo, 0, Math.PI*2); ctx.fill();
-          ctx.fillStyle = '#0a0f0a';
-          ctx.beginPath(); ctx.arc(dx+CELL_SIZE/1.7+eo/3, dy+CELL_SIZE/3-eo/3, eo/2, 0, Math.PI*2); ctx.fill();
-          ctx.beginPath(); ctx.arc(dx+CELL_SIZE/2.5+eo/3, dy+CELL_SIZE/3-eo/3, eo/2, 0, Math.PI*2); ctx.fill();
-        }
+
+        const radius = (CELL_SIZE/2) - (i === 0 ? CELL_SIZE/10 : CELL_SIZE/6);
+        drawSnakeSegment(dx, dy, radius, i === 0);
       }
+
       if (!gameActive && !isPaused) {
         ctx.globalAlpha = 0.7; ctx.fillStyle = '#0a140e'; ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = 1; ctx.font = 'bold 20px "Segoe UI", Inter'; ctx.fillStyle = '#f9e7b3';
@@ -1381,6 +1439,7 @@
       pauseRestartButton.addEventListener('click', restartFromPause);
       pauseMainMenuButton.addEventListener('click', goToMainMenu);
 
+      snakeStyleSelect.addEventListener('change', (e) => { snakeStyle = parseInt(e.target.value, 10); pauseSnakeStyleSelect.value = snakeStyle; drawBoard(); saveAllSettings(); });
       soundSelect.addEventListener('change', (e) => { currentSoundType = parseInt(e.target.value, 10); pauseSoundSelect.value = currentSoundType; saveAllSettings(); });
       previewSoundBtn.addEventListener('click', () => { initAudio(); playAppleSound(); });
       volumeSlider.addEventListener('input', (e) => { soundVolume = parseInt(e.target.value, 10)/100; volumeValue.textContent = e.target.value; pauseVolumeSlider.value = e.target.value; pauseVolumeValue.textContent = e.target.value; saveAllSettings(); });
@@ -1392,6 +1451,7 @@
       saveNicknameBtn.addEventListener('click', saveNickname);
       nicknameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') saveNickname(); });
 
+      pauseSnakeStyleSelect.addEventListener('change', (e) => { snakeStyle = parseInt(e.target.value, 10); snakeStyleSelect.value = snakeStyle; drawBoard(); saveAllSettings(); });
       pauseSoundSelect.addEventListener('change', (e) => { currentSoundType = parseInt(e.target.value, 10); soundSelect.value = currentSoundType; saveAllSettings(); });
       pausePreviewSound.addEventListener('click', () => { initAudio(); playAppleSound(); });
       pauseVolumeSlider.addEventListener('input', (e) => { soundVolume = parseInt(e.target.value, 10)/100; pauseVolumeValue.textContent = e.target.value; volumeSlider.value = e.target.value; volumeValue.textContent = e.target.value; saveAllSettings(); });
@@ -1415,6 +1475,8 @@
       const ss = loadSettings(), ms = { ...defaultSettings, ...ss };
       GRID_SIZE = ms.gridSize; CELL_SIZE = canvas.width / GRID_SIZE; currentLeaderboardSize = GRID_SIZE.toString();
       snakeColor = ms.snakeColor; snakeColorPicker.value = snakeColor;
+      snakeStyle = ms.snakeStyle !== undefined ? ms.snakeStyle : 0;
+      snakeStyleSelect.value = snakeStyle;
       fieldDesign = ms.fieldDesign; fieldDesignSelect.value = fieldDesign;
       fruitType = ms.fruitType; fruitSelect.value = fruitType;
       currentSoundType = ms.soundType; soundSelect.value = currentSoundType;
