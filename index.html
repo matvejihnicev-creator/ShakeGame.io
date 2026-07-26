@@ -735,49 +735,72 @@
 
     const deviceId = getDeviceId();
 
+    // Загрузка лидерборда из облака с правильными заголовками
     async function loadLeaderboardFromCloud() {
       try {
         syncStatus.textContent = '🔄 Синхронизация...';
         syncStatus.className = 'sync-status sync-loading';
         
-        const response = await fetch(JSONBIN_URL, {
-          headers: { 'X-Master-Key': JSONBIN_API_KEY }
+        const response = await fetch(JSONBIN_URL + '/latest', {
+          method: 'GET',
+          headers: { 
+            'X-Master-Key': JSONBIN_API_KEY,
+            'Content-Type': 'application/json'
+          }
         });
         
-        if (response.ok) {
-          const data = await response.json();
-          leaderboard = data.record.leaderboard || { '10': [], '20': [] };
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Проверяем структуру ответа
+        if (data && data.record && data.record.leaderboard) {
+          leaderboard = data.record.leaderboard;
           lastSyncTime = Date.now();
           isOnline = true;
           updateLeaderboardUI();
           syncStatus.textContent = '✅ Онлайн • Данные синхронизированы';
           syncStatus.className = 'sync-status sync-ok';
+          
+          // Сохраняем локальную копию
+          localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
           return true;
         } else {
-          throw new Error('Ошибка ответа сервера');
+          throw new Error('Неверная структура данных');
         }
       } catch (e) {
-        console.warn('Ошибка загрузки из облака:', e);
+        console.warn('Ошибка загрузки из облака:', e.message);
         isOnline = false;
+        
+        // Пробуем загрузить локальную копию
         const saved = localStorage.getItem('snakeLocalLeaderboard');
-        if (saved) leaderboard = JSON.parse(saved);
+        if (saved) {
+          try {
+            leaderboard = JSON.parse(saved);
+          } catch (parseError) {
+            leaderboard = { '10': [], '20': [] };
+          }
+        }
+        
         updateLeaderboardUI();
-        syncStatus.textContent = '⚠️ Офлайн • Локальные данные';
+        
+        // Показываем статус в зависимости от наличия данных
+        if (leaderboard['10'].length > 0 || leaderboard['20'].length > 0) {
+          syncStatus.textContent = '⚠️ Офлайн • Показаны локальные данные';
+        } else {
+          syncStatus.textContent = '⚠️ Офлайн • Нет данных';
+        }
         syncStatus.className = 'sync-status sync-error';
         return false;
       }
     }
 
+    // Сохранение лидерборда в облако
     async function saveLeaderboardToCloud() {
-      if (!isOnline) {
-        localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
-        syncStatus.textContent = '⚠️ Офлайн • Сохранено локально';
-        syncStatus.className = 'sync-status sync-error';
-        return false;
-      }
-
       try {
-        syncStatus.textContent = '📤 Отправка...';
+        syncStatus.textContent = '📤 Сохранение...';
         syncStatus.className = 'sync-status sync-loading';
         
         const response = await fetch(JSONBIN_URL, {
@@ -789,31 +812,48 @@
           body: JSON.stringify({ leaderboard })
         });
         
-        if (response.ok) {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data && data.record) {
           lastSyncTime = Date.now();
+          isOnline = true;
           syncStatus.textContent = '✅ Онлайн • Сохранено в облаке';
           syncStatus.className = 'sync-status sync-ok';
+          
+          // Обновляем локальную копию
           localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
           return true;
         } else {
           throw new Error('Ошибка сохранения');
         }
       } catch (e) {
-        console.warn('Ошибка сохранения в облако:', e);
+        console.warn('Ошибка сохранения в облако:', e.message);
+        
+        // Сохраняем локально при ошибке
         localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
-        syncStatus.textContent = '⚠️ Ошибка сети • Сохранено локально';
+        syncStatus.textContent = '⚠️ Сохранено локально • Нет связи';
         syncStatus.className = 'sync-status sync-error';
         return false;
       }
     }
 
+    // Добавление результата
     async function addToLeaderboard(nickname, score, gridSize) {
       if (!nickname || score === 0) return;
+      
+      // Сначала загружаем актуальные данные
       await loadLeaderboardFromCloud();
+      
       const sizeKey = gridSize.toString();
       if (!leaderboard[sizeKey]) leaderboard[sizeKey] = [];
+      
       const board = leaderboard[sizeKey];
       const existingIndex = board.findIndex(e => e.nickname === nickname);
+      
       if (existingIndex >= 0) {
         if (score > board[existingIndex].score) {
           board[existingIndex].score = score;
@@ -823,8 +863,10 @@
       } else {
         board.push({ nickname, score, deviceId, timestamp: Date.now() });
       }
+      
       board.sort((a, b) => b.score - a.score);
       leaderboard[sizeKey] = board.slice(0, 50);
+      
       updateLeaderboardUI();
       await saveLeaderboardToCloud();
     }
@@ -841,6 +883,7 @@
     function updateLeaderboardUI() {
       const board = leaderboard[currentLeaderboardSize] || [];
       leaderboardList.innerHTML = '';
+      
       if (board.length === 0) {
         const li = document.createElement('li');
         li.innerHTML = '<span class="rank">-</span><span class="name">Нет записей</span><span class="score">-</span>';
@@ -858,13 +901,17 @@
           leaderboardList.appendChild(li);
         });
       }
+      
       document.querySelectorAll('.leaderboard-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.size === currentLeaderboardSize);
       });
     }
 
     function startCloudSync() {
+      // Первая загрузка при старте
       loadLeaderboardFromCloud();
+      
+      // Периодическая синхронизация
       setInterval(() => {
         if (Date.now() - lastSyncTime > SYNC_INTERVAL) {
           loadLeaderboardFromCloud();
