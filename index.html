@@ -498,9 +498,8 @@
       </div>
     </div>
 
-    <!-- Таблица лидеров -->
     <div class="leaderboard" id="leaderboardPanel">
-      <h3 id="leaderboardTitle">🏆 ТАБЛИЦА ЛИДЕРОВ</h3>
+      <h3 id="leaderboardTitle">🏆 ОНЛАЙН ТАБЛИЦА</h3>
       <div class="leaderboard-tabs">
         <button class="leaderboard-tab active" data-size="10">10×10</button>
         <button class="leaderboard-tab" data-size="20">20×20</button>
@@ -512,7 +511,6 @@
     </div>
   </div>
 
-  <!-- Главное меню -->
   <div id="mainMenu" class="menu-overlay">
     <div class="menu-panel">
       <h2>🐍 <span id="menuTitle">ЗМЕЙКА</span></h2>
@@ -523,12 +521,10 @@
     </div>
   </div>
 
-  <!-- Меню паузы -->
   <div id="pauseMenu" class="menu-overlay hidden">
     <div class="menu-panel">
       <h2>⏸ <span id="pauseTitle">ПАУЗА</span></h2>
       <div class="menu-subtitle" id="pauseSubtitle">Игра приостановлена</div>
-      
       <div class="settings-group">
         <label id="pauseNicknameLabel">👤 Никнейм</label>
         <div class="nickname-section">
@@ -583,7 +579,6 @@
           <option value="en">English</option>
         </select>
       </div>
-      
       <div class="menu-buttons">
         <button id="resumeButton" class="menu-btn">▶ <span id="resumeText">ПРОДОЛЖИТЬ</span></button>
         <button id="pauseRestartButton" class="menu-btn">↺ <span id="pauseRestartText">НОВАЯ ИГРА</span></button>
@@ -592,7 +587,6 @@
     </div>
   </div>
 
-  <!-- Меню настроек -->
   <div id="settingsMenu" class="menu-overlay hidden">
     <div class="menu-panel">
       <h2>⚙ <span id="settingsTitle">НАСТРОЙКИ</span></h2>
@@ -657,15 +651,13 @@
 
 <script>
   (function() {
-    // ==================== КОНФИГУРАЦИЯ JSONBIN.IO ====================
-    const JSONBIN_API_KEY = '$2a$10$NUHE1wV1353mVTk4cMX/q.nq7qkpvNs54Sjcx8zrdB7DnxVhs3scG';
+    const JSONBIN_API_KEY = '$2a$10$uCtxUi53PKP7TgaD9hxj8.a9mu25dVgjJrmAZjXflXT6I2Hi1D2Ci';
     const JSONBIN_BIN_ID = '6a64dabd3919920ec4854d0c';
     const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
     
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Элементы интерфейса
     const currentScoreSpan = document.getElementById('currentScoreDisplay');
     const highScoreSpan = document.getElementById('highScoreDisplay');
     const snakeColorPicker = document.getElementById('snakeColorPicker');
@@ -676,7 +668,6 @@
     const syncStatus = document.getElementById('syncStatus');
     const pauseOverlay = document.getElementById('pauseOverlay');
 
-    // Меню
     const mainMenu = document.getElementById('mainMenu');
     const settingsMenu = document.getElementById('settingsMenu');
     const pauseMenu = document.getElementById('pauseMenu');
@@ -687,7 +678,6 @@
     const pauseRestartButton = document.getElementById('pauseRestartButton');
     const pauseMainMenuButton = document.getElementById('pauseMainMenuButton');
 
-    // Настройки
     const snakeStyleSelect = document.getElementById('snakeStyleSelect');
     const soundSelect = document.getElementById('soundSelect');
     const volumeSlider = document.getElementById('volumeSlider');
@@ -702,7 +692,6 @@
     const saveNicknameBtn = document.getElementById('saveNicknameBtn');
     const nicknameError = document.getElementById('nicknameError');
 
-    // Настройки паузы
     const pauseSnakeStyleSelect = document.getElementById('pauseSnakeStyleSelect');
     const pauseSoundSelect = document.getElementById('pauseSoundSelect');
     const pauseVolumeSlider = document.getElementById('pauseVolumeSlider');
@@ -735,17 +724,15 @@
 
     const deviceId = getDeviceId();
 
-    // Загрузка лидерборда из облака с правильными заголовками
     async function loadLeaderboardFromCloud() {
       try {
         syncStatus.textContent = '🔄 Синхронизация...';
         syncStatus.className = 'sync-status sync-loading';
         
-        const response = await fetch(JSONBIN_URL + '/latest', {
+        const response = await fetch(`${JSONBIN_URL}/latest`, {
           method: 'GET',
           headers: { 
-            'X-Master-Key': JSONBIN_API_KEY,
-            'Content-Type': 'application/json'
+            'X-Access-Key': JSONBIN_API_KEY
           }
         });
         
@@ -755,7 +742,6 @@
         
         const data = await response.json();
         
-        // Проверяем структуру ответа
         if (data && data.record && data.record.leaderboard) {
           leaderboard = data.record.leaderboard;
           lastSyncTime = Date.now();
@@ -763,41 +749,25 @@
           updateLeaderboardUI();
           syncStatus.textContent = '✅ Онлайн • Данные синхронизированы';
           syncStatus.className = 'sync-status sync-ok';
-          
-          // Сохраняем локальную копию
           localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
           return true;
         } else {
           throw new Error('Неверная структура данных');
         }
       } catch (e) {
-        console.warn('Ошибка загрузки из облака:', e.message);
+        console.warn('Ошибка загрузки:', e.message);
         isOnline = false;
-        
-        // Пробуем загрузить локальную копию
         const saved = localStorage.getItem('snakeLocalLeaderboard');
         if (saved) {
-          try {
-            leaderboard = JSON.parse(saved);
-          } catch (parseError) {
-            leaderboard = { '10': [], '20': [] };
-          }
+          try { leaderboard = JSON.parse(saved); } catch (parseError) { leaderboard = { '10': [], '20': [] }; }
         }
-        
         updateLeaderboardUI();
-        
-        // Показываем статус в зависимости от наличия данных
-        if (leaderboard['10'].length > 0 || leaderboard['20'].length > 0) {
-          syncStatus.textContent = '⚠️ Офлайн • Показаны локальные данные';
-        } else {
-          syncStatus.textContent = '⚠️ Офлайн • Нет данных';
-        }
+        syncStatus.textContent = leaderboard['10'].length > 0 || leaderboard['20'].length > 0 ? '⚠️ Офлайн • Локальные данные' : '⚠️ Офлайн • Нет данных';
         syncStatus.className = 'sync-status sync-error';
         return false;
       }
     }
 
-    // Сохранение лидерборда в облако
     async function saveLeaderboardToCloud() {
       try {
         syncStatus.textContent = '📤 Сохранение...';
@@ -807,7 +777,7 @@
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'X-Master-Key': JSONBIN_API_KEY
+            'X-Access-Key': JSONBIN_API_KEY
           },
           body: JSON.stringify({ leaderboard })
         });
@@ -816,44 +786,28 @@
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const data = await response.json();
-        
-        if (data && data.record) {
-          lastSyncTime = Date.now();
-          isOnline = true;
-          syncStatus.textContent = '✅ Онлайн • Сохранено в облаке';
-          syncStatus.className = 'sync-status sync-ok';
-          
-          // Обновляем локальную копию
-          localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
-          return true;
-        } else {
-          throw new Error('Ошибка сохранения');
-        }
-      } catch (e) {
-        console.warn('Ошибка сохранения в облако:', e.message);
-        
-        // Сохраняем локально при ошибке
+        lastSyncTime = Date.now();
+        isOnline = true;
+        syncStatus.textContent = '✅ Онлайн • Сохранено в облаке';
+        syncStatus.className = 'sync-status sync-ok';
         localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
-        syncStatus.textContent = '⚠️ Сохранено локально • Нет связи';
+        return true;
+      } catch (e) {
+        console.warn('Ошибка сохранения:', e.message);
+        localStorage.setItem('snakeLocalLeaderboard', JSON.stringify(leaderboard));
+        syncStatus.textContent = '⚠️ Сохранено локально';
         syncStatus.className = 'sync-status sync-error';
         return false;
       }
     }
 
-    // Добавление результата
     async function addToLeaderboard(nickname, score, gridSize) {
       if (!nickname || score === 0) return;
-      
-      // Сначала загружаем актуальные данные
       await loadLeaderboardFromCloud();
-      
       const sizeKey = gridSize.toString();
       if (!leaderboard[sizeKey]) leaderboard[sizeKey] = [];
-      
       const board = leaderboard[sizeKey];
       const existingIndex = board.findIndex(e => e.nickname === nickname);
-      
       if (existingIndex >= 0) {
         if (score > board[existingIndex].score) {
           board[existingIndex].score = score;
@@ -863,10 +817,8 @@
       } else {
         board.push({ nickname, score, deviceId, timestamp: Date.now() });
       }
-      
       board.sort((a, b) => b.score - a.score);
       leaderboard[sizeKey] = board.slice(0, 50);
-      
       updateLeaderboardUI();
       await saveLeaderboardToCloud();
     }
@@ -883,7 +835,6 @@
     function updateLeaderboardUI() {
       const board = leaderboard[currentLeaderboardSize] || [];
       leaderboardList.innerHTML = '';
-      
       if (board.length === 0) {
         const li = document.createElement('li');
         li.innerHTML = '<span class="rank">-</span><span class="name">Нет записей</span><span class="score">-</span>';
@@ -901,17 +852,13 @@
           leaderboardList.appendChild(li);
         });
       }
-      
       document.querySelectorAll('.leaderboard-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.size === currentLeaderboardSize);
       });
     }
 
     function startCloudSync() {
-      // Первая загрузка при старте
       loadLeaderboardFromCloud();
-      
-      // Периодическая синхронизация
       setInterval(() => {
         if (Date.now() - lastSyncTime > SYNC_INTERVAL) {
           loadLeaderboardFromCloud();
@@ -975,7 +922,6 @@
       return translations[currentLang][key] || key;
     }
 
-    // ==================== НАСТРОЙКИ ====================
     const defaultSettings = {
       language: 'ru', snakeStyle: 0, soundType: 0, volume: 70,
       fruitType: 0, fieldDesign: 0, gridSize: 20,
@@ -1092,7 +1038,7 @@
     let gameActive = false, gameOverFlag = false, winFlag = false, isPaused = false;
     let currentScore = 0, highScore = 0;
     let snakeColor = snakeColorPicker.value;
-    let snakeStyle = 0; // 0 - круглая, 1 - квадратная
+    let snakeStyle = 0;
     let gameLoopInterval = null, animationFrameId = null;
     const MOVE_INTERVAL_MS = 120;
     let lastMoveTime = 0, animationProgress = 0, prevSnake = [];
@@ -1107,7 +1053,6 @@
     let fruitType = 0, playerNickname = '';
     let audioCtx = null, currentSoundType = 0, soundVolume = 0.7;
 
-    // ==================== АУДИО ====================
     function initAudio() {
       if (audioCtx) return;
       try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
@@ -1157,7 +1102,6 @@
       });
     }
 
-    // ==================== ИГРОВАЯ ЛОГИКА ====================
     function loadHighScore() {
       try {
         const s = localStorage.getItem('snakeHighScore');
@@ -1191,23 +1135,13 @@
 
     function moveSnake() {
       if (!gameActive || isPaused) return;
-      
       prevSnake = snake.map(s => ({...s}));
-      
       direction = {...nextDirection};
       const head = snake[0];
       const nh = {x: head.x + direction.x, y: head.y + direction.y};
       const fe = (nh.x === food.x && nh.y === food.y);
-      
-      let ns;
-      if (fe) {
-        ns = [nh, ...snake];
-      } else {
-        ns = [nh, ...snake.slice(0, -1)];
-      }
-      
+      let ns = fe ? [nh, ...snake] : [nh, ...snake.slice(0, -1)];
       const bc = ns.slice(1);
-      
       if (checkCollision(nh, bc)) {
         gameActive = false; gameOverFlag = true; winFlag = false;
         updateGameStatus(); clearGameLoop();
@@ -1215,17 +1149,13 @@
         addToLeaderboard(playerNickname, currentScore, GRID_SIZE);
         playGameOverSound(); animationProgress = 1; drawBoard(); return;
       }
-      
       snake = ns;
-      
       if (fe) {
         currentScore++;
         currentScoreSpan.textContent = currentScore;
         saveHighScore(currentScore);
         playAppleSound();
-        
         prevSnake = [prevSnake[0], ...prevSnake];
-        
         if (!generateRandomFood()) {
           gameActive = false; gameOverFlag = false; winFlag = true;
           updateGameStatus(); clearGameLoop();
@@ -1234,7 +1164,6 @@
           playWinSound(); animationProgress = 1; drawBoard(); return;
         }
       }
-      
       animationProgress = 0;
       lastMoveTime = performance.now();
       drawBoard();
@@ -1319,7 +1248,6 @@
       drawBoard(); animationFrameId = requestAnimationFrame(animateLoop);
     }
 
-    // ==================== УПРАВЛЕНИЕ ====================
     function handleKeyDown(e) {
       const key = e.key, code = e.code;
       if (document.activeElement === nicknameInput || document.activeElement === pauseNicknameInput) {
@@ -1355,7 +1283,6 @@
         if (direction.x === -nd.x && direction.y === -nd.y) return; nextDirection = nd; }
     }
 
-    // ==================== ОТРИСОВКА ====================
     function drawFruit(fx, fy) {
       const s = CELL_SIZE / 2.5;
       ctx.shadowColor = '#ff7b6b'; ctx.shadowBlur = 10;
@@ -1378,7 +1305,6 @@
 
     function drawSnakeSegment(x, y, radius, isHead) {
       if (snakeStyle === 0) {
-        // Круглая змейка
         const gradient = ctx.createRadialGradient(x + 4, y + 4, 2, x + CELL_SIZE/2, y + CELL_SIZE/2, CELL_SIZE/1.5);
         gradient.addColorStop(0, snakeColor);
         gradient.addColorStop(0.7, '#1e3b1a');
@@ -1387,7 +1313,6 @@
         ctx.arc(x + CELL_SIZE/2, y + CELL_SIZE/2, radius, 0, 2 * Math.PI);
         ctx.fill();
       } else {
-        // Квадратная змейка
         const padding = CELL_SIZE * 0.15;
         ctx.fillStyle = snakeColor;
         ctx.fillRect(x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2);
@@ -1396,7 +1321,6 @@
         ctx.strokeRect(x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2);
       }
 
-      // Глаза для головы
       if (isHead && CELL_SIZE > 10) {
         const eyeOffset = CELL_SIZE / 6;
         ctx.fillStyle = 'white';
@@ -1434,12 +1358,10 @@
         const seg = snake[i];
         let dx = seg.x * CELL_SIZE;
         let dy = seg.y * CELL_SIZE;
-
         if (prevSnake[i] && p < 1 && gameActive && !isPaused) {
           dx = prevSnake[i].x * CELL_SIZE + (seg.x - prevSnake[i].x) * CELL_SIZE * p;
           dy = prevSnake[i].y * CELL_SIZE + (seg.y - prevSnake[i].y) * CELL_SIZE * p;
         }
-
         const radius = (CELL_SIZE/2) - (i === 0 ? CELL_SIZE/10 : CELL_SIZE/6);
         drawSnakeSegment(dx, dy, radius, i === 0);
       }
@@ -1473,7 +1395,6 @@
     function hideAllMenus() { mainMenu.classList.add('hidden'); settingsMenu.classList.add('hidden'); pauseMenu.classList.add('hidden'); }
     function showSettings() { mainMenu.classList.add('hidden'); settingsMenu.classList.remove('hidden'); pauseMenu.classList.add('hidden'); nicknameError.classList.add('hidden'); }
 
-    // ==================== ПРИВЯЗКА СОБЫТИЙ ====================
     function bindEvents() {
       window.addEventListener('keydown', handleKeyDown);
       restartBtn.addEventListener('click', resetGame);
@@ -1516,7 +1437,6 @@
       pauseOverlay.addEventListener('click', () => { if (isPaused && pauseMenu.classList.contains('hidden')) togglePause(); });
     }
 
-    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
     function initialStart() {
       loadHighScore();
       const ss = loadSettings(), ms = { ...defaultSettings, ...ss };
