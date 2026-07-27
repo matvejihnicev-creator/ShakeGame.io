@@ -167,10 +167,9 @@
     </div>
   </div>
 
-  <!-- Меню -->
   <div id="mainMenu" class="menu-overlay"><div class="menu-panel"><h2>🐍 <span id="menuTitle">ЗМЕЙКА</span></h2><div class="menu-buttons"><button id="playButton" class="menu-btn">▶ <span id="playText">ИГРАТЬ</span></button><button id="shopButton" class="menu-btn">🛒 <span id="shopText">МАГАЗИН</span></button><button id="achievementsButton" class="menu-btn">🏆 <span id="achievementsText">ДОСТИЖЕНИЯ</span></button><button id="settingsButton" class="menu-btn">⚙ <span id="settingsText">НАСТРОЙКИ</span></button><button id="addCoinsBtn" class="menu-btn" style="background:#2ecc71;color:#fff;">💰 +500 монет</button></div></div></div>
   <div id="modeSelectMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🎮 <span id="modeSelectTitle">ВЫБОР РЕЖИМА</span></h2><div class="mode-select"><button class="mode-btn active" data-mode="classic">🐍 <span id="modeClassic">Обычный</span></button><button class="mode-btn" data-mode="infinite">🌀 <span id="modeInfinite">Бесконечный</span></button><button class="mode-btn" data-mode="bombs">💣 <span id="modeBombs">С бомбами</span></button></div><div class="menu-buttons"><button id="startGameBtn" class="menu-btn">▶ <span id="startGameText">НАЧАТЬ ИГРУ</span></button><button id="backFromModeSelect" class="menu-btn">↩ <span id="backFromModeSelectText">НАЗАД</span></button></div></div></div>
-  <div id="shopMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🛒 <span id="shopTitle">МАГАЗИН</span></h2><div class="coins-display" style="margin-bottom:0.8rem;"><span class="coin-sprite"></span><span class="coins-value" id="shopCoinsDisplay">0</span></div><div class="shop-tabs"><button class="shop-tab active" data-tab="skins">🐍 Скины</button><button class="shop-tab" data-tab="fruits">🍉 Фрукты</button><button class="shop-tab" data-tab="backgrounds">🖼️ Фоны</button><button class="shop-tab" data-tab="custom">🎨 Свой</button></div><div class="settings-group" id="shopContent"></div><button id="backFromShop" class="menu-btn">↩ <span id="backFromShopText">НАЗАД</span></button></div></div>
+  <div id="shopMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🛒 <span id="shopTitle">МАГАЗИН</span></h2><div class="coins-display" style="margin-bottom:0.8rem;"><span class="coin-sprite"></span><span class="coins-value" id="shopCoinsDisplay">0</span></div><div class="shop-tabs"><button class="shop-tab active" data-tab="skins">🐍 Скины</button><button class="shop-tab" data-tab="fruits">🍉 Фрукты</button><button class="shop-tab" data-tab="backgrounds">🖼️ Фоны</button></div><div class="settings-group" id="shopContent"></div><button id="backFromShop" class="menu-btn">↩ <span id="backFromShopText">НАЗАД</span></button></div></div>
   <div id="customSkinMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🎨 РЕДАКТОР СКИНА</h2><div class="settings-group">
     <label>Основной цвет</label><input type="color" id="customBaseColor" value="#6fbf4c">
     <label>Свечение</label><div class="custom-editor-row"><input type="checkbox" id="customGlow"><span>Включить</span></div>
@@ -225,10 +224,9 @@
   const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || window.innerWidth < 800;
   if(isMobile) document.getElementById('mobileControls').classList.remove('hidden');
 
-  // Раздельные рекорды
   let highScoreClassic = 0, highScoreInfinite = 0, highScoreBombs = 0;
   let coins = 0, ownedSkins = ['default'], equippedSkin = 'default', ownedFruits = [0, 1, 2], ownedBackgrounds = [0,1,2,3,4];
-  let customSkinParams = null; // { baseColor, glow, glowColor, gradient, segments: [] }
+  let customSkinParams = null;
   let currentShopTab = 'skins';
   let achievements = {}, currentAchievementFilter = 'all';
   let gameMode = 'classic'; let selectedMode = 'classic';
@@ -317,7 +315,30 @@
     return s ? s.glowColor : '#ffffff';
   }
 
-  function updateFruitSelect(){fruitSelect.innerHTML='';allFruits.forEach(f=>{if(ownedFruits.includes(f.id)){const o=document.createElement('option');o.value=f.id;o.textContent=f.icon==='plum'?'🫐 '+f.name[currentLang]:f.icon==='grape'?'🍇 '+f.name[currentLang]:f.icon+' '+f.name[currentLang];fruitSelect.appendChild(o)}});if(!ownedFruits.includes(fruitType)){fruitType=ownedFruits[0]||0}fruitSelect.value=fruitType}
+  function updateFruitSelect(){
+    fruitSelect.innerHTML = '';
+    allFruits.forEach(f => {
+      if (ownedFruits.includes(f.id)) {
+        const o = document.createElement('option');
+        o.value = f.id;
+        let fruitText = '';
+        if (f.icon === 'plum') {
+          fruitText = '🫐 ' + f.name[currentLang];
+        } else if (f.icon === 'grape') {
+          fruitText = '🍇 ' + f.name[currentLang];
+        } else {
+          fruitText = f.icon + ' ' + f.name[currentLang];
+        }
+        o.textContent = fruitText;
+        fruitSelect.appendChild(o);
+      }
+    });
+    if (!ownedFruits.includes(fruitType)) {
+      fruitType = ownedFruits[0] || 0;
+    }
+    fruitSelect.value = fruitType;
+  }
+  
   function updateFieldDesignSelect(){const o=fieldDesignSelect.querySelectorAll('option');for(let i=0;i<o.length;i++){const v=parseInt(o[i].value);if(v>=5&&!ownedBackgrounds.includes(v)){o[i].disabled=true}else{o[i].disabled=false}}}
 
   function renderAchievements(){
@@ -344,15 +365,38 @@
   function renderShop(){
     shopContent.innerHTML='';
     if (currentShopTab === 'skins') {
+      const customOwned = ownedSkins.includes('custom');
+      const customItem = document.createElement('div'); 
+      customItem.className = `shop-item ${equippedSkin==='custom'?'equipped':''} ${customOwned?'owned':''}`;
+      customItem.innerHTML = `<div class="shop-preview" style="background:${customSkinParams?customSkinParams.baseColor:'#ccc'};border-radius:0.8rem;"></div><div class="shop-info"><div class="shop-name">${currentLang==='ru'?'Свой скин':'Custom Skin'}</div><div class="shop-price">${customOwned?'Куплено':`⭐ 250`}</div></div><button class="shop-btn" ${!customOwned && coins < 250 ? 'disabled' : ''}>${equippedSkin==='custom'?'Надет':customOwned?'Надеть':`⭐ 250`}</button>`;
+      customItem.querySelector('.shop-btn').onclick = () => {
+        if (!customOwned && coins >= 250) {
+          coins -= 250; ownedSkins.push('custom'); saveCoins(); saveSkins(); updateCoinsDisplay();
+          customSkinMenu.classList.remove('hidden');
+          if (customSkinParams) {
+            customBaseColor.value = customSkinParams.baseColor;
+            customGlow.checked = customSkinParams.glow;
+            customGlowColor.value = customSkinParams.glowColor;
+            customGradient.checked = customSkinParams.gradient;
+            customSegments.value = customSkinParams.segments.join(',');
+          }
+        } else if (customOwned) {
+          if (equippedSkin !== 'custom') { equippedSkin = 'custom'; saveSkins(); renderShop(); }
+          else { customSkinMenu.classList.remove('hidden'); }
+        }
+      };
+      shopContent.appendChild(customItem);
+
       const def = document.createElement('div'); def.className = `shop-item ${equippedSkin==='default'?'equipped':'owned'}`;
-      def.innerHTML = `<div class="shop-preview" style="background:${snakeColor};border-radius:0.8rem;"></div><div class="shop-info"><div class="shop-name">Стандартный</div><div class="shop-price">Бесплатно</div></div><button class="shop-btn">${equippedSkin==='default'?'Надет':'Надеть'}</button>`;
+      def.innerHTML = `<div class="shop-preview" style="background:${snakeColor};border-radius:0.8rem;"></div><div class="shop-info"><div class="shop-name">${currentLang==='ru'?'Стандартный':'Default'}</div><div class="shop-price">${currentLang==='ru'?'Бесплатно':'Free'}</div></div><button class="shop-btn">${equippedSkin==='default'?'Надет':'Надеть'}</button>`;
       def.querySelector('.shop-btn').onclick = () => { equippedSkin='default'; saveSkins(); renderShop(); };
       shopContent.appendChild(def);
+
       shopSkins.forEach(s => {
         const owned = ownedSkins.includes(s.id), eq = equippedSkin === s.id;
         const item = document.createElement('div'); item.className = `shop-item ${eq?'equipped':''} ${owned?'owned':''}`;
         const preview = s.id==='golden'?'<span class="coin-sprite"></span>':s.id==='neon'?'<div style="width:30px;height:30px;background:#00ffcc;border-radius:50%;box-shadow:0 0 15px #00ffcc;"></div>':s.id==='rainbow'?'<div class="shop-preview-rainbow"></div>':'';
-        item.innerHTML = `<div class="shop-preview">${preview}</div><div class="shop-info"><div class="shop-name">${s.name[currentLang]}</div><div class="shop-price">${owned?'Куплено':`⭐ ${s.price}`}</div></div><button class="shop-btn" ${!owned && coins < s.price ? 'disabled' : ''}>${eq?'Надет':owned?'Надеть':`⭐ ${s.price}`}</button>`;
+        item.innerHTML = `<div class="shop-preview">${preview}</div><div class="shop-info"><div class="shop-name">${s.name[currentLang]}</div><div class="shop-price">${owned?(currentLang==='ru'?'Куплено':'Owned'):`⭐ ${s.price}`}</div></div><button class="shop-btn" ${!owned && coins < s.price ? 'disabled' : ''}>${eq?'Надет':owned?'Надеть':`⭐ ${s.price}`}</button>`;
         item.querySelector('.shop-btn').onclick = () => {
           if (!owned && coins >= s.price) { coins -= s.price; ownedSkins.push(s.id); equippedSkin = s.id; saveCoins(); saveSkins(); updateCoinsDisplay(); renderShop(); }
           else if (owned) { equippedSkin = s.id; saveSkins(); renderShop(); }
@@ -363,7 +407,28 @@
       allFruits.filter(f=>!f.default).sort((a,b)=>a.price-b.price).forEach(f => {
         const owned = ownedFruits.includes(f.id);
         const item = document.createElement('div'); item.className = `shop-item ${owned?'owned':''}`;
-        item.innerHTML = `<div class="shop-preview" style="background:${f.color};border-radius:50%;font-size:1.8rem;">${f.icon}</div><div class="shop-info"><div class="shop-name">${f.name[currentLang]}</div><div class="shop-price">${owned?'Куплено':`⭐ ${f.price}`}</div></div><button class="shop-btn" ${!owned && coins < f.price ? 'disabled' : ''}>${owned?'✓':`⭐ ${f.price}`}</button>`;
+        let previewHTML = '';
+        if (f.id === 6) {
+          previewHTML = '<div style="position:relative;width:40px;height:40px;">';
+          const grapes = [
+            {x:12,y:10},{x:22,y:10},{x:17,y:19},{x:8,y:15},{x:26,y:15},{x:14,y:26},{x:24,y:24}
+          ];
+          grapes.forEach(g => {
+            previewHTML += `<div style="position:absolute;left:${g.x}px;top:${g.y}px;width:10px;height:10px;background:radial-gradient(circle at 30% 30%, #a569bd, #7d3c98);border-radius:50%;box-shadow:1px 1px 2px rgba(0,0,0,0.3);"></div>`;
+          });
+          previewHTML += '</div>';
+        } else if (f.id === 5) {
+          previewHTML = '<div style="position:relative;width:40px;height:40px;">';
+          previewHTML += '<div style="position:absolute;left:6px;top:10px;width:16px;height:16px;background:radial-gradient(circle at 30% 30%, #ff6b6b, #c0392b);border-radius:50%;"></div>';
+          previewHTML += '<div style="position:absolute;left:18px;top:14px;width:14px;height:14px;background:radial-gradient(circle at 30% 30%, #ff6b6b, #c0392b);border-radius:50%;"></div>';
+          previewHTML += '<div style="position:absolute;left:7px;top:3px;width:2px;height:8px;background:#5d8233;transform:rotate(-30deg);"></div>';
+          previewHTML += '<div style="position:absolute;left:18px;top:8px;width:2px;height:8px;background:#5d8233;transform:rotate(-20deg);"></div>';
+          previewHTML += '<div style="position:absolute;left:10px;top:0px;width:10px;height:6px;background:#2ecc71;border-radius:50%;transform:rotate(20deg);"></div>';
+          previewHTML += '</div>';
+        } else {
+          previewHTML = `<span style="font-size:1.8rem;">${f.icon}</span>`;
+        }
+        item.innerHTML = `<div class="shop-preview" style="background:#1a2f1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">${previewHTML}</div><div class="shop-info"><div class="shop-name">${f.name[currentLang]}</div><div class="shop-price">${owned?(currentLang==='ru'?'Куплено':'Owned'):`⭐ ${f.price}`}</div></div><button class="shop-btn" ${!owned && coins < f.price ? 'disabled' : ''}>${owned?'✓':`⭐ ${f.price}`}</button>`;
         item.querySelector('.shop-btn').onclick = () => { if (!owned && coins >= f.price) { coins -= f.price; ownedFruits.push(f.id); saveCoins(); saveOwnedFruits(); updateCoinsDisplay(); updateFruitSelect(); renderShop(); } };
         shopContent.appendChild(item);
       });
@@ -371,32 +436,10 @@
       shopBackgrounds.forEach(bg => {
         const owned = ownedBackgrounds.includes(bg.id);
         const item = document.createElement('div'); item.className = `shop-item ${owned?'owned':''}`;
-        item.innerHTML = `<div class="shop-preview" style="font-size:1.8rem;">${bg.icon}</div><div class="shop-info"><div class="shop-name">${bg.name[currentLang]}</div><div class="shop-price">${owned?'Куплено':`⭐ ${bg.price}`}</div></div><button class="shop-btn" ${!owned && coins < bg.price ? 'disabled' : ''}>${owned?'✓':`⭐ ${bg.price}`}</button>`;
+        item.innerHTML = `<div class="shop-preview" style="font-size:1.8rem;">${bg.icon}</div><div class="shop-info"><div class="shop-name">${bg.name[currentLang]}</div><div class="shop-price">${owned?(currentLang==='ru'?'Куплено':'Owned'):`⭐ ${bg.price}`}</div></div><button class="shop-btn" ${!owned && coins < bg.price ? 'disabled' : ''}>${owned?'✓':`⭐ ${bg.price}`}</button>`;
         item.querySelector('.shop-btn').onclick = () => { if (!owned && coins >= bg.price) { coins -= bg.price; ownedBackgrounds.push(bg.id); saveCoins(); saveOwnedBackgrounds(); updateCoinsDisplay(); updateFieldDesignSelect(); renderShop(); } };
         shopContent.appendChild(item);
       });
-    } else if (currentShopTab === 'custom') {
-      const owned = ownedSkins.includes('custom');
-      const item = document.createElement('div'); item.className = `shop-item ${owned?'owned':''}`;
-      item.innerHTML = `<div class="shop-preview" style="background:${customSkinParams?customSkinParams.baseColor:'#ccc'};border-radius:0.8rem;"></div><div class="shop-info"><div class="shop-name">Свой скин</div><div class="shop-price">${owned?'Куплено':`⭐ 250`}</div></div><button class="shop-btn" ${!owned && coins < 250 ? 'disabled' : ''}>${owned?(equippedSkin==='custom'?'Надет':'Надеть'):`⭐ 250`}</button>`;
-      item.querySelector('.shop-btn').onclick = () => {
-        if (!owned && coins >= 250) {
-          coins -= 250; ownedSkins.push('custom'); saveCoins(); saveSkins(); updateCoinsDisplay();
-          // Открыть редактор
-          customSkinMenu.classList.remove('hidden');
-          if (customSkinParams) {
-            customBaseColor.value = customSkinParams.baseColor;
-            customGlow.checked = customSkinParams.glow;
-            customGlowColor.value = customSkinParams.glowColor;
-            customGradient.checked = customSkinParams.gradient;
-            customSegments.value = customSkinParams.segments.join(',');
-          }
-        } else if (owned) {
-          if (equippedSkin !== 'custom') { equippedSkin = 'custom'; saveSkins(); renderShop(); }
-          else { customSkinMenu.classList.remove('hidden'); }
-        }
-      };
-      shopContent.appendChild(item);
     }
   }
 
@@ -419,7 +462,6 @@
   };
   cancelCustomSkinBtn.onclick = () => { customSkinMenu.classList.add('hidden'); };
 
-  // Временная кнопка +500 монет
   addCoinsBtn.onclick = () => { addCoins(500); };
 
   let leaderboard={'10':[],'20':[]},currentLeaderboardSize='20',lastSyncTime=0,SYNC_INTERVAL=5000,isOnline=false;
@@ -544,11 +586,109 @@
   function showMainMenu(){mainMenu.classList.remove('hidden');modeSelectMenu.classList.add('hidden');shopMenu.classList.add('hidden');customSkinMenu.classList.add('hidden');achievementsMenu.classList.add('hidden');settingsMenu.classList.add('hidden');pauseMenu.classList.add('hidden');pauseOverlay.classList.add('hidden')}
   function hideAllMenus(){mainMenu.classList.add('hidden');modeSelectMenu.classList.add('hidden');shopMenu.classList.add('hidden');customSkinMenu.classList.add('hidden');achievementsMenu.classList.add('hidden');settingsMenu.classList.add('hidden');pauseMenu.classList.add('hidden')}
   function showModeSelect(){mainMenu.classList.add('hidden');modeSelectMenu.classList.remove('hidden');selectedMode=gameMode;document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===selectedMode))}
-  function showSettings(){mainMenu.classList.add('hidden');settingsMenu.classList.remove('hidden');nicknameError.classList.add('hidden');document.querySelector('.settings-tab[data-tab="sound"]').click()}
+  function showSettings(){
+    mainMenu.classList.add('hidden');
+    settingsMenu.classList.remove('hidden');
+    nicknameError.classList.add('hidden');
+    updateFruitSelect();
+    document.querySelector('.settings-tab[data-tab="sound"]').click();
+  }
   function showShop(){mainMenu.classList.add('hidden');shopMenu.classList.remove('hidden');updateCoinsDisplay();currentShopTab='skins';document.querySelector('.shop-tab[data-tab="skins"]').click();renderShop()}
   function showAchievements(){mainMenu.classList.add('hidden');achievementsMenu.classList.remove('hidden');currentAchievementFilter='all';document.querySelector('.achievement-tab[data-filter="all"]').click();renderAchievements()}
 
-  function bindEvents(){window.addEventListener('keydown',handleKeyDown);restartBtn.addEventListener('click',resetGame);snakeColorPicker.addEventListener('input',updateSnakeColor);snakeColorPicker.addEventListener('change',updateSnakeColor);playButton.addEventListener('click',showModeSelect);shopButton.addEventListener('click',showShop);achievementsButton.addEventListener('click',showAchievements);settingsButton.addEventListener('click',showSettings);backFromModeSelect.addEventListener('click',()=>{modeSelectMenu.classList.add('hidden');mainMenu.classList.remove('hidden')});startGameBtn.addEventListener('click',()=>{gameMode=selectedMode;updateModeIndicator();highScoreSpan.textContent=getCurrentHighScore();initAudio();resetGame();modeSelectMenu.classList.add('hidden')});backFromShop.addEventListener('click',()=>{shopMenu.classList.add('hidden');mainMenu.classList.remove('hidden')});backFromAchievements.addEventListener('click',()=>{achievementsMenu.classList.add('hidden');mainMenu.classList.remove('hidden')});backFromSettings.addEventListener('click',()=>{settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden')});resumeButton.addEventListener('click',resumeGame);pauseRestartButton.addEventListener('click',restartFromPause);pauseMainMenuButton.addEventListener('click',goToMainMenu);resetAchievementsBtn.addEventListener('click',()=>{confirmReset.classList.remove('hidden')});confirmYes.addEventListener('click',()=>{resetAchievements();confirmReset.classList.add('hidden')});confirmNo.addEventListener('click',()=>{confirmReset.classList.add('hidden')});document.querySelectorAll('.mode-btn').forEach(b=>{b.addEventListener('click',()=>{selectedMode=b.dataset.mode;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x.dataset.mode===selectedMode))})});document.querySelectorAll('.settings-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const target=tab.dataset.tab;tabContentSound.classList.toggle('hidden',target!=='sound');tabContentDesign.classList.toggle('hidden',target!=='design')})});document.querySelectorAll('.shop-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.shop-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');currentShopTab=tab.dataset.tab;renderShop()})});document.querySelectorAll('.achievement-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.achievement-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');currentAchievementFilter=tab.dataset.filter;renderAchievements()})});snakeStyleSelect.addEventListener('change',(e)=>{snakeStyle=parseInt(e.target.value,10);drawBoard();saveAllSettings()});soundSelect.addEventListener('change',(e)=>{currentSoundType=parseInt(e.target.value,10);saveAllSettings()});previewSoundBtn.addEventListener('click',()=>{initAudio();playAppleSound()});volumeSlider.addEventListener('input',(e)=>{soundVolume=parseInt(e.target.value,10)/100;volumeValue.textContent=e.target.value;saveAllSettings()});fruitSpawnVolumeSlider.addEventListener('input',(e)=>{fruitSpawnVolume=parseInt(e.target.value,10)/100;fruitSpawnVolumeValue.textContent=e.target.value;saveAllSettings()});fruitSelect.addEventListener('change',(e)=>{fruitType=parseInt(e.target.value,10);drawBoard();saveAllSettings()});fieldDesignSelect.addEventListener('change',(e)=>{fieldDesign=parseInt(e.target.value,10);if(!ownedBackgrounds.includes(fieldDesign)&&fieldDesign>=5){fieldDesign=0;fieldDesignSelect.value=0;return}if(fieldDesign===4)unlockAchievement('custom_bg');drawBoard();saveAllSettings()});customBgInput.addEventListener('change',(e)=>{const f=e.target.files[0];if(f){unlockAchievement('custom_bg');const r=new FileReader();r.onload=function(ev){const img=new Image();img.onload=function(){customBgImage=img;if(fieldDesign===4)drawBoard()};img.src=ev.target.result};r.readAsDataURL(f)}});gridSizeSelect.addEventListener('change',()=>{applyGridSize()});languageSelect.addEventListener('change',(e)=>{currentLang=e.target.value;updateUILanguage();drawBoard();saveAllSettings()});saveNicknameBtn.addEventListener('click',saveNickname);nicknameInput.addEventListener('keypress',(e)=>{if(e.key==='Enter')saveNickname()});document.querySelectorAll('.leaderboard-tab').forEach(tab=>{tab.addEventListener('click',()=>{currentLeaderboardSize=tab.dataset.size;updateLeaderboardUI()})});pauseOverlay.addEventListener('click',()=>{if(isPaused&&pauseMenu.classList.contains('hidden'))togglePause()})}
+  function bindEvents(){
+    window.addEventListener('keydown',handleKeyDown);
+    restartBtn.addEventListener('click',resetGame);
+    snakeColorPicker.addEventListener('input',updateSnakeColor);
+    snakeColorPicker.addEventListener('change',updateSnakeColor);
+    playButton.addEventListener('click',showModeSelect);
+    shopButton.addEventListener('click',showShop);
+    achievementsButton.addEventListener('click',showAchievements);
+    settingsButton.addEventListener('click',showSettings);
+    backFromModeSelect.addEventListener('click',()=>{modeSelectMenu.classList.add('hidden');mainMenu.classList.remove('hidden')});
+    startGameBtn.addEventListener('click',()=>{gameMode=selectedMode;updateModeIndicator();highScoreSpan.textContent=getCurrentHighScore();initAudio();resetGame();modeSelectMenu.classList.add('hidden')});
+    backFromShop.addEventListener('click',()=>{shopMenu.classList.add('hidden');mainMenu.classList.remove('hidden')});
+    backFromAchievements.addEventListener('click',()=>{achievementsMenu.classList.add('hidden');mainMenu.classList.remove('hidden')});
+    backFromSettings.addEventListener('click',()=>{settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden')});
+    resumeButton.addEventListener('click',resumeGame);
+    pauseRestartButton.addEventListener('click',restartFromPause);
+    pauseMainMenuButton.addEventListener('click',goToMainMenu);
+    resetAchievementsBtn.addEventListener('click',()=>{confirmReset.classList.remove('hidden')});
+    confirmYes.addEventListener('click',()=>{resetAchievements();confirmReset.classList.add('hidden')});
+    confirmNo.addEventListener('click',()=>{confirmReset.classList.add('hidden')});
+    
+    document.querySelectorAll('.mode-btn').forEach(b=>{
+      b.addEventListener('click',()=>{
+        selectedMode=b.dataset.mode;
+        document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x.dataset.mode===selectedMode));
+      });
+    });
+    
+    document.querySelectorAll('.settings-tab').forEach(tab=>{
+      tab.addEventListener('click',()=>{
+        document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        const target=tab.dataset.tab;
+        tabContentSound.classList.toggle('hidden',target!=='sound');
+        tabContentDesign.classList.toggle('hidden',target!=='design');
+        if (target === 'design') {
+          updateFruitSelect();
+        }
+      });
+    });
+    
+    document.querySelectorAll('.shop-tab').forEach(tab=>{
+      tab.addEventListener('click',()=>{
+        document.querySelectorAll('.shop-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        currentShopTab=tab.dataset.tab;
+        renderShop();
+      });
+    });
+    
+    document.querySelectorAll('.achievement-tab').forEach(tab=>{
+      tab.addEventListener('click',()=>{
+        document.querySelectorAll('.achievement-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        currentAchievementFilter=tab.dataset.filter;
+        renderAchievements();
+      });
+    });
+    
+    snakeStyleSelect.addEventListener('change',(e)=>{snakeStyle=parseInt(e.target.value,10);drawBoard();saveAllSettings();});
+    soundSelect.addEventListener('change',(e)=>{currentSoundType=parseInt(e.target.value,10);saveAllSettings();});
+    previewSoundBtn.addEventListener('click',()=>{initAudio();playAppleSound();});
+    volumeSlider.addEventListener('input',(e)=>{soundVolume=parseInt(e.target.value,10)/100;volumeValue.textContent=e.target.value;saveAllSettings();});
+    fruitSpawnVolumeSlider.addEventListener('input',(e)=>{fruitSpawnVolume=parseInt(e.target.value,10)/100;fruitSpawnVolumeValue.textContent=e.target.value;saveAllSettings();});
+    fruitSelect.addEventListener('change',(e)=>{fruitType=parseInt(e.target.value,10);drawBoard();saveAllSettings();});
+    fieldDesignSelect.addEventListener('change',(e)=>{
+      fieldDesign=parseInt(e.target.value,10);
+      if(!ownedBackgrounds.includes(fieldDesign)&&fieldDesign>=5){fieldDesign=0;fieldDesignSelect.value=0;return;}
+      if(fieldDesign===4)unlockAchievement('custom_bg');
+      drawBoard();saveAllSettings();
+    });
+    customBgInput.addEventListener('change',(e)=>{
+      const f=e.target.files[0];
+      if(f){
+        unlockAchievement('custom_bg');
+        const r=new FileReader();
+        r.onload=function(ev){
+          const img=new Image();
+          img.onload=function(){customBgImage=img;if(fieldDesign===4)drawBoard();};
+          img.src=ev.target.result;
+        };
+        r.readAsDataURL(f);
+      }
+    });
+    gridSizeSelect.addEventListener('change',()=>{applyGridSize();});
+    languageSelect.addEventListener('change',(e)=>{currentLang=e.target.value;updateUILanguage();drawBoard();saveAllSettings();});
+    saveNicknameBtn.addEventListener('click',saveNickname);
+    nicknameInput.addEventListener('keypress',(e)=>{if(e.key==='Enter')saveNickname();});
+    document.querySelectorAll('.leaderboard-tab').forEach(tab=>{
+      tab.addEventListener('click',()=>{currentLeaderboardSize=tab.dataset.size;updateLeaderboardUI();});
+    });
+    pauseOverlay.addEventListener('click',()=>{if(isPaused&&pauseMenu.classList.contains('hidden'))togglePause();});
+  }
 
   function initialStart(){
     loadHighScores();
@@ -567,7 +707,11 @@
     currentLang=ms.language;languageSelect.value=currentLang;
     playerNickname=ms.nickname||'';
     snake=getInitSnake();prevSnake=snake.map(s=>({...s}));
-    bindEvents();updateUILanguage();updateNicknameDisplay();updateFieldDesignSelect();
+    bindEvents();
+    updateUILanguage();
+    updateNicknameDisplay();
+    updateFieldDesignSelect();
+    updateFruitSelect();
     animationProgress=1;drawBoard();gameActive=false;showMainMenu();
     saveAllSettings();startCloudSync();
   }
