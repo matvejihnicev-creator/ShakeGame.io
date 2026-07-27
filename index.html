@@ -47,10 +47,10 @@
     .achievement-desc { color: #b9dbb0; font-size: 0.8rem; word-wrap: break-word; line-height: 1.3; }
     .achievement-status { font-size: 1.3rem; flex-shrink: 0; margin-left: 0.5rem; }
     
-    /* Анимация появления достижения */
+    /* Анимация появления достижения - СВЕРХУ */
     .achievement-toast {
       position: fixed;
-      bottom: -120px;
+      top: -120px;
       left: 50%;
       transform: translateX(-50%);
       background: linear-gradient(135deg, #1a3324 0%, #0f2219 100%);
@@ -62,16 +62,16 @@
       gap: 1rem;
       z-index: 300;
       box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.4);
-      animation: slideUp 0.5s ease-out forwards, slideDown 0.5s ease-in 3s forwards;
+      animation: slideDown 0.5s ease-out forwards, slideUp 0.5s ease-in 3s forwards;
       max-width: 90vw;
     }
-    @keyframes slideUp {
-      from { bottom: -120px; opacity: 0; }
-      to { bottom: 30px; opacity: 1; }
-    }
     @keyframes slideDown {
-      from { bottom: 30px; opacity: 1; }
-      to { bottom: -120px; opacity: 0; }
+      from { top: -120px; opacity: 0; }
+      to { top: 20px; opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { top: 20px; opacity: 1; }
+      to { top: -120px; opacity: 0; }
     }
     .achievement-toast-icon { font-size: 2rem; }
     .achievement-toast-info { text-align: left; }
@@ -81,8 +81,9 @@
     .shop-item { background: #152b1f; border-radius: 1rem; padding: 1rem; margin: 0.8rem 0; display: flex; align-items: center; gap: 1rem; border: 2px solid #3a5a40; transition: all 0.2s; }
     .shop-item.owned { border-color: #7bbf6a; background: #1a3324; }
     .shop-item.equipped { border-color: #ffd700; box-shadow: 0 0 15px rgba(255,215,0,0.3); }
-    .shop-preview { width: 44px; height: 44px; border-radius: 0.8rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+    .shop-preview { width: 44px; height: 44px; border-radius: 0.8rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; overflow: hidden; }
     .shop-preview-rainbow { background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet); background-size: 400% 400%; animation: rainbow 2s linear infinite; }
+    .shop-preview-rainbow-circle { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet); background-size: 400% 400%; animation: rainbow 2s linear infinite; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
     @keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
     .shop-info { flex: 1; min-width: 0; overflow: hidden; }
     .shop-name { color: #f5ffdd; font-weight: bold; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -117,7 +118,7 @@
     .pause-text { font-size: 3rem; font-weight: bold; color: #f7e05e; text-shadow: 0 0 20px rgba(247,224,94,0.5); animation: pulse 1.5s ease-in-out infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     .coin-sprite { width: 24px; height: 24px; background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b); border-radius: 50%; border: 2px solid #daa520; display: inline-block; position: relative; }
-    .coin-sprite::after { content: '⭐'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; }
+    .coin-sprite::after { content: '⭐'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; text-shadow: 0 0 3px #000, 0 0 6px #000; }
     .plum-sprite { width: 22px; height: 22px; background: radial-gradient(circle at 35% 35%, #bb8fce, #7d3c98); border-radius: 50%; display: inline-block; position: relative; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3); }
     .plum-sprite::after { content: ''; position: absolute; top: 3px; left: 6px; width: 4px; height: 6px; background: #5b2c6f; border-radius: 2px; }
     .grape-sprite { width: 24px; height: 24px; position: relative; display: inline-block; }
@@ -137,6 +138,30 @@
     .custom-editor-row label { flex: 1; }
     .swipe-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.6); font-size: 1.5rem; pointer-events: none; animation: fadeInOut 1.5s ease-out forwards; }
     @keyframes fadeInOut { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); } 30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1); } }
+    
+    /* Кнопка меню при свайпе */
+    .swipe-menu-btn {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      background: rgba(0,0,0,0.6);
+      border: 2px solid rgba(255,255,255,0.5);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 15;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      padding: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .swipe-menu-btn:active { background: rgba(255,255,255,0.2); }
+    
     @media (max-width: 800px) { 
       .main-layout { flex-direction: column; align-items: center; } 
       .leaderboard { width: 100%; max-width: 500px; } 
@@ -168,6 +193,7 @@
   <div class="main-layout">
     <div class="game-container" id="gameContainer">
       <canvas id="gameCanvas" width="400" height="400"></canvas>
+      <button class="swipe-menu-btn" id="swipeMenuBtn" title="Меню">🏠</button>
       <div class="mobile-controls" id="mobileControls">
         <button class="mobile-btn up">⬆</button>
         <button class="mobile-btn left">⬅</button>
@@ -244,6 +270,7 @@
   const previewSoundBtn = document.getElementById('previewSound'); const fruitSelect = document.getElementById('fruitSelect'); const fieldDesignSelect = document.getElementById('fieldDesignSelect'); const customBgInput = document.getElementById('customBgInput'); const gridSizeSelect = document.getElementById('gridSizeSelect'); const languageSelect = document.getElementById('languageSelect'); const nicknameInput = document.getElementById('nicknameInput'); const saveNicknameBtn = document.getElementById('saveNicknameBtn'); const nicknameError = document.getElementById('nicknameError');
   const mobileMenuBtn = document.getElementById('mobileMenuBtn'); const mobileRestartBtn = document.getElementById('mobileRestartBtn');
   const mobileControlType = document.getElementById('mobileControlType');
+  const swipeMenuBtn = document.getElementById('swipeMenuBtn');
 
   const customBaseColor = document.getElementById('customBaseColor');
   const customGlow = document.getElementById('customGlow');
@@ -252,7 +279,7 @@
   const customSegments = document.getElementById('customSegments');
 
   const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || window.innerWidth < 800;
-  let mobileControlMode = 'buttons'; // 'buttons' или 'swipe'
+  let mobileControlMode = 'buttons';
 
   let highScoreClassic = 0, highScoreInfinite = 0, highScoreBombs = 0;
   let coins = 0, ownedSkins = ['default'], equippedSkin = 'default', ownedFruits = [0, 1, 2], ownedBackgrounds = [0,1,2,3,4];
@@ -287,7 +314,6 @@
     { id: 6, name: { ru: 'Мерцающие звёзды', en: 'Twinkling Stars' }, icon: '⭐', price: 80 }
   ];
 
-  // Toast для достижений
   function showAchievementToast(achievement) {
     const existing = document.querySelector('.achievement-toast');
     if (existing) existing.remove();
@@ -449,7 +475,14 @@
       shopSkins.forEach(s => {
         const owned = ownedSkins.includes(s.id), eq = equippedSkin === s.id;
         const item = document.createElement('div'); item.className = `shop-item ${eq?'equipped':''} ${owned?'owned':''}`;
-        const preview = s.id==='golden'?'<span class="coin-sprite"></span>':s.id==='neon'?'<div style="width:30px;height:30px;background:#00ffcc;border-radius:50%;box-shadow:0 0 15px #00ffcc;"></div>':s.id==='rainbow'?'<div class="shop-preview-rainbow"></div>':'';
+        let preview = '';
+        if (s.id === 'golden') {
+          preview = '<span class="coin-sprite"></span>';
+        } else if (s.id === 'neon') {
+          preview = '<div style="width:30px;height:30px;background:#00ffcc;border-radius:50%;box-shadow:0 0 15px #00ffcc;"></div>';
+        } else if (s.id === 'rainbow') {
+          preview = '<div class="shop-preview-rainbow-circle"></div>';
+        }
         item.innerHTML = `<div class="shop-preview">${preview}</div><div class="shop-info"><div class="shop-name">${s.name[currentLang]}</div><div class="shop-price">${owned?(currentLang==='ru'?'Куплено':'Owned'):`⭐ ${s.price}`}</div></div><button class="shop-btn" ${!owned && coins < s.price ? 'disabled' : ''}>${eq?'Надет':owned?'Надеть':`⭐ ${s.price}`}</button>`;
         item.querySelector('.shop-btn').onclick = () => {
           if (!owned && coins >= s.price) { coins -= s.price; ownedSkins.push(s.id); equippedSkin = s.id; saveCoins(); saveSkins(); updateCoinsDisplay(); renderShop(); }
@@ -540,21 +573,31 @@
   const fieldDesigns={0:{bg:'#0b1b12',grid:'#2a462a'},1:{bg:'#1a2f1a',grid:'#3a5a2a'},2:{bg:'#2a2618',grid:'#5a4a2a'},3:{bg:'#1a2830',grid:'#3a4a5a'},4:{bg:'#0b1b12',grid:'#2a462a'},5:{bg:'#1a2f3a',grid:'#3a5a6a'},6:{bg:'#0a0a1a',grid:'#2a2a4a'}};
   let fruitType=0,playerNickname='',audioCtx=null,currentSoundType=0,soundVolume=0.7;
 
-  // Свайп-переменные
   let touchStartX=0,touchStartY=0,touchStartTime=0;
   const SWIPE_THRESHOLD=30;
 
   function updateMobileControlsVisibility(){
     const mc = document.getElementById('mobileControls');
-    if (!isMobile) { mc.classList.add('hidden'); return; }
+    if (!isMobile) { 
+      mc.classList.add('hidden'); 
+      swipeMenuBtn.style.display = 'none';
+      return; 
+    }
     if (mobileControlMode === 'buttons') {
       mc.classList.remove('hidden');
+      swipeMenuBtn.style.display = 'none';
       canvas.style.touchAction = 'none';
     } else {
       mc.classList.add('hidden');
+      swipeMenuBtn.style.display = 'flex';
       canvas.style.touchAction = 'none';
     }
   }
+
+  swipeMenuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (gameActive) { goToMainMenu(); } else { showMainMenu(); }
+  });
 
   canvas.addEventListener('touchstart', function(e) {
     if (!isMobile || mobileControlMode !== 'swipe' || !gameActive || isPaused) return;
@@ -582,7 +625,6 @@
       nd = dy > 0 ? {x:0,y:1} : {x:0,y:-1};
     }
     if (nd && !(direction.x===-nd.x&&direction.y===-nd.y)) {
-      // Показываем индикатор свайпа
       const indicator = document.createElement('div');
       indicator.className = 'swipe-indicator';
       indicator.textContent = nd.x===1?'➡':nd.x===-1?'⬅':nd.y===-1?'⬆':'⬇';
@@ -630,7 +672,6 @@
 
   function handleKeyDown(e){const key=e.key,code=e.code;if(document.activeElement===nicknameInput){if(key==='Escape'||code==='Escape'){e.preventDefault();if(!settingsMenu.classList.contains('hidden')){settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden')}else if(!mainMenu.classList.contains('hidden'))hideAllMenus()}return}if(code==='Space'||key===' '||key==='Space'){e.preventDefault();resetGame();return}if(code==='KeyM'||key==='m'||key==='M'||key==='ь'||key==='Ь'){e.preventDefault();isMuted=!isMuted;if(isMuted){previousVolume=soundVolume;soundVolume=0;volumeSlider.value=0;volumeValue.textContent='0'}else{soundVolume=previousVolume;volumeSlider.value=Math.round(previousVolume*100);volumeValue.textContent=Math.round(previousVolume*100)}saveAllSettings();return}if(key==='Escape'||code==='Escape'){e.preventDefault();if(!pauseMenu.classList.contains('hidden')){resumeGame();return}if(!modeSelectMenu.classList.contains('hidden')){modeSelectMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!shopMenu.classList.contains('hidden')){shopMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!customSkinMenu.classList.contains('hidden')){customSkinMenu.classList.add('hidden');shopMenu.classList.remove('hidden');return}if(!achievementsMenu.classList.contains('hidden')){achievementsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!settingsMenu.classList.contains('hidden')){settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!mainMenu.classList.contains('hidden')){hideAllMenus();return}if(gameActive&&!gameOverFlag&&!winFlag)togglePause();else showMainMenu();return}let nd=null;if(code==='ArrowUp'||code==='KeyW')nd={x:0,y:-1};else if(code==='ArrowDown'||code==='KeyS')nd={x:0,y:1};else if(code==='ArrowLeft'||code==='KeyA')nd={x:-1,y:0};else if(code==='ArrowRight'||code==='KeyD')nd={x:1,y:0};if(!nd){if(key==='ц'||key==='Ц'||key==='w'||key==='W')nd={x:0,y:-1};else if(key==='ы'||key==='Ы'||key==='s'||key==='S')nd={x:0,y:1};else if(key==='ф'||key==='Ф'||key==='a'||key==='A')nd={x:-1,y:0};else if(key==='в'||key==='В'||key==='d'||key==='D')nd={x:1,y:0}}if(nd){e.preventDefault();if(!gameActive||isPaused)return;if(direction.x===-nd.x&&direction.y===-nd.y)return;nextDirection=nd}}
 
-  // Мобильные кнопки
   document.querySelector('.mobile-btn.up')?.addEventListener('pointerdown',(e)=>{e.preventDefault();if(gameActive&&!isPaused&&!(direction.x===0&&direction.y===1))nextDirection={x:0,y:-1}});
   document.querySelector('.mobile-btn.down')?.addEventListener('pointerdown',(e)=>{e.preventDefault();if(gameActive&&!isPaused&&!(direction.x===0&&direction.y===-1))nextDirection={x:0,y:1}});
   document.querySelector('.mobile-btn.left')?.addEventListener('pointerdown',(e)=>{e.preventDefault();if(gameActive&&!isPaused&&!(direction.x===1&&direction.y===0))nextDirection={x:-1,y:0}});
