@@ -164,6 +164,13 @@
     .stat-item:last-child { border-bottom: none; }
     .stat-label { color: #b9dbb0; }
     .stat-value { color: #f5ffdd; font-weight: bold; }
+
+    /* Улучшенный редактор скина */
+    .custom-skin-preview { width: 100%; height: 80px; border-radius: 1rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .custom-skin-preview-segment { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #1e3b1a; transition: all 0.2s; }
+    .custom-color-row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
+    .custom-color-row input[type="color"] { width: 44px; height: 44px; padding: 2px; margin-bottom: 0; cursor: pointer; }
+    .custom-color-row span { color: #b9dbb0; font-size: 0.85rem; flex: 1; }
     
     @media (max-width: 800px) { 
       .main-layout { flex-direction: column; align-items: center; } 
@@ -239,16 +246,18 @@
   <div id="modeSelectMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🎮 <span id="modeSelectTitle">ВЫБОР РЕЖИМА</span></h2><div class="mode-select"><button class="mode-btn active" data-mode="classic">🐍 <span id="modeClassic">Обычный</span></button><button class="mode-btn" data-mode="infinite">🌀 <span id="modeInfinite">Бесконечный</span></button><button class="mode-btn" data-mode="bombs">💣 <span id="modeBombs">С бомбами</span></button><button class="mode-btn" data-mode="duo">👥 <span id="modeDuo">Два игрока</span></button></div><div class="menu-buttons"><button id="startGameBtn" class="menu-btn">▶ <span id="startGameText">НАЧАТЬ ИГРУ</span></button><button id="backFromModeSelect" class="menu-btn">↩ <span id="backFromModeSelectText">НАЗАД</span></button></div></div></div>
   <div id="shopMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🛒 <span id="shopTitle">МАГАЗИН</span></h2><div class="coins-display" style="margin-bottom:0.8rem;"><span class="coin-sprite"></span><span class="coins-value" id="shopCoinsDisplay">0</span></div><div class="shop-tabs"><button class="shop-tab active" data-tab="skins">🐍 Скины</button><button class="shop-tab" data-tab="fruits">🍉 Фрукты</button><button class="shop-tab" data-tab="backgrounds">🖼️ Фоны</button></div><div class="settings-group" id="shopContent"></div><button id="backFromShop" class="menu-btn">↩ <span id="backFromShopText">НАЗАД</span></button></div></div>
   <div id="customSkinMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🎨 РЕДАКТОР СКИНА</h2><div class="settings-group">
-    <label>Основной цвет</label><input type="color" id="customBaseColor" value="#6fbf4c">
-    <label>Свечение</label><div class="custom-editor-row"><input type="checkbox" id="customGlow"><span>Включить</span></div>
-    <label>Цвет свечения</label><input type="color" id="customGlowColor" value="#6fbf4c">
-    <label>Градиент</label><div class="custom-editor-row"><input type="checkbox" id="customGradient"><span>Включить</span></div>
-    <label>Цвета сегментов (через запятую, до 7)</label><input type="text" id="customSegments" placeholder="#ff0000,#ff8800,#ffff00,#00ff00,#0088ff,#0000ff,#8800ff">
+    <div class="custom-skin-preview" id="customSkinPreview"></div>
+    <div class="custom-color-row"><span>Основной цвет</span><input type="color" id="customBaseColor" value="#6fbf4c"></div>
+    <div class="custom-color-row"><span>Свечение</span><input type="checkbox" id="customGlow" style="width:auto;margin:0;"><span style="flex:none;">Вкл</span></div>
+    <div class="custom-color-row"><span>Цвет свечения</span><input type="color" id="customGlowColor" value="#6fbf4c"></div>
+    <div class="custom-color-row"><span>Градиент</span><input type="checkbox" id="customGradient" style="width:auto;margin:0;"><span style="flex:none;">Вкл</span></div>
+    <label>Цвета сегментов (через запятую, до 7)</label>
+    <input type="text" id="customSegments" placeholder="#ff0000,#ff8800,#ffff00,#00ff00,#0088ff,#0000ff,#8800ff">
   </div><div class="menu-buttons"><button id="saveCustomSkin" class="menu-btn">💾 СОХРАНИТЬ</button><button id="cancelCustomSkin" class="menu-btn">↩ НАЗАД</button></div></div></div>
   <div id="achievementsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🏆 <span id="achievementsTitle">ДОСТИЖЕНИЯ</span></h2><div class="achievement-tabs"><button class="achievement-tab active" data-filter="all">✅ Все</button><button class="achievement-tab" data-filter="unlocked">🔓 Полученные</button><button class="achievement-tab" data-filter="locked">🔒 Заблокированные</button></div><div class="settings-group" id="achievementsContent"></div><button id="resetAchievementsBtn" class="menu-btn reset-btn">🗑 Сбросить</button><button id="backFromAchievements" class="menu-btn" style="margin-top:0.5rem;">↩ НАЗАД</button></div></div>
   <div id="confirmReset" class="confirm-overlay hidden"><div class="confirm-panel"><h3>⚠️ <span id="confirmTitle">Сброс достижений</span></h3><p id="confirmText">Вы точно хотите удалить все достижения? Это действие нельзя отменить.</p><div class="confirm-buttons"><button id="confirmYes" class="menu-btn reset-btn">✅ Да, сбросить</button><button id="confirmNo" class="menu-btn">❌ Отмена</button></div></div></div>
   <div id="pauseMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>⏸ ПАУЗА</h2><div class="menu-buttons"><button id="resumeButton" class="menu-btn">▶ ПРОДОЛЖИТЬ</button><button id="pauseRestartButton" class="menu-btn">↺ НОВАЯ ИГРА</button><button id="pauseMainMenuButton" class="menu-btn">🏠 ГЛАВНОЕ МЕНЮ</button></div></div></div>
-  <div id="settingsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>⚙ НАСТРОЙКИ</h2><label class="nickname-label-centered">👤 Никнейм</label><div class="nickname-section"><input type="text" id="nicknameInput" placeholder="Введите никнейм" maxlength="15" autocomplete="off"><button id="saveNicknameBtn">✓</button></div><div class="error-msg hidden" id="nicknameError"></div><div class="settings-tabs"><button class="settings-tab active" data-tab="sound">🔊 Звук</button><button class="settings-tab" data-tab="design">🎨 Дизайн</button><button class="settings-tab" data-tab="stats">📊 Статистика</button></div><div class="settings-group" id="tabContentSound"><label>🔊 Звук сбора</label><select id="soundSelect"><option value="0">Классический</option><option value="1">Весёлый день</option><option value="2">Глубокий хлопок</option></select><button id="previewSound" class="preview-btn">▶ Прослушать</button><label>🔈 Громкость: <span id="volumeValue">70</span>%</label><input type="range" id="volumeSlider" min="0" max="100" value="70"><label>🍎 Громкость появления: <span id="fruitSpawnVolumeValue">50</span>%</label><input type="range" id="fruitSpawnVolumeSlider" min="0" max="100" value="50"></div><div class="settings-group hidden" id="tabContentDesign"><label>🐍 Стиль змейки</label><select id="snakeStyleSelect"><option value="0">Круглая</option><option value="1">Квадратная</option></select><label>🐍 Цвет змейки</label><input type="color" id="snakeColorPicker" value="#6fbf4c"><label>🍎 Фрукт</label><select id="fruitSelect"></select><label>🎨 Дизайн поля</label><select id="fieldDesignSelect"><option value="0">Классический тёмный</option><option value="1">Лесной</option><option value="2">Пустынный</option><option value="3">Зимний</option><option value="4">Свой фон</option><option value="5">Движущиеся облака</option><option value="6">Мерцающие звёзды</option></select><input type="file" id="customBgInput" accept="image/*"><label>📐 Размер поля</label><select id="gridSizeSelect"><option value="10">10x10</option><option value="20" selected>20x20</option></select><label>📱 Управление на телефоне</label><select id="mobileControlType"><option value="buttons">Кнопки</option><option value="swipe">Свайп по экрану</option></select></div><div class="settings-group hidden" id="tabContentStats"><div id="statsContent"></div></div><label class="nickname-label-centered">🌐 Язык</label><select id="languageSelect"><option value="ru">Русский</option><option value="en">English</option></select><button id="backFromSettings" class="menu-btn" style="margin-top:1rem;">↩ НАЗАД</button></div></div>
+  <div id="settingsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>⚙ НАСТРОЙКИ</h2><label class="nickname-label-centered">👤 Никнейм</label><div class="nickname-section"><input type="text" id="nicknameInput" placeholder="Введите никнейм" maxlength="15" autocomplete="off"><button id="saveNicknameBtn">✓</button></div><div class="error-msg hidden" id="nicknameError"></div><div class="settings-tabs"><button class="settings-tab active" data-tab="sound">🔊 Звук</button><button class="settings-tab" data-tab="design">🎨 Дизайн</button><button class="settings-tab" data-tab="stats">📊 Статистика</button></div><div class="settings-group" id="tabContentSound"><label>🔊 Звук сбора</label><select id="soundSelect"><option value="0">Классический</option><option value="1">Весёлый день</option><option value="2">Глубокий хлопок</option></select><button id="previewSound" class="preview-btn">▶ Прослушать</button><label>🔈 Громкость: <span id="volumeValue">70</span>%</label><input type="range" id="volumeSlider" min="0" max="100" value="70"><label>🍎 Громкость появления: <span id="fruitSpawnVolumeValue">50</span>%</label><input type="range" id="fruitSpawnVolumeSlider" min="0" max="100" value="50"></div><div class="settings-group hidden" id="tabContentDesign"><label>🐍 Стиль змейки</label><select id="snakeStyleSelect"><option value="0">Круглая</option><option value="1">Квадратная</option></select><label>🍎 Фрукт</label><select id="fruitSelect"></select><label>🎨 Дизайн поля</label><select id="fieldDesignSelect"><option value="0">Классический тёмный</option><option value="1">Лесной</option><option value="2">Пустынный</option><option value="3">Зимний</option><option value="4">Свой фон</option><option value="5">Движущиеся облака</option><option value="6">Мерцающие звёзды</option></select><input type="file" id="customBgInput" accept="image/*"><label>📐 Размер поля</label><select id="gridSizeSelect"><option value="10">10x10</option><option value="20" selected>20x20</option></select><label>📱 Управление на телефоне</label><select id="mobileControlType"><option value="buttons">Кнопки</option><option value="swipe">Свайп по экрану</option></select></div><div class="settings-group hidden" id="tabContentStats"><div id="statsContent"></div></div><label class="nickname-label-centered">🌐 Язык</label><select id="languageSelect"><option value="ru">Русский</option><option value="en">English</option></select><button id="backFromSettings" class="menu-btn" style="margin-top:1rem;">↩ НАЗАД</button></div></div>
 </div>
 
 <script>
@@ -260,7 +269,7 @@
   const gameContainer = document.getElementById('gameContainer');
   const currentScoreSpan = document.getElementById('currentScoreDisplay'); const highScoreSpan = document.getElementById('highScoreDisplay');
   const coinsDisplay = document.getElementById('coinsDisplay'); const shopCoinsDisplay = document.getElementById('shopCoinsDisplay');
-  const snakeColorPicker = document.getElementById('snakeColorPicker'); const restartBtn = document.getElementById('restartButton');
+  let snakeColorPicker = {value: '#6fbf4c'}; const restartBtn = document.getElementById('restartButton');
   let gameStatusDiv = document.getElementById('gameStatus'); let nicknameDisplay = document.getElementById('nicknameDisplay');
   const modeIndicator = document.getElementById('modeIndicator');
   const leaderboardList = document.getElementById('leaderboardList'); const syncStatus = document.getElementById('syncStatus');
@@ -288,6 +297,7 @@
   const p1ScoreDisplay = document.getElementById('p1ScoreDisplay'); const p2ScoreDisplay = document.getElementById('p2ScoreDisplay');
   const controlsHint = document.getElementById('controlsHint');
   const menuHighClassic = document.getElementById('menuHighClassic'); const menuHighInfinite = document.getElementById('menuHighInfinite'); const menuHighBombs = document.getElementById('menuHighBombs');
+  const customSkinPreview = document.getElementById('customSkinPreview');
 
   const customBaseColor = document.getElementById('customBaseColor');
   const customGlow = document.getElementById('customGlow');
@@ -308,10 +318,7 @@
   let fruitSpawnVolume = 0.5;
   let bombs = [], particles = [];
 
-  // Статистика
   let stats = { totalGames: 0, totalScore: 0, totalFruits: 0, totalDeaths: 0, totalTime: 0, bestScore: 0, favoriteMode: '' };
-
-  // Режим дуо
   let snake2 = [], direction2 = {x:-1,y:0}, nextDirection2 = {x:-1,y:0};
   let scoreP1 = 0, scoreP2 = 0;
 
@@ -338,6 +345,29 @@
     { id: 6, name: { ru: 'Мерцающие звёзды', en: 'Twinkling Stars' }, icon: '⭐', price: 80 }
   ];
 
+  function updateCustomSkinPreview() {
+    const base = customBaseColor.value;
+    const gradient = customGradient.checked;
+    const segStr = customSegments.value.trim();
+    let segments = [];
+    if (gradient && segStr) {
+      segments = segStr.split(',').map(s=>s.trim()).filter(s=>/^#[0-9a-fA-F]{6}$/.test(s)).slice(0,7);
+    }
+    const colors = gradient && segments.length > 0 ? segments : [base, base, base, base, base, base, base];
+    customSkinPreview.innerHTML = '';
+    for (let i = 0; i < 7; i++) {
+      const div = document.createElement('div');
+      div.className = 'custom-skin-preview-segment';
+      div.style.background = colors[i % colors.length];
+      if (customGlow.checked) div.style.boxShadow = `0 0 10px ${customGlowColor.value}`;
+      customSkinPreview.appendChild(div);
+    }
+  }
+
+  [customBaseColor, customGlowColor, customGlow, customGradient, customSegments].forEach(el => {
+    if (el) el.addEventListener('input', updateCustomSkinPreview);
+  });
+
   // Звук достижения
   function playAchievementSound(){if(!audioCtx||soundVolume===0||isMuted)return;if(audioCtx.state==='suspended')audioCtx.resume();const n=audioCtx.currentTime,v=soundVolume;[523,659,784].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.setValueAtTime(f,n+i*0.12);g.gain.setValueAtTime(v*0.25,n+i*0.12);g.gain.exponentialRampToValueAtTime(0.001,n+i*0.12+0.3);o.connect(g);g.connect(audioCtx.destination);o.start(n+i*0.12);o.stop(n+i*0.12+0.3)})}
 
@@ -352,21 +382,13 @@
     setTimeout(()=>{if(toast.parentNode)toast.remove();},3500);
   }
 
-  // Статистика
   function loadStats(){try{const s=localStorage.getItem('snakeStats');stats=s?JSON.parse(s):{totalGames:0,totalScore:0,totalFruits:0,totalDeaths:0,totalTime:0,bestScore:0,favoriteMode:''}}catch(e){stats={totalGames:0,totalScore:0,totalFruits:0,totalDeaths:0,totalTime:0,bestScore:0,favoriteMode:''}}}
   function saveStats(){try{localStorage.setItem('snakeStats',JSON.stringify(stats))}catch(e){}}
   function updateStats(score,fruits,isDeath,mode){
-    stats.totalGames++;
-    stats.totalScore+=score;
-    stats.totalFruits+=fruits;
-    if(isDeath)stats.totalDeaths++;
+    stats.totalGames++;stats.totalScore+=score;stats.totalFruits+=fruits;if(isDeath)stats.totalDeaths++;
     if(score>stats.bestScore)stats.bestScore=score;
-    if(mode==='classic')stats.favoriteMode='classic';
-    else if(mode==='infinite')stats.favoriteMode='infinite';
-    else if(mode==='bombs')stats.favoriteMode='bombs';
-    else if(mode==='duo')stats.favoriteMode='duo';
-    saveStats();
-    updateMenuHighScores();
+    if(mode==='classic')stats.favoriteMode='classic';else if(mode==='infinite')stats.favoriteMode='infinite';else if(mode==='bombs')stats.favoriteMode='bombs';else if(mode==='duo')stats.favoriteMode='duo';
+    saveStats();updateMenuHighScores();
   }
   function renderStats(){
     const s=stats;
@@ -380,36 +402,15 @@
     `;
   }
 
-  function updateMenuHighScores(){
-    menuHighClassic.textContent = highScoreClassic;
-    menuHighInfinite.textContent = highScoreInfinite;
-    menuHighBombs.textContent = highScoreBombs;
-  }
+  function updateMenuHighScores(){menuHighClassic.textContent=highScoreClassic;menuHighInfinite.textContent=highScoreInfinite;menuHighBombs.textContent=highScoreBombs}
 
-  function loadHighScores() {
-    highScoreClassic = parseInt(localStorage.getItem('snakeHighScoreClassic')||'0');
-    highScoreInfinite = parseInt(localStorage.getItem('snakeHighScoreInfinite')||'0');
-    highScoreBombs = parseInt(localStorage.getItem('snakeHighScoreBombs')||'0');
-    updateMenuHighScores();
-  }
-  function getCurrentHighScore() {
-    if (gameMode === 'classic') return highScoreClassic;
-    if (gameMode === 'infinite') return highScoreInfinite;
-    if (gameMode === 'bombs') return highScoreBombs;
-    return Math.max(highScoreClassic, highScoreInfinite, highScoreBombs);
-  }
-  function saveCurrentHighScore(score) {
-    if (gameMode === 'classic' && score > highScoreClassic) { highScoreClassic = score; localStorage.setItem('snakeHighScoreClassic', score); }
-    else if (gameMode === 'infinite' && score > highScoreInfinite) { highScoreInfinite = score; localStorage.setItem('snakeHighScoreInfinite', score); }
-    else if (gameMode === 'bombs' && score > highScoreBombs) { highScoreBombs = score; localStorage.setItem('snakeHighScoreBombs', score); }
-    highScoreSpan.textContent = getCurrentHighScore();
-    updateMenuHighScores();
-  }
+  function loadHighScores(){highScoreClassic=parseInt(localStorage.getItem('snakeHighScoreClassic')||'0');highScoreInfinite=parseInt(localStorage.getItem('snakeHighScoreInfinite')||'0');highScoreBombs=parseInt(localStorage.getItem('snakeHighScoreBombs')||'0');updateMenuHighScores()}
+  function getCurrentHighScore(){if(gameMode==='classic')return highScoreClassic;if(gameMode==='infinite')return highScoreInfinite;if(gameMode==='bombs')return highScoreBombs;return Math.max(highScoreClassic,highScoreInfinite,highScoreBombs)}
+  function saveCurrentHighScore(score){if(gameMode==='classic'&&score>highScoreClassic){highScoreClassic=score;localStorage.setItem('snakeHighScoreClassic',score)}else if(gameMode==='infinite'&&score>highScoreInfinite){highScoreInfinite=score;localStorage.setItem('snakeHighScoreInfinite',score)}else if(gameMode==='bombs'&&score>highScoreBombs){highScoreBombs=score;localStorage.setItem('snakeHighScoreBombs',score)}highScoreSpan.textContent=getCurrentHighScore();updateMenuHighScores()}
 
   function loadAchievements(){try{const s=localStorage.getItem('snakeAchievements');achievements=s?JSON.parse(s):{}}catch(e){achievements={}}}
   function saveAchievements(){try{localStorage.setItem('snakeAchievements',JSON.stringify(achievements))}catch(e){}}
-  function unlockAchievement(id){
-    if(!achievements[id]){achievements[id]={unlocked:true,timestamp:Date.now()};saveAchievements();const ach=achievementsList.find(a=>a.id===id);if(ach)showAchievementToast(ach);return true}return false}
+  function unlockAchievement(id){if(!achievements[id]){achievements[id]={unlocked:true,timestamp:Date.now()};saveAchievements();const ach=achievementsList.find(a=>a.id===id);if(ach)showAchievementToast(ach);return true}return false}
   function resetAchievements(){achievements={};saveAchievements();renderAchievements()}
   function isAchievementUnlocked(id){return achievements[id]&&achievements[id].unlocked}
 
@@ -450,7 +451,7 @@
     shopContent.innerHTML='';
     if(currentShopTab==='skins'){
       const co=ownedSkins.includes('custom');const ci=document.createElement('div');ci.className=`shop-item ${equippedSkin==='custom'?'equipped':''} ${co?'owned':''}`;ci.innerHTML=`<div class="shop-preview" style="background:${customSkinParams?customSkinParams.baseColor:'#ccc'};border-radius:0.8rem;"></div><div class="shop-info"><div class="shop-name">${currentLang==='ru'?'Свой скин':'Custom Skin'}</div><div class="shop-price">${co?'Куплено':`⭐ 250`}</div></div><button class="shop-btn" ${!co&&coins<250?'disabled':''}>${equippedSkin==='custom'?'Надет':co?'Надеть':`⭐ 250`}</button>`;
-      ci.querySelector('.shop-btn').onclick=()=>{if(!co&&coins>=250){coins-=250;ownedSkins.push('custom');saveCoins();saveSkins();updateCoinsDisplay();customSkinMenu.classList.remove('hidden');if(customSkinParams){customBaseColor.value=customSkinParams.baseColor;customGlow.checked=customSkinParams.glow;customGlowColor.value=customSkinParams.glowColor;customGradient.checked=customSkinParams.gradient;customSegments.value=customSkinParams.segments.join(',')}}else if(co){if(equippedSkin!=='custom'){equippedSkin='custom';saveSkins();renderShop()}else{customSkinMenu.classList.remove('hidden')}}};shopContent.appendChild(ci);
+      ci.querySelector('.shop-btn').onclick=()=>{if(!co&&coins>=250){coins-=250;ownedSkins.push('custom');saveCoins();saveSkins();updateCoinsDisplay();openCustomSkinEditor()}else if(co){if(equippedSkin!=='custom'){equippedSkin='custom';saveSkins();renderShop()}else{openCustomSkinEditor()}}};shopContent.appendChild(ci);
       const d=document.createElement('div');d.className=`shop-item ${equippedSkin==='default'?'equipped':'owned'}`;d.innerHTML=`<div class="shop-preview" style="background:${snakeColor};border-radius:0.8rem;"></div><div class="shop-info"><div class="shop-name">${currentLang==='ru'?'Стандартный':'Default'}</div><div class="shop-price">${currentLang==='ru'?'Бесплатно':'Free'}</div></div><button class="shop-btn">${equippedSkin==='default'?'Надет':'Надеть'}</button>`;d.querySelector('.shop-btn').onclick=()=>{equippedSkin='default';saveSkins();renderShop()};shopContent.appendChild(d);
       shopSkins.forEach(s=>{const owned=ownedSkins.includes(s.id),eq=equippedSkin===s.id;const item=document.createElement('div');item.className=`shop-item ${eq?'equipped':''} ${owned?'owned':''}`;let p='';if(s.id==='golden')p='<span class="coin-sprite"></span>';else if(s.id==='neon')p='<div style="width:30px;height:30px;background:#00ffcc;border-radius:50%;box-shadow:0 0 15px #00ffcc;"></div>';else if(s.id==='rainbow')p='<div class="shop-preview-rainbow-circle"></div>';item.innerHTML=`<div class="shop-preview">${p}</div><div class="shop-info"><div class="shop-name">${s.name[currentLang]}</div><div class="shop-price">${owned?(currentLang==='ru'?'Куплено':'Owned'):`⭐ ${s.price}`}</div></div><button class="shop-btn" ${!owned&&coins<s.price?'disabled':''}>${eq?'Надет':owned?'Надеть':`⭐ ${s.price}`}</button>`;item.querySelector('.shop-btn').onclick=()=>{if(!owned&&coins>=s.price){coins-=s.price;ownedSkins.push(s.id);equippedSkin=s.id;saveCoins();saveSkins();updateCoinsDisplay();renderShop()}else if(owned){equippedSkin=s.id;saveSkins();renderShop()}};shopContent.appendChild(item)});
     }else if(currentShopTab==='fruits'){
@@ -460,8 +461,26 @@
     }
   }
 
-  saveCustomSkinBtn.onclick=()=>{const base=customBaseColor.value;const glow=customGlow.checked;const glowColor=customGlowColor.value;const gradient=customGradient.checked;const segStr=customSegments.value.trim();let segments=[];if(gradient&&segStr)segments=segStr.split(',').map(s=>s.trim()).filter(s=>/^#[0-9a-fA-F]{6}$/.test(s)).slice(0,7);customSkinParams={baseColor:base,glow,glowColor,gradient,segments};localStorage.setItem('snakeCustomSkin',JSON.stringify(customSkinParams));equippedSkin='custom';saveSkins();customSkinMenu.classList.add('hidden');renderShop()};
-  cancelCustomSkinBtn.onclick=()=>{customSkinMenu.classList.add('hidden')};
+  function openCustomSkinEditor() {
+    customSkinMenu.classList.remove('hidden');
+    shopMenu.classList.add('hidden');
+    if (customSkinParams) {
+      customBaseColor.value = customSkinParams.baseColor;
+      customGlow.checked = customSkinParams.glow;
+      customGlowColor.value = customSkinParams.glowColor;
+      customGradient.checked = customSkinParams.gradient;
+      customSegments.value = customSkinParams.segments.join(',');
+    }
+    updateCustomSkinPreview();
+  }
+
+  saveCustomSkinBtn.onclick=()=>{
+    const base=customBaseColor.value;const glow=customGlow.checked;const glowColor=customGlowColor.value;const gradient=customGradient.checked;const segStr=customSegments.value.trim();let segments=[];
+    if(gradient&&segStr)segments=segStr.split(',').map(s=>s.trim()).filter(s=>/^#[0-9a-fA-F]{6}$/.test(s)).slice(0,7);
+    customSkinParams={baseColor:base,glow,glowColor,gradient,segments};localStorage.setItem('snakeCustomSkin',JSON.stringify(customSkinParams));equippedSkin='custom';saveSkins();
+    customSkinMenu.classList.add('hidden');shopMenu.classList.remove('hidden');renderShop();
+  };
+  cancelCustomSkinBtn.onclick=()=>{customSkinMenu.classList.add('hidden');shopMenu.classList.remove('hidden')};
   addCoinsBtn.onclick=()=>{addCoins(500)};
 
   let leaderboard={'10':[],'20':[]},currentLeaderboardSize='20',lastSyncTime=0,SYNC_INTERVAL=5000,isOnline=false;
@@ -486,7 +505,7 @@
   let GRID_SIZE=20,CELL_SIZE=canvas.width/GRID_SIZE;
   let snake=[],direction={x:1,y:0},nextDirection={x:1,y:0},food={x:10,y:5};
   let gameActive=false,gameOverFlag=false,winFlag=false,isPaused=false;
-  let currentScore=0,highScore=0,snakeColor=snakeColorPicker.value,snakeStyle=0;
+  let currentScore=0,highScore=0,snakeColor='#6fbf4c',snakeStyle=0;
   let gameLoopInterval=null,animationFrameId=null;const MOVE_INTERVAL_MS=120;
   let lastMoveTime=0,animationProgress=0,prevSnake=[],prevSnake2=[],wallPassTriggered=false;
   let fieldDesign=0,customBgImage=null,cloudOffset=0,starTwinkle=0;
@@ -519,64 +538,16 @@
 
   function getInitSnake(){const m=Math.floor(GRID_SIZE/2);return[{x:m,y:m},{x:m-1,y:m},{x:m-2,y:m}]}
   function getInitSnake2(){const m=Math.floor(GRID_SIZE/2);return[{x:m+3,y:m+3},{x:m+4,y:m+3},{x:m+5,y:m+3}]}
-  function generateRandomFood(){
-    for(let a=0;a<2000;a++){const x=Math.floor(Math.random()*GRID_SIZE),y=Math.floor(Math.random()*GRID_SIZE);
-      if(!snake.some(s=>s.x===x&&s.y===y)&&!bombs.some(b=>b.x===x&&b.y===y)&&(!snake2.length||!snake2.some(s=>s.x===x&&s.y===y))){food={x,y};playFruitSpawnSound();return true}}return false}
+  function generateRandomFood(){for(let a=0;a<2000;a++){const x=Math.floor(Math.random()*GRID_SIZE),y=Math.floor(Math.random()*GRID_SIZE);if(!snake.some(s=>s.x===x&&s.y===y)&&!bombs.some(b=>b.x===x&&b.y===y)&&(!snake2.length||!snake2.some(s=>s.x===x&&s.y===y))){food={x,y};playFruitSpawnSound();return true}}return false}
   function spawnBomb(){if(gameMode!=='bombs'||!gameActive)return;for(let a=0;a<100;a++){const x=Math.floor(Math.random()*GRID_SIZE),y=Math.floor(Math.random()*GRID_SIZE);if(!snake.some(s=>s.x===x&&s.y===y)&&!(food.x===x&&food.y===y)&&!bombs.some(b=>b.x===x&&b.y===y)){bombs.push({x,y});return}}}
-  function checkCollision(h,b,forReal=false,isDuo=false){
-    if(!isDuo&&gameMode==='infinite'){let wrapped=false;if(h.x<0){if(forReal)wallPassTriggered=true;h.x=GRID_SIZE-1;wrapped=true}if(h.x>=GRID_SIZE){if(forReal)wallPassTriggered=true;h.x=0;wrapped=true}if(h.y<0){if(forReal)wallPassTriggered=true;h.y=GRID_SIZE-1;wrapped=true}if(h.y>=GRID_SIZE){if(forReal)wallPassTriggered=true;h.y=0;wrapped=true}if(wrapped&&forReal)unlockAchievement('wall_pass');return b.some(s=>s.x===h.x&&s.y===h.y)}
-    if(h.x<0||h.x>=GRID_SIZE||h.y<0||h.y>=GRID_SIZE)return true;return b.some(s=>s.x===h.x&&s.y===h.y)}
+  function checkCollision(h,b,forReal=false,isDuo=false){if(!isDuo&&gameMode==='infinite'){let wrapped=false;if(h.x<0){if(forReal)wallPassTriggered=true;h.x=GRID_SIZE-1;wrapped=true}if(h.x>=GRID_SIZE){if(forReal)wallPassTriggered=true;h.x=0;wrapped=true}if(h.y<0){if(forReal)wallPassTriggered=true;h.y=GRID_SIZE-1;wrapped=true}if(h.y>=GRID_SIZE){if(forReal)wallPassTriggered=true;h.y=0;wrapped=true}if(wrapped&&forReal)unlockAchievement('wall_pass');return b.some(s=>s.x===h.x&&s.y===h.y)}if(h.x<0||h.x>=GRID_SIZE||h.y<0||h.y>=GRID_SIZE)return true;return b.some(s=>s.x===h.x&&s.y===h.y)}
   function spawnParticles(x,y,color,count=10){for(let i=0;i<count;i++){particles.push({x:x*CELL_SIZE+CELL_SIZE/2,y:y*CELL_SIZE+CELL_SIZE/2,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.5)*6,life:1,color:color,size:Math.random()*3+1.5})}}
   function spawnFruitParticles(x,y,color){for(let i=0;i<15;i++){const angle=Math.random()*Math.PI*2;const speed=2+Math.random()*3;particles.push({x:x*CELL_SIZE+CELL_SIZE/2,y:y*CELL_SIZE+CELL_SIZE/2,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:1,color:color,size:Math.random()*3+2})}}
   function triggerShake(){gameContainer.classList.add('shake');setTimeout(()=>gameContainer.classList.remove('shake'),500)}
 
-  function moveSnake(){
-    if(!gameActive||isPaused)return;
-    if(gameMode==='duo'){moveSnakeDuo();return}
-    prevSnake=snake.map(s=>({...s}));direction={...nextDirection};const h=snake[0],nh={x:h.x+direction.x,y:h.y+direction.y};const fe=(nh.x===food.x&&nh.y===food.y);const bombHit=bombs.some(b=>b.x===nh.x&&b.y===nh.y);let ns=fe?[nh,...snake]:[nh,...snake.slice(0,-1)];const bc=ns.slice(1);
-    if(bombHit){gameActive=false;gameOverFlag=true;winFlag=false;updateStats(currentScore,fruitsEatenThisGame,true,gameMode);updateGameStatus();clearGameLoop();saveHighScore(currentScore);addCoins(Math.floor(currentScore/5));addToLeaderboard(playerNickname,currentScore,GRID_SIZE);triggerShake();spawnParticles(nh.x,nh.y,'#ff4444',25);playGameOverSound();animationProgress=1;drawBoard();return}
-    wallPassTriggered=false;
-    if(checkCollision(nh,bc,true)){if(bc.some(s=>s.x===nh.x&&s.y===nh.y))unlockAchievement('self_collision');gameActive=false;gameOverFlag=true;winFlag=false;updateStats(currentScore,fruitsEatenThisGame,true,gameMode);updateGameStatus();clearGameLoop();saveHighScore(currentScore);addCoins(Math.floor(currentScore/5));addToLeaderboard(playerNickname,currentScore,GRID_SIZE);if(currentScore===0&&gameMode!=='infinite')unlockAchievement('wall_collision_zero');triggerShake();spawnParticles(nh.x,nh.y,snakeColor,20);playGameOverSound();animationProgress=1;drawBoard();return}
-    if(gameMode==='infinite'){if(nh.x<0)snake[0].x=GRID_SIZE-1;if(nh.x>=GRID_SIZE)snake[0].x=0;if(nh.y<0)snake[0].y=GRID_SIZE-1;if(nh.y>=GRID_SIZE)snake[0].y=0;if(wallPassTriggered)unlockAchievement('wall_pass')}
-    snake=ns;
-    if(fe){currentScore++;fruitsEatenThisGame++;currentScoreSpan.textContent=currentScore;saveHighScore(currentScore);addCoins(1);playAppleSound();spawnFruitParticles(food.x,food.y,'#ff7b6b');prevSnake=[prevSnake[0],...prevSnake];if(!generateRandomFood()){gameActive=false;gameOverFlag=false;winFlag=true;updateStats(currentScore,fruitsEatenThisGame,false,gameMode);updateGameStatus();clearGameLoop();saveHighScore(currentScore);addCoins(currentScore);addToLeaderboard(playerNickname,currentScore,GRID_SIZE);if(GRID_SIZE===10)unlockAchievement('fill_10x10');if(GRID_SIZE===20)unlockAchievement('fill_20x20');playWinSound();animationProgress=1;drawBoard();return}if(gameMode==='bombs'&&currentScore%3===0)spawnBomb()}
-    animationProgress=0;lastMoveTime=performance.now();drawBoard();
-  }
+  function moveSnake(){if(!gameActive||isPaused)return;if(gameMode==='duo'){moveSnakeDuo();return}prevSnake=snake.map(s=>({...s}));direction={...nextDirection};const h=snake[0],nh={x:h.x+direction.x,y:h.y+direction.y};const fe=(nh.x===food.x&&nh.y===food.y);const bombHit=bombs.some(b=>b.x===nh.x&&b.y===nh.y);let ns=fe?[nh,...snake]:[nh,...snake.slice(0,-1)];const bc=ns.slice(1);if(bombHit){gameActive=false;gameOverFlag=true;winFlag=false;updateStats(currentScore,fruitsEatenThisGame,true,gameMode);updateGameStatus();clearGameLoop();saveHighScore(currentScore);addCoins(Math.floor(currentScore/5));addToLeaderboard(playerNickname,currentScore,GRID_SIZE);triggerShake();spawnParticles(nh.x,nh.y,'#ff4444',25);playGameOverSound();animationProgress=1;drawBoard();return}wallPassTriggered=false;if(checkCollision(nh,bc,true)){if(bc.some(s=>s.x===nh.x&&s.y===nh.y))unlockAchievement('self_collision');gameActive=false;gameOverFlag=true;winFlag=false;updateStats(currentScore,fruitsEatenThisGame,true,gameMode);updateGameStatus();clearGameLoop();saveHighScore(currentScore);addCoins(Math.floor(currentScore/5));addToLeaderboard(playerNickname,currentScore,GRID_SIZE);if(currentScore===0&&gameMode!=='infinite')unlockAchievement('wall_collision_zero');triggerShake();spawnParticles(nh.x,nh.y,snakeColor,20);playGameOverSound();animationProgress=1;drawBoard();return}if(gameMode==='infinite'){if(nh.x<0)snake[0].x=GRID_SIZE-1;if(nh.x>=GRID_SIZE)snake[0].x=0;if(nh.y<0)snake[0].y=GRID_SIZE-1;if(nh.y>=GRID_SIZE)snake[0].y=0;if(wallPassTriggered)unlockAchievement('wall_pass')}snake=ns;if(fe){currentScore++;fruitsEatenThisGame++;currentScoreSpan.textContent=currentScore;saveHighScore(currentScore);addCoins(1);playAppleSound();spawnFruitParticles(food.x,food.y,'#ff7b6b');prevSnake=[prevSnake[0],...prevSnake];if(!generateRandomFood()){gameActive=false;gameOverFlag=false;winFlag=true;updateStats(currentScore,fruitsEatenThisGame,false,gameMode);updateGameStatus();clearGameLoop();saveHighScore(currentScore);addCoins(currentScore);addToLeaderboard(playerNickname,currentScore,GRID_SIZE);if(GRID_SIZE===10)unlockAchievement('fill_10x10');if(GRID_SIZE===20)unlockAchievement('fill_20x20');playWinSound();animationProgress=1;drawBoard();return}if(gameMode==='bombs'&&currentScore%3===0)spawnBomb()}animationProgress=0;lastMoveTime=performance.now();drawBoard()}
 
-  function moveSnakeDuo(){
-    prevSnake=snake.map(s=>({...s}));prevSnake2=snake2.map(s=>({...s}));
-    direction={...nextDirection};direction2={...nextDirection2};
-    const h1=snake[0],nh1={x:h1.x+direction.x,y:h1.y+direction.y};const h2=snake2[0],nh2={x:h2.x+direction2.x,y:h2.y+direction2.y};
-    const fe1=(nh1.x===food.x&&nh1.y===food.y);const fe2=(nh2.x===food.x&&nh2.y===food.y);
-    let ns1=fe1?[nh1,...snake]:[nh1,...snake.slice(0,-1)];let ns2=fe2?[nh2,...snake2]:[nh2,...snake2.slice(0,-1)];
-    const allSnakes=[...ns1,...ns2];
-    const death1=checkCollision(nh1,[...ns1.slice(1),...ns2],true,true);
-    const death2=checkCollision(nh2,[...ns2.slice(1),...ns1],true,true);
-    const headCollision=nh1.x===nh2.x&&nh1.y===nh2.y;
-    if(death1&&death2||headCollision){
-      gameActive=false;gameOverFlag=true;winFlag=false;
-      updateStats(scoreP1+scoreP2,fruitsEatenThisGame,true,'duo');
-      updateGameStatus();clearGameLoop();addCoins(Math.floor((scoreP1+scoreP2)/5));triggerShake();
-      spawnParticles(nh1.x,nh1.y,'#44ff44',15);spawnParticles(nh2.x,nh2.y,'#4488ff',15);
-      playGameOverSound();animationProgress=1;drawBoard();return;
-    }
-    if(death1){
-      gameActive=false;gameOverFlag=true;winFlag=false;
-      updateStats(scoreP1+scoreP2,fruitsEatenThisGame,true,'duo');
-      updateGameStatus();clearGameLoop();addCoins(Math.floor(scoreP2/5));triggerShake();
-      spawnParticles(nh1.x,nh1.y,'#44ff44',20);playGameOverSound();animationProgress=1;drawBoard();return;
-    }
-    if(death2){
-      gameActive=false;gameOverFlag=true;winFlag=false;
-      updateStats(scoreP1+scoreP2,fruitsEatenThisGame,true,'duo');
-      updateGameStatus();clearGameLoop();addCoins(Math.floor(scoreP1/5));triggerShake();
-      spawnParticles(nh2.x,nh2.y,'#4488ff',20);playGameOverSound();animationProgress=1;drawBoard();return;
-    }
-    snake=ns1;snake2=ns2;
-    if(fe1){scoreP1++;fruitsEatenThisGame++;p1ScoreDisplay.textContent=scoreP1;addCoins(1);playAppleSound();spawnFruitParticles(food.x,food.y,'#44ff44');prevSnake=[prevSnake[0],...prevSnake];if(!generateRandomFood()){gameActive=false;winFlag=true;updateGameStatus();clearGameLoop();updateStats(scoreP1+scoreP2,fruitsEatenThisGame,false,'duo');addCoins(scoreP1+scoreP2);playWinSound();animationProgress=1;drawBoard();return}}
-    if(fe2){scoreP2++;fruitsEatenThisGame++;p2ScoreDisplay.textContent=scoreP2;addCoins(1);playAppleSound();spawnFruitParticles(food.x,food.y,'#4488ff');prevSnake2=[prevSnake2[0],...prevSnake2];if(!generateRandomFood()){gameActive=false;winFlag=true;updateGameStatus();clearGameLoop();updateStats(scoreP1+scoreP2,fruitsEatenThisGame,false,'duo');addCoins(scoreP1+scoreP2);playWinSound();animationProgress=1;drawBoard();return}}
-    animationProgress=0;lastMoveTime=performance.now();drawBoard();
-  }
+  function moveSnakeDuo(){prevSnake=snake.map(s=>({...s}));prevSnake2=snake2.map(s=>({...s}));direction={...nextDirection};direction2={...nextDirection2};const h1=snake[0],nh1={x:h1.x+direction.x,y:h1.y+direction.y};const h2=snake2[0],nh2={x:h2.x+direction2.x,y:h2.y+direction2.y};const fe1=(nh1.x===food.x&&nh1.y===food.y);const fe2=(nh2.x===food.x&&nh2.y===food.y);let ns1=fe1?[nh1,...snake]:[nh1,...snake.slice(0,-1)];let ns2=fe2?[nh2,...snake2]:[nh2,...snake2.slice(0,-1)];const allSnakes=[...ns1,...ns2];const death1=checkCollision(nh1,[...ns1.slice(1),...ns2],true,true);const death2=checkCollision(nh2,[...ns2.slice(1),...ns1],true,true);const headCollision=nh1.x===nh2.x&&nh1.y===nh2.y;if(death1&&death2||headCollision){gameActive=false;gameOverFlag=true;winFlag=false;updateStats(scoreP1+scoreP2,fruitsEatenThisGame,true,'duo');updateGameStatus();clearGameLoop();addCoins(Math.floor((scoreP1+scoreP2)/5));triggerShake();spawnParticles(nh1.x,nh1.y,'#44ff44',15);spawnParticles(nh2.x,nh2.y,'#4488ff',15);playGameOverSound();animationProgress=1;drawBoard();return}if(death1){gameActive=false;gameOverFlag=true;winFlag=false;updateStats(scoreP1+scoreP2,fruitsEatenThisGame,true,'duo');updateGameStatus();clearGameLoop();addCoins(Math.floor(scoreP2/5));triggerShake();spawnParticles(nh1.x,nh1.y,'#44ff44',20);playGameOverSound();animationProgress=1;drawBoard();return}if(death2){gameActive=false;gameOverFlag=true;winFlag=false;updateStats(scoreP1+scoreP2,fruitsEatenThisGame,true,'duo');updateGameStatus();clearGameLoop();addCoins(Math.floor(scoreP1/5));triggerShake();spawnParticles(nh2.x,nh2.y,'#4488ff',20);playGameOverSound();animationProgress=1;drawBoard();return}snake=ns1;snake2=ns2;if(fe1){scoreP1++;fruitsEatenThisGame++;p1ScoreDisplay.textContent=scoreP1;addCoins(1);playAppleSound();spawnFruitParticles(food.x,food.y,'#44ff44');prevSnake=[prevSnake[0],...prevSnake];if(!generateRandomFood()){gameActive=false;winFlag=true;updateGameStatus();clearGameLoop();updateStats(scoreP1+scoreP2,fruitsEatenThisGame,false,'duo');addCoins(scoreP1+scoreP2);playWinSound();animationProgress=1;drawBoard();return}}if(fe2){scoreP2++;fruitsEatenThisGame++;p2ScoreDisplay.textContent=scoreP2;addCoins(1);playAppleSound();spawnFruitParticles(food.x,food.y,'#4488ff');prevSnake2=[prevSnake2[0],...prevSnake2];if(!generateRandomFood()){gameActive=false;winFlag=true;updateGameStatus();clearGameLoop();updateStats(scoreP1+scoreP2,fruitsEatenThisGame,false,'duo');addCoins(scoreP1+scoreP2);playWinSound();animationProgress=1;drawBoard();return}}animationProgress=0;lastMoveTime=performance.now();drawBoard()}
 
   function togglePause(){if(!gameActive||gameOverFlag||winFlag)return;isPaused=!isPaused;if(isPaused){pauseOverlay.classList.remove('hidden');clearGameLoop();pauseMenu.classList.remove('hidden')}else{pauseOverlay.classList.add('hidden');pauseMenu.classList.add('hidden');lastMoveTime=performance.now();animationProgress=1;startGameLoop()}updateGameStatus()}
   function resumeGame(){if(!isPaused)return;isPaused=false;pauseOverlay.classList.add('hidden');pauseMenu.classList.add('hidden');lastMoveTime=performance.now();animationProgress=1;updateGameStatus();startGameLoop()}
@@ -584,60 +555,12 @@
   function goToMainMenu(){clearGameLoop();pauseMenu.classList.add('hidden');pauseOverlay.classList.add('hidden');isPaused=false;gameActive=false;gameOverFlag=false;winFlag=false;updateGameStatus();showMainMenu()}
   function applyGridSize(){GRID_SIZE=parseInt(gridSizeSelect.value,10);CELL_SIZE=canvas.width/GRID_SIZE;currentLeaderboardSize=GRID_SIZE.toString();snake=getInitSnake();prevSnake=snake.map(s=>({...s}));direction={x:1,y:0};nextDirection={x:1,y:0};currentScore=0;scoreP1=0;scoreP2=0;fruitsEatenThisGame=0;currentScoreSpan.textContent='0';p1ScoreDisplay.textContent='0';p2ScoreDisplay.textContent='0';bombs=[];particles=[];snake2=[];gameActive=true;gameOverFlag=false;winFlag=false;isPaused=false;pauseOverlay.classList.add('hidden');updateGameStatus();if(!generateRandomFood())food={x:Math.floor(GRID_SIZE/2)+2,y:Math.floor(GRID_SIZE/2)};clearGameLoop();updateLeaderboardUI();animationProgress=1;drawBoard();startGameLoop();saveAllSettings()}
   
-  function resetGame(){
-    clearGameLoop();
-    snake=getInitSnake();prevSnake=snake.map(s=>({...s}));
-    if(gameMode==='duo'){
-      snake2=getInitSnake2();prevSnake2=snake2.map(s=>({...s}));
-      direction2={x:-1,y:0};nextDirection2={x:-1,y:0};
-      scoreP1=0;scoreP2=0;
-      p1ScoreDisplay.textContent='0';p2ScoreDisplay.textContent='0';
-      scoreBlockSingle.classList.add('hidden');scoreBlockDuo.classList.remove('hidden');
-      controlsHint.innerHTML=`<span>${t('duoControls')}</span><span>Space - рестарт</span><span>M - звук</span><span>Esc - пауза</span><span id="gameStatus" style="color:#f7da7c;">▶ Игра идёт</span><span class="nickname-display" id="nicknameDisplay"></span>`;
-    } else {
-      snake2=[];prevSnake2=[];
-      scoreBlockSingle.classList.remove('hidden');scoreBlockDuo.classList.add('hidden');
-      controlsHint.innerHTML=`<span>⬆⬇⬅➡ / WASD</span><span>Space - рестарт</span><span>M - звук</span><span>Esc - пауза</span><span id="gameStatus" style="color:#f7da7c;">▶ Игра идёт</span><span class="nickname-display" id="nicknameDisplay"></span>`;
-    }
-    // ВСЕГДА обновляем gameStatusDiv и nicknameDisplay после изменения innerHTML
-    gameStatusDiv = document.getElementById('gameStatus');
-    nicknameDisplay = document.getElementById('nicknameDisplay');
-    
-    direction={x:1,y:0};nextDirection={x:1,y:0};
-    gameActive=true;gameOverFlag=false;winFlag=false;isPaused=false;
-    currentScore=0;fruitsEatenThisGame=0;
-    currentScoreSpan.textContent='0';bombs=[];particles=[];
-    pauseOverlay.classList.add('hidden');updateGameStatus();
-    if(!generateRandomFood())food={x:Math.floor(GRID_SIZE/2)+2,y:Math.floor(GRID_SIZE/2)};
-    animationProgress=1;lastMoveTime=performance.now();drawBoard();startGameLoop();hideAllMenus();
-    updateMobileControlsVisibility();updateNicknameDisplay();
-  }
-  
+  function resetGame(){clearGameLoop();snake=getInitSnake();prevSnake=snake.map(s=>({...s}));if(gameMode==='duo'){snake2=getInitSnake2();prevSnake2=snake2.map(s=>({...s}));direction2={x:-1,y:0};nextDirection2={x:-1,y:0};scoreP1=0;scoreP2=0;p1ScoreDisplay.textContent='0';p2ScoreDisplay.textContent='0';scoreBlockSingle.classList.add('hidden');scoreBlockDuo.classList.remove('hidden');controlsHint.innerHTML=`<span>${t('duoControls')}</span><span>Space - рестарт</span><span>M - звук</span><span>Esc - пауза</span><span id="gameStatus" style="color:#f7da7c;">▶ Игра идёт</span><span class="nickname-display" id="nicknameDisplay"></span>`}else{snake2=[];prevSnake2=[];scoreBlockSingle.classList.remove('hidden');scoreBlockDuo.classList.add('hidden');controlsHint.innerHTML=`<span>⬆⬇⬅➡ / WASD</span><span>Space - рестарт</span><span>M - звук</span><span>Esc - пауза</span><span id="gameStatus" style="color:#f7da7c;">▶ Игра идёт</span><span class="nickname-display" id="nicknameDisplay"></span>`}gameStatusDiv=document.getElementById('gameStatus');nicknameDisplay=document.getElementById('nicknameDisplay');direction={x:1,y:0};nextDirection={x:1,y:0};gameActive=true;gameOverFlag=false;winFlag=false;isPaused=false;currentScore=0;fruitsEatenThisGame=0;currentScoreSpan.textContent='0';bombs=[];particles=[];pauseOverlay.classList.add('hidden');updateGameStatus();if(!generateRandomFood())food={x:Math.floor(GRID_SIZE/2)+2,y:Math.floor(GRID_SIZE/2)};animationProgress=1;lastMoveTime=performance.now();drawBoard();startGameLoop();hideAllMenus();updateMobileControlsVisibility();updateNicknameDisplay()}
   function startGameLoop(){if(gameLoopInterval)clearInterval(gameLoopInterval);if(animationFrameId)cancelAnimationFrame(animationFrameId);if(gameActive&&!isPaused){gameLoopInterval=setInterval(moveSnake,MOVE_INTERVAL_MS);animationFrameId=requestAnimationFrame(animateLoop)}}
   function clearGameLoop(){if(gameLoopInterval){clearInterval(gameLoopInterval);gameLoopInterval=null}if(animationFrameId){cancelAnimationFrame(animationFrameId);animationFrameId=null}}
   function animateLoop(ts){if(!gameActive||isPaused){animationFrameId=null;return}animationProgress=Math.min(1,(ts-lastMoveTime)/MOVE_INTERVAL_MS);particles=particles.filter(p=>{p.life-=0.025;p.x+=p.vx;p.y+=p.vy;return p.life>0});cloudOffset+=0.1;starTwinkle+=0.05;drawBoard();animationFrameId=requestAnimationFrame(animateLoop)}
 
-  function handleKeyDown(e){
-    const key=e.key,code=e.code;
-    if(document.activeElement===nicknameInput){if(key==='Escape'||code==='Escape'){e.preventDefault();if(!settingsMenu.classList.contains('hidden')){settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden')}else if(!mainMenu.classList.contains('hidden'))hideAllMenus()}return}
-    if(code==='Space'||key===' '||key==='Space'){e.preventDefault();resetGame();return}
-    if(code==='KeyM'||key==='m'||key==='M'||key==='ь'||key==='Ь'){e.preventDefault();isMuted=!isMuted;if(isMuted){previousVolume=soundVolume;soundVolume=0;volumeSlider.value=0;volumeValue.textContent='0'}else{soundVolume=previousVolume;volumeSlider.value=Math.round(previousVolume*100);volumeValue.textContent=Math.round(previousVolume*100)}saveAllSettings();return}
-    if(key==='Escape'||code==='Escape'){e.preventDefault();if(!pauseMenu.classList.contains('hidden')){resumeGame();return}if(!modeSelectMenu.classList.contains('hidden')){modeSelectMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!shopMenu.classList.contains('hidden')){shopMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!customSkinMenu.classList.contains('hidden')){customSkinMenu.classList.add('hidden');shopMenu.classList.remove('hidden');return}if(!achievementsMenu.classList.contains('hidden')){achievementsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!settingsMenu.classList.contains('hidden')){settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!mainMenu.classList.contains('hidden')){hideAllMenus();return}if(gameActive&&!gameOverFlag&&!winFlag)togglePause();else showMainMenu();return}
-    
-    if(gameMode==='duo'){
-      let nd1=null,nd2=null;
-      if(code==='KeyW')nd1={x:0,y:-1};else if(code==='KeyS')nd1={x:0,y:1};else if(code==='KeyA')nd1={x:-1,y:0};else if(code==='KeyD')nd1={x:1,y:0};
-      if(code==='ArrowUp')nd2={x:0,y:-1};else if(code==='ArrowDown')nd2={x:0,y:1};else if(code==='ArrowLeft')nd2={x:-1,y:0};else if(code==='ArrowRight')nd2={x:1,y:0};
-      if(nd1&&!(direction.x===-nd1.x&&direction.y===-nd1.y)){e.preventDefault();nextDirection=nd1}
-      if(nd2&&!(direction2.x===-nd2.x&&direction2.y===-nd2.y)){e.preventDefault();nextDirection2=nd2}
-      return;
-    }
-    
-    let nd=null;
-    if(code==='ArrowUp'||code==='KeyW')nd={x:0,y:-1};else if(code==='ArrowDown'||code==='KeyS')nd={x:0,y:1};else if(code==='ArrowLeft'||code==='KeyA')nd={x:-1,y:0};else if(code==='ArrowRight'||code==='KeyD')nd={x:1,y:0};
-    if(!nd){if(key==='ц'||key==='Ц'||key==='w'||key==='W')nd={x:0,y:-1};else if(key==='ы'||key==='Ы'||key==='s'||key==='S')nd={x:0,y:1};else if(key==='ф'||key==='Ф'||key==='a'||key==='A')nd={x:-1,y:0};else if(key==='в'||key==='В'||key==='d'||key==='D')nd={x:1,y:0}}
-    if(nd){e.preventDefault();if(!gameActive||isPaused)return;if(direction.x===-nd.x&&direction.y===-nd.y)return;nextDirection=nd}
-  }
+  function handleKeyDown(e){const key=e.key,code=e.code;if(document.activeElement===nicknameInput){if(key==='Escape'||code==='Escape'){e.preventDefault();if(!settingsMenu.classList.contains('hidden')){settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden')}else if(!mainMenu.classList.contains('hidden'))hideAllMenus()}return}if(code==='Space'||key===' '||key==='Space'){e.preventDefault();resetGame();return}if(code==='KeyM'||key==='m'||key==='M'||key==='ь'||key==='Ь'){e.preventDefault();isMuted=!isMuted;if(isMuted){previousVolume=soundVolume;soundVolume=0;volumeSlider.value=0;volumeValue.textContent='0'}else{soundVolume=previousVolume;volumeSlider.value=Math.round(previousVolume*100);volumeValue.textContent=Math.round(previousVolume*100)}saveAllSettings();return}if(key==='Escape'||code==='Escape'){e.preventDefault();if(!pauseMenu.classList.contains('hidden')){resumeGame();return}if(!modeSelectMenu.classList.contains('hidden')){modeSelectMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!shopMenu.classList.contains('hidden')){shopMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!customSkinMenu.classList.contains('hidden')){customSkinMenu.classList.add('hidden');shopMenu.classList.remove('hidden');return}if(!achievementsMenu.classList.contains('hidden')){achievementsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!settingsMenu.classList.contains('hidden')){settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return}if(!mainMenu.classList.contains('hidden')){hideAllMenus();return}if(gameActive&&!gameOverFlag&&!winFlag)togglePause();else showMainMenu();return}if(gameMode==='duo'){let nd1=null,nd2=null;if(code==='KeyW')nd1={x:0,y:-1};else if(code==='KeyS')nd1={x:0,y:1};else if(code==='KeyA')nd1={x:-1,y:0};else if(code==='KeyD')nd1={x:1,y:0};if(code==='ArrowUp')nd2={x:0,y:-1};else if(code==='ArrowDown')nd2={x:0,y:1};else if(code==='ArrowLeft')nd2={x:-1,y:0};else if(code==='ArrowRight')nd2={x:1,y:0};if(nd1&&!(direction.x===-nd1.x&&direction.y===-nd1.y)){e.preventDefault();nextDirection=nd1}if(nd2&&!(direction2.x===-nd2.x&&direction2.y===-nd2.y)){e.preventDefault();nextDirection2=nd2}return}let nd=null;if(code==='ArrowUp'||code==='KeyW')nd={x:0,y:-1};else if(code==='ArrowDown'||code==='KeyS')nd={x:0,y:1};else if(code==='ArrowLeft'||code==='KeyA')nd={x:-1,y:0};else if(code==='ArrowRight'||code==='KeyD')nd={x:1,y:0};if(!nd){if(key==='ц'||key==='Ц'||key==='w'||key==='W')nd={x:0,y:-1};else if(key==='ы'||key==='Ы'||key==='s'||key==='S')nd={x:0,y:1};else if(key==='ф'||key==='Ф'||key==='a'||key==='A')nd={x:-1,y:0};else if(key==='в'||key==='В'||key==='d'||key==='D')nd={x:1,y:0}}if(nd){e.preventDefault();if(!gameActive||isPaused)return;if(direction.x===-nd.x&&direction.y===-nd.y)return;nextDirection=nd}}
 
   document.querySelector('.mobile-btn.up')?.addEventListener('pointerdown',(e)=>{e.preventDefault();if(gameActive&&!isPaused&&gameMode!=='duo'&&!(direction.x===0&&direction.y===1))nextDirection={x:0,y:-1}});
   document.querySelector('.mobile-btn.down')?.addEventListener('pointerdown',(e)=>{e.preventDefault();if(gameActive&&!isPaused&&gameMode!=='duo'&&!(direction.x===0&&direction.y===-1))nextDirection={x:0,y:1}});
@@ -649,35 +572,33 @@
   function drawFruit(fx,fy){const s=CELL_SIZE/2.5;ctx.shadowColor='#ff7b6b';ctx.shadowBlur=10;if(fruitType===0){ctx.fillStyle='#e8453c';ctx.beginPath();ctx.arc(fx+CELL_SIZE/2,fy+CELL_SIZE/2,s,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8bc34a';ctx.shadowBlur=6;ctx.beginPath();ctx.ellipse(fx+CELL_SIZE/1.8,fy+CELL_SIZE/3.5,CELL_SIZE/8,CELL_SIZE/5.5,0.4,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#5d8233';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx+CELL_SIZE/1.9,fy+CELL_SIZE/3.2);ctx.lineTo(fx+CELL_SIZE/1.55,fy+CELL_SIZE/4.5);ctx.stroke()}else if(fruitType===1){ctx.fillStyle='#ffe135';ctx.beginPath();ctx.moveTo(fx+CELL_SIZE/2,fy+CELL_SIZE/4);ctx.quadraticCurveTo(fx+CELL_SIZE*0.9,fy+CELL_SIZE/3,fx+CELL_SIZE*0.85,fy+CELL_SIZE/2);ctx.quadraticCurveTo(fx+CELL_SIZE*0.9,fy+CELL_SIZE*0.7,fx+CELL_SIZE/2,fy+CELL_SIZE*0.8);ctx.quadraticCurveTo(fx+CELL_SIZE*0.15,fy+CELL_SIZE*0.7,fx+CELL_SIZE*0.15,fy+CELL_SIZE/2);ctx.quadraticCurveTo(fx+CELL_SIZE*0.15,fy+CELL_SIZE/3,fx+CELL_SIZE/2,fy+CELL_SIZE/4);ctx.fill();ctx.strokeStyle='#c8a600';ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle='#8b7355';ctx.beginPath();ctx.arc(fx+CELL_SIZE/2,fy+CELL_SIZE/4,s*0.25,0,Math.PI*2);ctx.fill();ctx.fillStyle='#654321';ctx.beginPath();ctx.arc(fx+CELL_SIZE*0.85,fy+CELL_SIZE/2,s*0.2,0,Math.PI*2);ctx.fill()}else if(fruitType===2){ctx.fillStyle='#8e44ad';ctx.beginPath();ctx.arc(fx+CELL_SIZE/2,fy+CELL_SIZE/2,s,0,Math.PI*2);ctx.fill();ctx.fillStyle='#6c3483';ctx.beginPath();ctx.arc(fx+CELL_SIZE/2.5,fy+CELL_SIZE/2.5,s*0.3,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#5d8233';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(fx+CELL_SIZE/2,fy+CELL_SIZE/3.5);ctx.lineTo(fx+CELL_SIZE/1.8,fy+CELL_SIZE/5);ctx.stroke()}else if(fruitType===3){ctx.fillStyle='#2ecc71';ctx.beginPath();ctx.arc(fx+CELL_SIZE/2,fy+CELL_SIZE/2,s*1.1,0,Math.PI*2);ctx.fill();ctx.fillStyle='#e74c3c';ctx.beginPath();ctx.arc(fx+CELL_SIZE/2,fy+CELL_SIZE/2,s*0.7,0,Math.PI*2);ctx.fill();ctx.fillStyle='#111';const sc=6;for(let i=0;i<sc;i++){const a=(i/sc)*Math.PI*2;const sx=fx+CELL_SIZE/2+Math.cos(a)*s*0.35;const sy=fy+CELL_SIZE/2+Math.sin(a)*s*0.35;ctx.beginPath();ctx.arc(sx,sy,s*0.08,0,Math.PI*2);ctx.fill()}}else if(fruitType===4){ctx.fillStyle='#f39c12';ctx.beginPath();ctx.ellipse(fx+CELL_SIZE/2,fy+CELL_SIZE/2.2,s*0.7,s*1.1,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#2ecc71';ctx.beginPath();ctx.ellipse(fx+CELL_SIZE/2,fy+CELL_SIZE/5,s*0.6,s*0.4,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#c0392b';ctx.lineWidth=1;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(fx+CELL_SIZE/3,fy+CELL_SIZE/2.5+i*s*0.3);ctx.lineTo(fx+CELL_SIZE*0.7,fy+CELL_SIZE/2.5+i*s*0.3);ctx.stroke()}}else if(fruitType===5){ctx.fillStyle='#e74c3c';ctx.beginPath();ctx.arc(fx+CELL_SIZE/3,fy+CELL_SIZE/2,s*0.6,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(fx+CELL_SIZE*0.7,fy+CELL_SIZE/1.8,s*0.6,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#2ecc71';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx+CELL_SIZE/3,fy+CELL_SIZE/4);ctx.lineTo(fx+CELL_SIZE/2,fy+CELL_SIZE/8);ctx.stroke();ctx.beginPath();ctx.moveTo(fx+CELL_SIZE*0.7,fy+CELL_SIZE/2.8);ctx.lineTo(fx+CELL_SIZE/2,fy+CELL_SIZE/8);ctx.stroke();ctx.fillStyle='#2ecc71';ctx.beginPath();ctx.ellipse(fx+CELL_SIZE/2,fy+CELL_SIZE/6,s*0.3,s*0.2,0.3,0,Math.PI*2);ctx.fill()}else if(fruitType===6){ctx.fillStyle='#8e44ad';const gx=fx+CELL_SIZE/2,gy=fy+CELL_SIZE/2;const pos=[{x:gx-4,y:gy-4},{x:gx+4,y:gy-4},{x:gx-6,y:gy+2},{x:gx+2,y:gy+2},{x:gx-2,y:gy-7},{x:gx+6,y:gy-5},{x:gx-1,y:gy-1}];pos.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,s*0.28,0,Math.PI*2);ctx.fill()});ctx.fillStyle='#2ecc71';ctx.beginPath();ctx.moveTo(gx-2,gy-9);ctx.lineTo(gx,gy-13);ctx.strokeStyle='#27ae60';ctx.lineWidth=1.5;ctx.stroke();ctx.beginPath();ctx.ellipse(gx,gy-13,s*0.2,s*0.15,0,0,Math.PI*2);ctx.fill()}}
   function drawBomb(bx,by){const s=CELL_SIZE/2.5;ctx.fillStyle='#111';ctx.beginPath();ctx.arc(bx*CELL_SIZE+CELL_SIZE/2,by*CELL_SIZE+CELL_SIZE/2,s*0.8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#444';ctx.beginPath();ctx.arc(bx*CELL_SIZE+CELL_SIZE/2-s*0.2,by*CELL_SIZE+CELL_SIZE/2-s*0.2,s*0.3,0,Math.PI*2);ctx.fill();ctx.fillStyle='#e74c3c';ctx.beginPath();ctx.arc(bx*CELL_SIZE+CELL_SIZE/2+s*0.3,by*CELL_SIZE+CELL_SIZE/2-s*0.1,s*0.15,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#ffd700';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(bx*CELL_SIZE+CELL_SIZE/2,by*CELL_SIZE+CELL_SIZE/2-s*0.7);ctx.lineTo(bx*CELL_SIZE+CELL_SIZE/2,by*CELL_SIZE+CELL_SIZE/2-s*0.9);ctx.stroke();ctx.fillStyle='#e74c3c';ctx.beginPath();ctx.arc(bx*CELL_SIZE+CELL_SIZE/2,by*CELL_SIZE+CELL_SIZE/2-s*0.9,s*0.12,0,Math.PI*2);ctx.fill()}
 
-  function drawSnakeSegment(x,y,radius,isHead,segmentIndex,player){
-    const skinColor=getCurrentSkinColor(segmentIndex,player);const glow=isSkinGlow()&&player!==2;
-    ctx.shadowColor='transparent';ctx.shadowBlur=0;if(glow){ctx.shadowColor=getSkinGlowColor();ctx.shadowBlur=15}
-    if(snakeStyle===0){const gradient=ctx.createRadialGradient(x+4,y+4,2,x+CELL_SIZE/2,y+CELL_SIZE/2,CELL_SIZE/1.5);gradient.addColorStop(0,skinColor);gradient.addColorStop(0.7,'#1e3b1a');ctx.fillStyle=gradient;ctx.beginPath();ctx.arc(x+CELL_SIZE/2,y+CELL_SIZE/2,radius,0,2*Math.PI);ctx.fill()}else{const padding=CELL_SIZE*0.15;ctx.fillStyle=skinColor;ctx.fillRect(x+padding,y+padding,CELL_SIZE-padding*2,CELL_SIZE-padding*2);ctx.strokeStyle='#1e3b1a';ctx.lineWidth=2;ctx.strokeRect(x+padding,y+padding,CELL_SIZE-padding*2,CELL_SIZE-padding*2)}
-    if(glow){ctx.shadowColor='transparent';ctx.shadowBlur=0}
-    if(isHead&&CELL_SIZE>10){const eo=CELL_SIZE/6;ctx.fillStyle='white';ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.beginPath();ctx.arc(x+CELL_SIZE/1.7,y+CELL_SIZE/3,eo,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x+CELL_SIZE/2.5,y+CELL_SIZE/3,eo,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0a0f0a';ctx.beginPath();ctx.arc(x+CELL_SIZE/1.7+eo/3,y+CELL_SIZE/3-eo/3,eo/2,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x+CELL_SIZE/2.5+eo/3,y+CELL_SIZE/3-eo/3,eo/2,0,Math.PI*2);ctx.fill()}
-  }
+  function drawSnakeSegment(x,y,radius,isHead,segmentIndex,player){const skinColor=getCurrentSkinColor(segmentIndex,player);const glow=isSkinGlow()&&player!==2;ctx.shadowColor='transparent';ctx.shadowBlur=0;if(glow){ctx.shadowColor=getSkinGlowColor();ctx.shadowBlur=15}if(snakeStyle===0){const gradient=ctx.createRadialGradient(x+4,y+4,2,x+CELL_SIZE/2,y+CELL_SIZE/2,CELL_SIZE/1.5);gradient.addColorStop(0,skinColor);gradient.addColorStop(0.7,'#1e3b1a');ctx.fillStyle=gradient;ctx.beginPath();ctx.arc(x+CELL_SIZE/2,y+CELL_SIZE/2,radius,0,2*Math.PI);ctx.fill()}else{const padding=CELL_SIZE*0.15;ctx.fillStyle=skinColor;ctx.fillRect(x+padding,y+padding,CELL_SIZE-padding*2,CELL_SIZE-padding*2);ctx.strokeStyle='#1e3b1a';ctx.lineWidth=2;ctx.strokeRect(x+padding,y+padding,CELL_SIZE-padding*2,CELL_SIZE-padding*2)}if(glow){ctx.shadowColor='transparent';ctx.shadowBlur=0}if(isHead&&CELL_SIZE>10){const eo=CELL_SIZE/6;ctx.fillStyle='white';ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.beginPath();ctx.arc(x+CELL_SIZE/1.7,y+CELL_SIZE/3,eo,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x+CELL_SIZE/2.5,y+CELL_SIZE/3,eo,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0a0f0a';ctx.beginPath();ctx.arc(x+CELL_SIZE/1.7+eo/3,y+CELL_SIZE/3-eo/3,eo/2,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x+CELL_SIZE/2.5+eo/3,y+CELL_SIZE/3-eo/3,eo/2,0,Math.PI*2);ctx.fill()}}
 
   function drawBoard(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     if(fieldDesign===4&&customBgImage)ctx.drawImage(customBgImage,0,0,canvas.width,canvas.height);
     else if(fieldDesign===5){const skyGrad=ctx.createLinearGradient(0,0,0,canvas.height);skyGrad.addColorStop(0,'#87CEEB');skyGrad.addColorStop(0.4,'#B0E0E6');skyGrad.addColorStop(0.7,'#E0F0FF');skyGrad.addColorStop(1,'#F5F5FF');ctx.fillStyle=skyGrad;ctx.fillRect(0,0,canvas.width,canvas.height);const sunX=canvas.width*0.8,sunY=canvas.height*0.2;const sunGrad=ctx.createRadialGradient(sunX,sunY,10,sunX,sunY,60);sunGrad.addColorStop(0,'rgba(255,255,200,1)');sunGrad.addColorStop(0.3,'rgba(255,255,150,0.8)');sunGrad.addColorStop(0.7,'rgba(255,200,100,0.2)');sunGrad.addColorStop(1,'rgba(255,200,100,0)');ctx.fillStyle=sunGrad;ctx.beginPath();ctx.arc(sunX,sunY,60,0,Math.PI*2);ctx.fill();for(let i=0;i<4;i++){const cx=((i*200+cloudOffset*0.5)%(canvas.width+200))-100;const cy=40+Math.sin(i*1.5+cloudOffset*0.03)*15;drawCloud(cx,cy,i)}for(let i=0;i<3;i++){const cx=((i*250+cloudOffset*0.3+100)%(canvas.width+200))-100;const cy=100+Math.sin(i*2+cloudOffset*0.04)*10;drawCloud(cx,cy,i+4)}}
-    else if(fieldDesign===6){ctx.fillStyle='#0a0a1a';ctx.fillRect(0,0,canvas.width,canvas.height);for(let i=0;i<30;i++){const twinkle=Math.sin(starTwinkle+i)*0.5+0.5;ctx.fillStyle=`rgba(255,255,200,${twinkle*0.8})`;ctx.beginPath();ctx.arc((i*37+173)%canvas.width,(i*53+97)%canvas.height,1+twinkle*2,0,Math.PI*2);ctx.fill()}}
+    else if(fieldDesign===6){
+      // Красивый фон с мерцающими звёздами
+      const skyGrad=ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+      skyGrad.addColorStop(0,'#0a0a2e');skyGrad.addColorStop(0.3,'#0d0d3a');skyGrad.addColorStop(0.5,'#0f0f2a');skyGrad.addColorStop(0.7,'#1a1a3e');skyGrad.addColorStop(1,'#0a0a1e');
+      ctx.fillStyle=skyGrad;ctx.fillRect(0,0,canvas.width,canvas.height);
+      // Туманность
+      for(let i=0;i<3;i++){const nx=canvas.width*(0.2+i*0.3),ny=canvas.height*(0.3+i*0.15);const ng=ctx.createRadialGradient(nx,ny,0,nx,ny,canvas.width*0.4);ng.addColorStop(0,`rgba(${80+i*30},${60+i*20},${120+i*40},0.08)`);ng.addColorStop(0.5,`rgba(${40+i*15},${30+i*10},${80+i*25},0.04)`);ng.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=ng;ctx.fillRect(0,0,canvas.width,canvas.height)}
+      // Звёзды разных размеров и яркости
+      for(let i=0;i<50;i++){const sx=(i*37+173)%canvas.width,sy=(i*53+97)%canvas.height;const twinkle=Math.sin(starTwinkle*1.5+i*0.8)*0.5+0.5;const size=0.5+(i%3)*0.8;ctx.fillStyle=`rgba(255,255,${200+i%56},${twinkle*0.9+0.1})`;ctx.shadowColor=`rgba(255,255,200,${twinkle*0.6})`;ctx.shadowBlur=size*4;ctx.beginPath();ctx.arc(sx,sy,size,0,Math.PI*2);ctx.fill();ctx.shadowColor='transparent';ctx.shadowBlur=0}
+      // Яркие переливающиеся звёзды
+      for(let i=0;i<8;i++){const sx=(i*89+251)%canvas.width,sy=(i*67+113)%canvas.height;const twinkle=Math.sin(starTwinkle*2+i*1.2)*0.5+0.5;const size=1.2+twinkle*2.5;ctx.fillStyle=`rgba(${200+i*7},${220+i*5},255,${twinkle*0.8+0.2})`;ctx.shadowColor=`rgba(200,220,255,${twinkle})`;ctx.shadowBlur=size*5;ctx.beginPath();ctx.arc(sx,sy,size,0,Math.PI*2);ctx.fill();ctx.shadowColor='transparent';ctx.shadowBlur=0}
+    }
     else{const d=fieldDesigns[fieldDesign];ctx.fillStyle=d.bg;ctx.fillRect(0,0,canvas.width,canvas.height)}
-    ctx.strokeStyle=fieldDesigns[fieldDesign]?fieldDesigns[fieldDesign].grid:'#2a462a';ctx.lineWidth=0.6;
+    ctx.strokeStyle=fieldDesign===6?'rgba(100,120,180,0.25)':fieldDesigns[fieldDesign]?fieldDesigns[fieldDesign].grid:'#2a462a';ctx.lineWidth=0.6;
     for(let i=0;i<=GRID_SIZE;i++){ctx.beginPath();ctx.moveTo(i*CELL_SIZE,0);ctx.lineTo(i*CELL_SIZE,canvas.height);ctx.stroke();ctx.moveTo(0,i*CELL_SIZE);ctx.lineTo(canvas.width,i*CELL_SIZE);ctx.stroke()}
     bombs.forEach(b=>drawBomb(b.x,b.y));
     if(food){const fx=food.x*CELL_SIZE,fy=food.y*CELL_SIZE;drawFruit(fx,fy)}
     particles.forEach(p=>{ctx.globalAlpha=p.life;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;ctx.shadowColor='transparent';ctx.shadowBlur=0;
-    const p=Math.min(1,Math.max(0,animationProgress));
-    if(gameActive||isPaused){
-      for(let i=snake.length-1;i>=0;i--){const seg=snake[i];let dx=seg.x*CELL_SIZE,dy=seg.y*CELL_SIZE;if(prevSnake[i]&&p<1&&gameActive&&!isPaused){dx=prevSnake[i].x*CELL_SIZE+(seg.x-prevSnake[i].x)*CELL_SIZE*p;dy=prevSnake[i].y*CELL_SIZE+(seg.y-prevSnake[i].y)*CELL_SIZE*p}const radius=(CELL_SIZE/2)-(i===0?CELL_SIZE/10:CELL_SIZE/6);drawSnakeSegment(dx,dy,radius,i===0,i,1)}
-      if(snake2.length){for(let i=snake2.length-1;i>=0;i--){const seg=snake2[i];let dx=seg.x*CELL_SIZE,dy=seg.y*CELL_SIZE;if(prevSnake2[i]&&p<1&&gameActive&&!isPaused){dx=prevSnake2[i].x*CELL_SIZE+(seg.x-prevSnake2[i].x)*CELL_SIZE*p;dy=prevSnake2[i].y*CELL_SIZE+(seg.y-prevSnake2[i].y)*CELL_SIZE*p}const radius=(CELL_SIZE/2)-(i===0?CELL_SIZE/10:CELL_SIZE/6);drawSnakeSegment(dx,dy,radius,i===0,i,2)}}
-    }
-    if(!gameActive&&!isPaused){ctx.globalAlpha=0.7;ctx.fillStyle='#0a140e';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.globalAlpha=1;ctx.font='bold 20px "Segoe UI", Inter';ctx.fillStyle='#f9e7b3';ctx.shadowColor='#000';ctx.shadowBlur=14;ctx.textAlign='center';if(winFlag)ctx.fillText(t('win'),canvas.width/2,canvas.height/2-10);else if(gameOverFlag){if(gameMode==='duo'){ctx.fillText('💔 '+(currentLang==='ru'?'Игра окончена!':'Game Over!'),canvas.width/2,canvas.height/2-10)}else ctx.fillText(t('gameOver'),canvas.width/2,canvas.height/2-10)}ctx.shadowColor='transparent';ctx.shadowBlur=0}
-  }
+    const p=Math.min(1,Math.max(0,animationProgress));if(gameActive||isPaused){for(let i=snake.length-1;i>=0;i--){const seg=snake[i];let dx=seg.x*CELL_SIZE,dy=seg.y*CELL_SIZE;if(prevSnake[i]&&p<1&&gameActive&&!isPaused){dx=prevSnake[i].x*CELL_SIZE+(seg.x-prevSnake[i].x)*CELL_SIZE*p;dy=prevSnake[i].y*CELL_SIZE+(seg.y-prevSnake[i].y)*CELL_SIZE*p}const radius=(CELL_SIZE/2)-(i===0?CELL_SIZE/10:CELL_SIZE/6);drawSnakeSegment(dx,dy,radius,i===0,i,1)}if(snake2.length){for(let i=snake2.length-1;i>=0;i--){const seg=snake2[i];let dx=seg.x*CELL_SIZE,dy=seg.y*CELL_SIZE;if(prevSnake2[i]&&p<1&&gameActive&&!isPaused){dx=prevSnake2[i].x*CELL_SIZE+(seg.x-prevSnake2[i].x)*CELL_SIZE*p;dy=prevSnake2[i].y*CELL_SIZE+(seg.y-prevSnake2[i].y)*CELL_SIZE*p}const radius=(CELL_SIZE/2)-(i===0?CELL_SIZE/10:CELL_SIZE/6);drawSnakeSegment(dx,dy,radius,i===0,i,2)}}}if(!gameActive&&!isPaused){ctx.globalAlpha=0.7;ctx.fillStyle='#0a140e';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.globalAlpha=1;ctx.font='bold 20px "Segoe UI", Inter';ctx.fillStyle='#f9e7b3';ctx.shadowColor='#000';ctx.shadowBlur=14;ctx.textAlign='center';if(winFlag)ctx.fillText(t('win'),canvas.width/2,canvas.height/2-10);else if(gameOverFlag){if(gameMode==='duo'){ctx.fillText('💔 '+(currentLang==='ru'?'Игра окончена!':'Game Over!'),canvas.width/2,canvas.height/2-10)}else ctx.fillText(t('gameOver'),canvas.width/2,canvas.height/2-10)}ctx.shadowColor='transparent';ctx.shadowBlur=0}}
   function drawCloud(cx,cy,seed){ctx.fillStyle='rgba(255,255,255,0.9)';ctx.beginPath();ctx.arc(cx,cy,25+Math.sin(seed)*5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx-20,cy+5,20+Math.cos(seed)*3,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx+20,cy+5,22+Math.sin(seed+1)*3,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx-10,cy-10,18,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx+10,cy-8,19,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx,cy+10,23,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(200,210,220,0.4)';ctx.beginPath();ctx.arc(cx-5,cy+15,18,0,Math.PI*2);ctx.fill()}
 
-  function updateSnakeColor(){snakeColor=snakeColorPicker.value;drawBoard();saveAllSettings()}
   function updateNicknameDisplay(){if(nicknameDisplay)nicknameDisplay.textContent=playerNickname||t('noNickname')}
   function saveNickname(){const nn=nicknameInput.value.trim();if(!nn){nicknameError.textContent='';nicknameError.classList.add('hidden');return}if(isNicknameTakenGlobally(nn)&&nn.toLowerCase()!==playerNickname.toLowerCase()){nicknameError.textContent=t('nicknameTaken');nicknameError.classList.remove('hidden');return}nicknameError.classList.add('hidden');playerNickname=nn;updateNicknameDisplay();nicknameInput.value='';saveAllSettings()}
   function showMainMenu(){mainMenu.classList.remove('hidden');modeSelectMenu.classList.add('hidden');shopMenu.classList.add('hidden');customSkinMenu.classList.add('hidden');achievementsMenu.classList.add('hidden');settingsMenu.classList.add('hidden');pauseMenu.classList.add('hidden');pauseOverlay.classList.add('hidden');updateMenuHighScores()}
@@ -688,9 +609,7 @@
   function showAchievements(){mainMenu.classList.add('hidden');achievementsMenu.classList.remove('hidden');currentAchievementFilter='all';document.querySelector('.achievement-tab[data-filter="all"]').click();renderAchievements()}
 
   function bindEvents(){
-    window.addEventListener('keydown',handleKeyDown);
-    restartBtn.addEventListener('click',resetGame);
-    snakeColorPicker.addEventListener('input',updateSnakeColor);snakeColorPicker.addEventListener('change',updateSnakeColor);
+    window.addEventListener('keydown',handleKeyDown);restartBtn.addEventListener('click',resetGame);
     playButton.addEventListener('click',showModeSelect);shopButton.addEventListener('click',showShop);achievementsButton.addEventListener('click',showAchievements);settingsButton.addEventListener('click',showSettings);
     backFromModeSelect.addEventListener('click',()=>{modeSelectMenu.classList.add('hidden');mainMenu.classList.remove('hidden')});
     startGameBtn.addEventListener('click',()=>{gameMode=selectedMode;updateModeIndicator();highScoreSpan.textContent=getCurrentHighScore();initAudio();resetGame();modeSelectMenu.classList.add('hidden')});
@@ -720,7 +639,7 @@
     loadCoins();loadOwnedSkins();loadOwnedFruits();loadOwnedBackgrounds();loadCustomSkin();loadAchievements();loadStats();
     const ss=loadSettings(),ms={...defaultSettings,...ss};
     GRID_SIZE=ms.gridSize;CELL_SIZE=canvas.width/GRID_SIZE;currentLeaderboardSize=GRID_SIZE.toString();
-    snakeColor=ms.snakeColor;snakeColorPicker.value=snakeColor;
+    snakeColor=ms.snakeColor||'#6fbf4c';snakeColorPicker.value=snakeColor;
     snakeStyle=ms.snakeStyle!==undefined?ms.snakeStyle:0;snakeStyleSelect.value=snakeStyle;
     fieldDesign=ms.fieldDesign;if(!ownedBackgrounds.includes(fieldDesign)&&fieldDesign>=5)fieldDesign=0;fieldDesignSelect.value=fieldDesign;
     fruitType=ownedFruits.includes(ms.fruitType)?ms.fruitType:ownedFruits[0];
