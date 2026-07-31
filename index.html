@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Змейка • Обновление v3.1</title>
+  <title>Змейка • Обновление v3.2</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: linear-gradient(145deg, #1a2f28 0%, #1e3a2f 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Segoe UI', 'Inter', system-ui, sans-serif; padding: 20px; margin: 0; overflow-y: auto; -webkit-tap-highlight-color: transparent; }
@@ -131,6 +131,7 @@
     .bonus-option { display: flex; align-items: center; gap: 0.3rem; color: #b9dbb0; font-size: 0.85rem; }
     .gameplay-section { background: #0d1f15; border-radius: 1rem; padding: 1rem; margin: 0.8rem 0; border: 1px solid #3a5a40; }
     .gameplay-section-title { color: #f7e05e; font-weight: bold; font-size: 0.9rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+    .speed-warning { color: #e74c3c; font-size: 0.7rem; margin-top: 0.2rem; }
     
     @media (max-width: 800px) { 
       .main-layout { flex-direction: column; align-items: center; } 
@@ -205,6 +206,19 @@
   <div id="pauseMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>⏸ ПАУЗА</h2><div class="menu-buttons"><button id="resumeButton" class="menu-btn">▶ ПРОДОЛЖИТЬ</button><button id="pauseRestartButton" class="menu-btn">↺ НОВАЯ ИГРА</button><button id="pauseMainMenuButton" class="menu-btn">🏠 ГЛАВНОЕ МЕНЮ</button></div></div></div>
   <div id="settingsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>⚙ НАСТРОЙКИ</h2><label class="nickname-label-centered">👤 Никнейм</label><div class="nickname-section"><input type="text" id="nicknameInput" placeholder="Введите никнейм" maxlength="15" autocomplete="off"><button id="saveNicknameBtn">✓</button></div><div class="error-msg hidden" id="nicknameError"></div><div class="settings-tabs"><button class="settings-tab active" data-tab="gameplay">🎮 Геймплей</button><button class="settings-tab" data-tab="sound">🔊 Звук</button><button class="settings-tab" data-tab="design">🎨 Дизайн</button><button class="settings-tab" data-tab="stats">📊 Статистика</button></div>
     <div class="settings-group" id="tabContentGameplay">
+      <div class="gameplay-section">
+        <div class="gameplay-section-title">⚡ Усложнения</div>
+        <p style="color:#b9dbb0;font-size:0.75rem;margin-bottom:0.8rem;">Эти настройки делают игру сложнее. Используйте с осторожностью!</p>
+        <div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;">
+          <input type="checkbox" id="enableSpeedIncrease" style="width:auto;margin:2px 0 0 0;flex-shrink:0;">
+          <div>
+            <span style="color:#ff6b6b;font-weight:bold;">⚡ Ускорение при съедании</span>
+            <span style="color:#b9dbb0;font-size:0.75rem;display:block;">Каждый фрукт ускоряет змейку на 3мс. Смерть сбрасывает скорость.</span>
+            <span id="currentSpeedDisplay" style="color:#ffd966;font-size:0.7rem;display:block;margin-top:0.2rem;">Текущая задержка: 120мс</span>
+          </div>
+        </div>
+      </div>
+      
       <div class="gameplay-section">
         <div class="gameplay-section-title">🎁 Бонусы</div>
         <p style="color:#b9dbb0;font-size:0.75rem;margin-bottom:0.8rem;">Бонусы появляются на поле каждые 5 съеденных фруктов</p>
@@ -288,6 +302,8 @@
   const segmentEditor = document.getElementById('segmentEditor');
   const customGlow = document.getElementById('customGlow'); const customGlowColor = document.getElementById('customGlowColor');
   const bonusIndicators = document.getElementById('bonusIndicators');
+  const enableSpeedIncreaseCheck = document.getElementById('enableSpeedIncrease');
+  const currentSpeedDisplay = document.getElementById('currentSpeedDisplay');
 
   const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || window.innerWidth < 800;
   let mobileControlMode = 'buttons';
@@ -307,6 +323,13 @@
   let shieldActive2 = false, shieldTimer2 = 0, magnetActive2 = false, magnetTimer2 = 0, diamondActive2 = false, diamondTimer2 = 0;
   let enableShield = true, enableMagnet = true, enableDiamond = true;
   let currentLang = 'ru';
+  
+  // Новые переменные для системы ускорения
+  let enableSpeedIncrease = false;
+  const BASE_MOVE_INTERVAL = 120; // базовая задержка в мс
+  const SPEED_INCREMENT = 3; // ускорение на 3мс за каждый фрукт
+  let currentMoveInterval = BASE_MOVE_INTERVAL;
+  let speedLevel = 0; // количество съеденных фруктов (для расчёта скорости)
 
   let stats = { totalGames: 0, totalScore: 0, totalFruits: 0, totalDeaths: 0, totalTime: 0, bestScore: 0, favoriteMode: '' };
   let snake2 = [], direction2 = {x:-1,y:0}, nextDirection2 = {x:-1,y:0};
@@ -336,6 +359,29 @@
     { id: 7, name: { ru: 'Глубокий лес', en: 'Deep Forest' }, icon: '🌲', price: 100 },
     { id: 8, name: { ru: 'Горный', en: 'Mountain' }, icon: '🏔', price: 120 }
   ];
+
+  // Функция для обновления отображения текущей скорости
+  function updateSpeedDisplay() {
+    if (currentSpeedDisplay) {
+      if (enableSpeedIncrease) {
+        currentSpeedDisplay.textContent = `Текущая задержка: ${currentMoveInterval}мс (уровень ускорения: ${speedLevel})`;
+        currentSpeedDisplay.style.color = '#ff6b6b';
+      } else {
+        currentSpeedDisplay.textContent = `Текущая задержка: ${currentMoveInterval}мс`;
+        currentSpeedDisplay.style.color = '#ffd966';
+      }
+    }
+  }
+
+  // Функция для расчёта текущей скорости на основе съеденных фруктов
+  function calculateMoveInterval() {
+    if (!enableSpeedIncrease) {
+      return BASE_MOVE_INTERVAL;
+    }
+    // Каждый фрукт уменьшает задержку на SPEED_INCREMENT мс
+    // Минимальная задержка - 40мс (чтобы игра оставалась играбельной)
+    return Math.max(40, BASE_MOVE_INTERVAL - (speedLevel * SPEED_INCREMENT));
+  }
 
   const translations = {
     ru: {
@@ -519,7 +565,7 @@
   let snake=[],direction={x:1,y:0},nextDirection={x:1,y:0},food={x:10,y:5};
   let gameActive=false,gameOverFlag=false,winFlag=false,isPaused=false;
   let currentScore=0,snakeStyle=0;
-  let gameLoopInterval=null,animationFrameId=null;const MOVE_INTERVAL_MS=120;
+  let gameLoopInterval=null,animationFrameId=null;
   let lastMoveTime=0,animationProgress=0,prevSnake=[],prevSnake2=[],wallPassTriggered=false;
   let fieldDesign=0,customBgImage=null,cloudOffset=0,starTwinkle=0;
   const fieldDesigns={0:{bg:'#0b1b12',grid:'#2a462a'},1:{bg:'#1a2f1a',grid:'#3a5a2a'},2:{bg:'#2a2618',grid:'#5a4a2a'},3:{bg:'#1a2830',grid:'#3a4a5a'},4:{bg:'#0b1b12',grid:'#2a462a'},5:{bg:'#1a2f3a',grid:'#3a5a6a'},6:{bg:'#0a0a1a',grid:'#2a2a4a'},7:{bg:'#0d1f0d',grid:'#1a3a1a'},8:{bg:'#1a1a2e',grid:'#3a3a5a'}};
@@ -594,19 +640,13 @@
     }
   }
 
-  // Новая функция для дуо-режима: выбирает, кто тянет фрукт
   function applyMagnetPullDuo(){
     if(!food) return;
-    
     const head1 = snake[0];
     const head2 = snake2[0];
-    
     if(!head1 || !head2) return;
-    
     const dist1 = Math.abs(food.x - head1.x) + Math.abs(food.y - head1.y);
     const dist2 = Math.abs(food.x - head2.x) + Math.abs(food.y - head2.y);
-    
-    // Если оба магнита активны и оба в радиусе — тянет ближайший
     if(magnetActive && magnetActive2 && dist1 <= MAGNET_RANGE && dist2 <= MAGNET_RANGE) {
         if(dist1 <= dist2) {
             applyMagnetPull(1);
@@ -614,7 +654,6 @@
             applyMagnetPull(2);
         }
     } else {
-        // Иначе каждый работает независимо
         if(magnetActive) applyMagnetPull(1);
         if(magnetActive2) applyMagnetPull(2);
     }
@@ -627,6 +666,15 @@
     if(nh.y<0)nh.y=GRID_SIZE-1;
     if(nh.y>=GRID_SIZE)nh.y=0;
     return wrapped;
+  }
+
+  // Функция для перезапуска игрового цикла с новой скоростью
+  function restartGameLoopWithNewSpeed() {
+    clearGameLoop();
+    if (gameActive && !isPaused) {
+      gameLoopInterval = setInterval(moveSnake, currentMoveInterval);
+      animationFrameId = requestAnimationFrame(animateLoop);
+    }
   }
 
   function moveSnake(){if(!gameActive||isPaused)return;if(gameMode==='duo'){moveSnakeDuo();return;}
@@ -654,6 +702,16 @@
     if(bonusHit){if(bonusHit.type==='shield'){shieldActive=true;shieldTimer=100;}else if(bonusHit.type==='magnet'){magnetActive=true;magnetTimer=150;}else if(bonusHit.type==='diamond'){diamondActive=true;diamondTimer=200;}bonuses=bonuses.filter(b=>!(b.x===bonusHit.x&&b.y===bonusHit.y));spawnParticles(bonusHit.x,bonusHit.y,'#ffff00',15);}
     if(fe){
       currentScore++;fruitsEatenThisGame++;
+      
+      // Применяем ускорение при съедании фрукта
+      if (enableSpeedIncrease) {
+        speedLevel++;
+        currentMoveInterval = calculateMoveInterval();
+        updateSpeedDisplay();
+        // Перезапускаем игровой цикл с новой скоростью
+        restartGameLoopWithNewSpeed();
+      }
+      
       if(diamondActive)currentScore++;
       currentScoreSpan.textContent=currentScore;
       saveCurrentHighScore(currentScore);
@@ -663,7 +721,6 @@
       addCoins(coinReward);
       playAppleSound();
       spawnFruitParticles(food.x,food.y,'#ff7b6b');
-      // Плавное добавление сегмента
       const tailPos = snake[snake.length - 1];
       prevSnake = [prevSnake[0], ...prevSnake, tailPos];
       if(!generateRandomFood()){
@@ -683,7 +740,6 @@
 
   function moveSnakeDuo(){prevSnake=snake.map(s=>({...s}));prevSnake2=snake2.map(s=>({...s}));direction={...nextDirection};direction2={...nextDirection2};
     const h1=snake[0],nh1={x:h1.x+direction.x,y:h1.y+direction.y};const h2=snake2[0],nh2={x:h2.x+direction2.x,y:h2.y+direction2.y};
-    // Используем новую функцию для избежания конфликта магнитов
     applyMagnetPullDuo();
     const fe1=(nh1.x===food.x&&nh1.y===food.y);const fe2=(nh2.x===food.x&&nh2.y===food.y);
     let ns1=fe1?[nh1,...snake]:[nh1,...snake.slice(0,-1)];let ns2=fe2?[nh2,...snake2]:[nh2,...snake2.slice(0,-1)];
@@ -705,6 +761,8 @@
     if(bonusHit2){if(bonusHit2.type==='shield'){shieldActive2=true;shieldTimer2=100;}else if(bonusHit2.type==='magnet'){magnetActive2=true;magnetTimer2=150;}else if(bonusHit2.type==='diamond'){diamondActive2=true;diamondTimer2=200;}bonuses=bonuses.filter(b=>!(b.x===bonusHit2.x&&b.y===bonusHit2.y));spawnParticles(bonusHit2.x,bonusHit2.y,'#ffff00',15);}
     
     if(fe1||fe2){
+      let speedChanged = false;
+      
       if(fe1){
         scoreP1++;fruitsEatenThisGame++;
         if(diamondActive)scoreP1++;
@@ -712,7 +770,6 @@
         addCoins(diamondActive?2:1);
         playAppleSound();
         spawnFruitParticles(food.x,food.y,'#44ff44');
-        // Плавное добавление сегмента
         const tailPos1 = snake[snake.length - 1];
         prevSnake = [prevSnake[0], ...prevSnake, tailPos1];
       }
@@ -723,19 +780,30 @@
         addCoins(diamondActive2?2:1);
         playAppleSound();
         spawnFruitParticles(food.x,food.y,getP2SnakeColor(0));
-        // Плавное добавление сегмента
         const tailPos2 = snake2[snake2.length - 1];
         prevSnake2 = [prevSnake2[0], ...prevSnake2, tailPos2];
       }
+      
+      // Применяем ускорение в дуо-режиме
+      if (enableSpeedIncrease && (fe1 || fe2)) {
+        speedLevel++;
+        currentMoveInterval = calculateMoveInterval();
+        updateSpeedDisplay();
+        speedChanged = true;
+      }
+      
       if(!generateRandomFood()){
         gameActive=false;winFlag=true;
         pauseMenu.classList.add('hidden');
         pauseOverlay.classList.add('hidden');
         updateGameStatus();clearGameLoop();updateStats(Math.max(scoreP1,scoreP2),fruitsEatenThisGame,false,'duo');saveCurrentHighScore(Math.max(scoreP1,scoreP2));addCoins(scoreP1+scoreP2);playWinSound();animationProgress=1;drawBoard();return;
       }
+      
+      if (speedChanged) {
+        restartGameLoopWithNewSpeed();
+      }
     }
     
-    // Исправлено условие появления бонусов
     if(fruitsEatenThisGame > 0 && fruitsEatenThisGame % 5 === 0 && (fe1 || fe2)) {
       spawnBonus();
     }
@@ -748,12 +816,25 @@
   function resumeGame(){if(!isPaused)return;isPaused=false;pauseOverlay.classList.add('hidden');pauseMenu.classList.add('hidden');lastMoveTime=performance.now();animationProgress=1;updateGameStatus();startGameLoop();}
   function restartFromPause(){pauseMenu.classList.add('hidden');pauseOverlay.classList.add('hidden');isPaused=false;resetGame();}
   function goToMainMenu(){clearGameLoop();pauseMenu.classList.add('hidden');pauseOverlay.classList.add('hidden');isPaused=false;gameActive=false;gameOverFlag=false;winFlag=false;updateGameStatus();showMainMenu();}
-  function applyGridSize(){GRID_SIZE=parseInt(gridSizeSelect.value,10);CELL_SIZE=canvas.width/GRID_SIZE;snake=getInitSnake();prevSnake=snake.map(s=>({...s}));direction={x:1,y:0};nextDirection={x:1,y:0};currentScore=0;scoreP1=0;scoreP2=0;fruitsEatenThisGame=0;currentScoreSpan.textContent='0';p1ScoreDisplay.textContent='0';p2ScoreDisplay.textContent='0';bombs=[];particles=[];bonuses=[];snake2=[];wallPassTriggered=false;gameActive=true;gameOverFlag=false;winFlag=false;isPaused=false;pauseOverlay.classList.add('hidden');updateGameStatus();if(!generateRandomFood())food={x:Math.floor(GRID_SIZE/2)+2,y:Math.floor(GRID_SIZE/2)};clearGameLoop();animationProgress=1;drawBoard();startGameLoop();saveAllSettings();}
+  function applyGridSize(){GRID_SIZE=parseInt(gridSizeSelect.value,10);CELL_SIZE=canvas.width/GRID_SIZE;snake=getInitSnake();prevSnake=snake.map(s=>({...s}));direction={x:1,y:0};nextDirection={x:1,y:0};currentScore=0;scoreP1=0;scoreP2=0;fruitsEatenThisGame=0;speedLevel=0;currentMoveInterval=BASE_MOVE_INTERVAL;updateSpeedDisplay();currentScoreSpan.textContent='0';p1ScoreDisplay.textContent='0';p2ScoreDisplay.textContent='0';bombs=[];particles=[];bonuses=[];snake2=[];wallPassTriggered=false;gameActive=true;gameOverFlag=false;winFlag=false;isPaused=false;pauseOverlay.classList.add('hidden');updateGameStatus();if(!generateRandomFood())food={x:Math.floor(GRID_SIZE/2)+2,y:Math.floor(GRID_SIZE/2)};clearGameLoop();animationProgress=1;drawBoard();startGameLoop();saveAllSettings();}
   
-  function resetGame(){clearGameLoop();snake=getInitSnake();prevSnake=snake.map(s=>({...s}));shieldActive=false;shieldTimer=0;magnetActive=false;magnetTimer=0;diamondActive=false;diamondTimer=0;shieldActive2=false;shieldTimer2=0;magnetActive2=false;magnetTimer2=0;diamondActive2=false;diamondTimer2=0;wallPassTriggered=false;updateBonusIndicators();if(gameMode==='duo'){snake2=getInitSnake2();prevSnake2=snake2.map(s=>({...s}));direction2={x:-1,y:0};nextDirection2={x:-1,y:0};scoreP1=0;scoreP2=0;p1ScoreDisplay.textContent='0';p2ScoreDisplay.textContent='0';scoreBlockSingle.classList.add('hidden');scoreBlockDuo.classList.remove('hidden');controlsHint.innerHTML=`<span>${t('duoControls')}</span><span>Space - ${currentLang==='ru'?'рестарт':'restart'}</span><span>M - ${currentLang==='ru'?'звук':'sound'}</span><span>Esc - ${currentLang==='ru'?'пауза':'pause'}</span><span id="gameStatus" style="color:#f7da7c;">${t('playing')}</span><span class="nickname-display" id="nicknameDisplay"></span>`;}else{snake2=[];prevSnake2=[];scoreBlockSingle.classList.remove('hidden');scoreBlockDuo.classList.add('hidden');controlsHint.innerHTML=`<span>⬆⬇⬅➡ / WASD</span><span>Space - ${currentLang==='ru'?'рестарт':'restart'}</span><span>M - ${currentLang==='ru'?'звук':'sound'}</span><span>Esc - ${currentLang==='ru'?'пауза':'pause'}</span><span id="gameStatus" style="color:#f7da7c;">${t('playing')}</span><span class="nickname-display" id="nicknameDisplay"></span>`;}gameStatusDiv=document.getElementById('gameStatus');nicknameDisplay=document.getElementById('nicknameDisplay');direction={x:1,y:0};nextDirection={x:1,y:0};gameActive=true;gameOverFlag=false;winFlag=false;isPaused=false;currentScore=0;fruitsEatenThisGame=0;currentScoreSpan.textContent='0';bombs=[];particles=[];bonuses=[];pauseOverlay.classList.add('hidden');pauseMenu.classList.add('hidden');updateGameStatus();if(!generateRandomFood())food={x:Math.floor(GRID_SIZE/2)+2,y:Math.floor(GRID_SIZE/2)};animationProgress=1;lastMoveTime=performance.now();drawBoard();startGameLoop();hideAllMenus();updateMobileControlsVisibility();updateNicknameDisplay();}
-  function startGameLoop(){if(gameLoopInterval)clearInterval(gameLoopInterval);if(animationFrameId)cancelAnimationFrame(animationFrameId);if(gameActive&&!isPaused){gameLoopInterval=setInterval(moveSnake,MOVE_INTERVAL_MS);animationFrameId=requestAnimationFrame(animateLoop);}}
+  function resetGame(){clearGameLoop();snake=getInitSnake();prevSnake=snake.map(s=>({...s}));shieldActive=false;shieldTimer=0;magnetActive=false;magnetTimer=0;diamondActive=false;diamondTimer=0;shieldActive2=false;shieldTimer2=0;magnetActive2=false;magnetTimer2=0;diamondActive2=false;diamondTimer2=0;wallPassTriggered=false;
+    // Сбрасываем скорость при новой игре
+    speedLevel = 0;
+    currentMoveInterval = calculateMoveInterval();
+    updateSpeedDisplay();
+    updateBonusIndicators();
+    if(gameMode==='duo'){snake2=getInitSnake2();prevSnake2=snake2.map(s=>({...s}));direction2={x:-1,y:0};nextDirection2={x:-1,y:0};scoreP1=0;scoreP2=0;p1ScoreDisplay.textContent='0';p2ScoreDisplay.textContent='0';scoreBlockSingle.classList.add('hidden');scoreBlockDuo.classList.remove('hidden');controlsHint.innerHTML=`<span>${t('duoControls')}</span><span>Space - ${currentLang==='ru'?'рестарт':'restart'}</span><span>M - ${currentLang==='ru'?'звук':'sound'}</span><span>Esc - ${currentLang==='ru'?'пауза':'pause'}</span><span id="gameStatus" style="color:#f7da7c;">${t('playing')}</span><span class="nickname-display" id="nicknameDisplay"></span>`;}else{snake2=[];prevSnake2=[];scoreBlockSingle.classList.remove('hidden');scoreBlockDuo.classList.add('hidden');controlsHint.innerHTML=`<span>⬆⬇⬅➡ / WASD</span><span>Space - ${currentLang==='ru'?'рестарт':'restart'}</span><span>M - ${currentLang==='ru'?'звук':'sound'}</span><span>Esc - ${currentLang==='ru'?'пауза':'pause'}</span><span id="gameStatus" style="color:#f7da7c;">${t('playing')}</span><span class="nickname-display" id="nicknameDisplay"></span>`;}gameStatusDiv=document.getElementById('gameStatus');nicknameDisplay=document.getElementById('nicknameDisplay');direction={x:1,y:0};nextDirection={x:1,y:0};gameActive=true;gameOverFlag=false;winFlag=false;isPaused=false;currentScore=0;fruitsEatenThisGame=0;currentScoreSpan.textContent='0';bombs=[];particles=[];bonuses=[];pauseOverlay.classList.add('hidden');pauseMenu.classList.add('hidden');updateGameStatus();if(!generateRandomFood())food={x:Math.floor(GRID_SIZE/2)+2,y:Math.floor(GRID_SIZE/2)};animationProgress=1;lastMoveTime=performance.now();drawBoard();startGameLoop();hideAllMenus();updateMobileControlsVisibility();updateNicknameDisplay();}
+  function startGameLoop(){
+    if(gameLoopInterval)clearInterval(gameLoopInterval);
+    if(animationFrameId)cancelAnimationFrame(animationFrameId);
+    if(gameActive&&!isPaused){
+      gameLoopInterval=setInterval(moveSnake,currentMoveInterval);
+      animationFrameId=requestAnimationFrame(animateLoop);
+    }
+  }
   function clearGameLoop(){if(gameLoopInterval){clearInterval(gameLoopInterval);gameLoopInterval=null;}if(animationFrameId){cancelAnimationFrame(animationFrameId);animationFrameId=null;}}
-  function animateLoop(ts){if(!gameActive||isPaused){animationFrameId=null;return;}animationProgress=Math.min(1,(ts-lastMoveTime)/MOVE_INTERVAL_MS);particles=particles.filter(p=>{p.life-=0.025;p.x+=p.vx;p.y+=p.vy;return p.life>0;});cloudOffset+=0.1;starTwinkle+=0.05;forestAnimOffset+=0.008;mountainCloudOffset+=0.06;drawBoard();animationFrameId=requestAnimationFrame(animateLoop);}
+  function animateLoop(ts){if(!gameActive||isPaused){animationFrameId=null;return;}animationProgress=Math.min(1,(ts-lastMoveTime)/currentMoveInterval);particles=particles.filter(p=>{p.life-=0.025;p.x+=p.vx;p.y+=p.vy;return p.life>0;});cloudOffset+=0.1;starTwinkle+=0.05;forestAnimOffset+=0.008;mountainCloudOffset+=0.06;drawBoard();animationFrameId=requestAnimationFrame(animateLoop);}
 
   function handleKeyDown(e){const key=e.key,code=e.code;if(document.activeElement===nicknameInput)return;if(code==='Space'||key===' '){e.preventDefault();resetGame();return;}if(code==='KeyM'||key==='m'||key==='M'){e.preventDefault();isMuted=!isMuted;if(isMuted){previousVolume=soundVolume;soundVolume=0;volumeSlider.value=0;volumeValue.textContent='0';}else{soundVolume=previousVolume;volumeSlider.value=Math.round(previousVolume*100);volumeValue.textContent=Math.round(previousVolume*100);}saveAllSettings();return;}if(key==='Escape'||code==='Escape'){e.preventDefault();if(!pauseMenu.classList.contains('hidden')){resumeGame();return;}if(!modeSelectMenu.classList.contains('hidden')){modeSelectMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return;}if(!shopMenu.classList.contains('hidden')){shopMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return;}if(!customSkinMenu.classList.contains('hidden')){customSkinMenu.classList.add('hidden');shopMenu.classList.remove('hidden');return;}if(!achievementsMenu.classList.contains('hidden')){achievementsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return;}if(!settingsMenu.classList.contains('hidden')){settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');return;}if(!mainMenu.classList.contains('hidden')){hideAllMenus();return;}if(gameActive&&!gameOverFlag&&!winFlag)togglePause();else showMainMenu();return;}if(gameMode==='duo'){let nd1=null,nd2=null;if(code==='KeyW')nd1={x:0,y:-1};else if(code==='KeyS')nd1={x:0,y:1};else if(code==='KeyA')nd1={x:-1,y:0};else if(code==='KeyD')nd1={x:1,y:0};if(code==='ArrowUp')nd2={x:0,y:-1};else if(code==='ArrowDown')nd2={x:0,y:1};else if(code==='ArrowLeft')nd2={x:-1,y:0};else if(code==='ArrowRight')nd2={x:1,y:0};if(nd1&&!(direction.x===-nd1.x&&direction.y===-nd1.y)){e.preventDefault();nextDirection=nd1;}if(nd2&&!(direction2.x===-nd2.x&&direction2.y===-nd2.y)){e.preventDefault();nextDirection2=nd2;}return;}let nd=null;if(code==='ArrowUp'||code==='KeyW')nd={x:0,y:-1};else if(code==='ArrowDown'||code==='KeyS')nd={x:0,y:1};else if(code==='ArrowLeft'||code==='KeyA')nd={x:-1,y:0};else if(code==='ArrowRight'||code==='KeyD')nd={x:1,y:0};if(nd){e.preventDefault();if(!gameActive||isPaused)return;if(direction.x===-nd.x&&direction.y===-nd.y)return;nextDirection=nd;}}
 
@@ -780,10 +861,10 @@
   function showMainMenu(){mainMenu.classList.remove('hidden');modeSelectMenu.classList.add('hidden');shopMenu.classList.add('hidden');customSkinMenu.classList.add('hidden');achievementsMenu.classList.add('hidden');settingsMenu.classList.add('hidden');pauseMenu.classList.add('hidden');pauseOverlay.classList.add('hidden');updateMenuHighScores();}
   function hideAllMenus(){mainMenu.classList.add('hidden');modeSelectMenu.classList.add('hidden');shopMenu.classList.add('hidden');customSkinMenu.classList.add('hidden');achievementsMenu.classList.add('hidden');settingsMenu.classList.add('hidden');pauseMenu.classList.add('hidden');}
   function showModeSelect(){mainMenu.classList.add('hidden');modeSelectMenu.classList.remove('hidden');selectedMode=gameMode;document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===selectedMode));}
-  function showSettings(){mainMenu.classList.add('hidden');settingsMenu.classList.remove('hidden');nicknameError.classList.add('hidden');if(mobileControlType)mobileControlType.value=mobileControlMode;updateFruitSelect();renderStats();updateDuoCustomSkinSection();const tab=document.querySelector('.settings-tab[data-tab="gameplay"]');if(tab)tab.click();}
+  function showSettings(){mainMenu.classList.add('hidden');settingsMenu.classList.remove('hidden');nicknameError.classList.add('hidden');if(mobileControlType)mobileControlType.value=mobileControlMode;updateFruitSelect();renderStats();updateDuoCustomSkinSection();updateSpeedDisplay();const tab=document.querySelector('.settings-tab[data-tab="gameplay"]');if(tab)tab.click();}
   function showShop(){mainMenu.classList.add('hidden');shopMenu.classList.remove('hidden');updateCoinsDisplay();const tab=document.querySelector('.shop-tab[data-tab="skins"]');if(tab)tab.click();renderShop();}
   function showAchievements(){mainMenu.classList.add('hidden');achievementsMenu.classList.remove('hidden');currentAchievementFilter='all';const tab=document.querySelector('.achievement-tab[data-filter="all"]');if(tab)tab.click();renderAchievements();}
-  function saveAllSettings(){const s={language:currentLang,snakeStyle:snakeStyle,p2SnakeStyle:p2SnakeStyle,p2UseCustomSkin:p2UseCustomSkin,soundType:currentSoundType,volume:Math.round(soundVolume*100),fruitSpawnVolume:Math.round(fruitSpawnVolume*100),fruitType:fruitType,fieldDesign:fieldDesign,gridSize:GRID_SIZE,nickname:playerNickname,mobileControlMode:mobileControlMode,enableShield:enableShield,enableMagnet:enableMagnet,enableDiamond:enableDiamond,isMuted:isMuted};try{localStorage.setItem('snakeSettings',JSON.stringify(s));}catch(e){}}
+  function saveAllSettings(){const s={language:currentLang,snakeStyle:snakeStyle,p2SnakeStyle:p2SnakeStyle,p2UseCustomSkin:p2UseCustomSkin,soundType:currentSoundType,volume:Math.round(soundVolume*100),fruitSpawnVolume:Math.round(fruitSpawnVolume*100),fruitType:fruitType,fieldDesign:fieldDesign,gridSize:GRID_SIZE,nickname:playerNickname,mobileControlMode:mobileControlMode,enableShield:enableShield,enableMagnet:enableMagnet,enableDiamond:enableDiamond,isMuted:isMuted,enableSpeedIncrease:enableSpeedIncrease};try{localStorage.setItem('snakeSettings',JSON.stringify(s));}catch(e){}}
   function loadSettings(){try{const s=localStorage.getItem('snakeSettings');return s?JSON.parse(s):{};}catch(e){return{};}}
 
   function bindEvents(){
@@ -805,7 +886,7 @@
     confirmYes.addEventListener('click',()=>{resetAchievements();confirmReset.classList.add('hidden');});
     confirmNo.addEventListener('click',()=>{confirmReset.classList.add('hidden');});
     document.querySelectorAll('.mode-btn').forEach(b=>{b.addEventListener('click',()=>{selectedMode=b.dataset.mode;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x.dataset.mode===selectedMode));});});
-    document.querySelectorAll('.settings-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const target=tab.dataset.tab;if(tabContentGameplay)tabContentGameplay.classList.toggle('hidden',target!=='gameplay');if(tabContentSound)tabContentSound.classList.toggle('hidden',target!=='sound');if(tabContentDesign)tabContentDesign.classList.toggle('hidden',target!=='design');if(tabContentStats)tabContentStats.classList.toggle('hidden',target!=='stats');if(target==='design')updateFruitSelect();if(target==='gameplay')updateDuoCustomSkinSection();if(target==='stats')renderStats();});});
+    document.querySelectorAll('.settings-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const target=tab.dataset.tab;if(tabContentGameplay)tabContentGameplay.classList.toggle('hidden',target!=='gameplay');if(tabContentSound)tabContentSound.classList.toggle('hidden',target!=='sound');if(tabContentDesign)tabContentDesign.classList.toggle('hidden',target!=='design');if(tabContentStats)tabContentStats.classList.toggle('hidden',target!=='stats');if(target==='design')updateFruitSelect();if(target==='gameplay'){updateDuoCustomSkinSection();updateSpeedDisplay();}if(target==='stats')renderStats();});});
     document.querySelectorAll('.shop-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.shop-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');renderShop();});});
     document.querySelectorAll('.achievement-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.achievement-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');currentAchievementFilter=tab.dataset.filter;renderAchievements();});});
     snakeStyleSelect.addEventListener('change',(e)=>{snakeStyle=parseInt(e.target.value,10);drawBoard();saveAllSettings();});
@@ -826,6 +907,26 @@
     const es=document.getElementById('enableShield');if(es)es.addEventListener('change',(e)=>{enableShield=e.target.checked;saveAllSettings();});
     const em=document.getElementById('enableMagnet');if(em)em.addEventListener('change',(e)=>{enableMagnet=e.target.checked;saveAllSettings();});
     const ed=document.getElementById('enableDiamond');if(ed)ed.addEventListener('change',(e)=>{enableDiamond=e.target.checked;saveAllSettings();});
+    // Обработчик для чекбокса ускорения
+    if(enableSpeedIncreaseCheck)enableSpeedIncreaseCheck.addEventListener('change',(e)=>{
+      enableSpeedIncrease=e.target.checked;
+      if (!enableSpeedIncrease) {
+        // Если отключили ускорение - сбрасываем скорость до базовой
+        speedLevel = 0;
+        currentMoveInterval = BASE_MOVE_INTERVAL;
+        if (gameActive && !isPaused) {
+          restartGameLoopWithNewSpeed();
+        }
+      } else {
+        // Если включили - пересчитываем скорость на основе текущего уровня
+        currentMoveInterval = calculateMoveInterval();
+        if (gameActive && !isPaused) {
+          restartGameLoopWithNewSpeed();
+        }
+      }
+      updateSpeedDisplay();
+      saveAllSettings();
+    });
   }
 
   function initialStart(){
@@ -846,10 +947,11 @@
     enableShield=ss.enableShield!==undefined?ss.enableShield:true;
     enableMagnet=ss.enableMagnet!==undefined?ss.enableMagnet:true;
     enableDiamond=ss.enableDiamond!==undefined?ss.enableDiamond:true;
+    enableSpeedIncrease=ss.enableSpeedIncrease||false;
     const es=document.getElementById('enableShield');if(es)es.checked=enableShield;
     const em=document.getElementById('enableMagnet');if(em)em.checked=enableMagnet;
     const ed=document.getElementById('enableDiamond');if(ed)ed.checked=enableDiamond;
-    // Восстановление isMuted
+    if(enableSpeedIncreaseCheck)enableSpeedIncreaseCheck.checked=enableSpeedIncrease;
     isMuted = ss.isMuted || false;
     if(isMuted) {
         previousVolume = soundVolume;
@@ -857,8 +959,9 @@
         volumeSlider.value = 0;
         volumeValue.textContent = '0';
     }
+    currentMoveInterval = calculateMoveInterval();
     snake=getInitSnake();prevSnake=snake.map(s=>({...s}));
-    bindEvents();updateUILanguage();updateNicknameDisplay();updateFieldDesignSelect();updateFruitSelect();updateDuoCustomSkinSection();updateMobileControlsVisibility();
+    bindEvents();updateUILanguage();updateNicknameDisplay();updateFieldDesignSelect();updateFruitSelect();updateDuoCustomSkinSection();updateMobileControlsVisibility();updateSpeedDisplay();
     animationProgress=1;drawBoard();gameActive=false;showMainMenu();saveAllSettings();
   }
   window.addEventListener('beforeunload',()=>{clearGameLoop();saveAllSettings();});
