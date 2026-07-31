@@ -594,6 +594,32 @@
     }
   }
 
+  // Новая функция для дуо-режима: выбирает, кто тянет фрукт
+  function applyMagnetPullDuo(){
+    if(!food) return;
+    
+    const head1 = snake[0];
+    const head2 = snake2[0];
+    
+    if(!head1 || !head2) return;
+    
+    const dist1 = Math.abs(food.x - head1.x) + Math.abs(food.y - head1.y);
+    const dist2 = Math.abs(food.x - head2.x) + Math.abs(food.y - head2.y);
+    
+    // Если оба магнита активны и оба в радиусе — тянет ближайший
+    if(magnetActive && magnetActive2 && dist1 <= MAGNET_RANGE && dist2 <= MAGNET_RANGE) {
+        if(dist1 <= dist2) {
+            applyMagnetPull(1);
+        } else {
+            applyMagnetPull(2);
+        }
+    } else {
+        // Иначе каждый работает независимо
+        if(magnetActive) applyMagnetPull(1);
+        if(magnetActive2) applyMagnetPull(2);
+    }
+  }
+
   function wrapHead(nh){
     const wrapped = nh.x < 0 || nh.x >= GRID_SIZE || nh.y < 0 || nh.y >= GRID_SIZE;
     if(nh.x<0)nh.x=GRID_SIZE-1;
@@ -626,13 +652,39 @@
     if(checkCollision(nh,bc,true)){if(bc.some(s=>s.x===nh.x&&s.y===nh.y))unlockAchievement('self_collision');if(shieldActive){shieldActive=false;shieldTimer=0;ns=[nh,...snake];}else{gameActive=false;gameOverFlag=true;winFlag=false;updateStats(currentScore,fruitsEatenThisGame,true,gameMode);updateGameStatus();clearGameLoop();saveCurrentHighScore(currentScore);addCoins(Math.floor(currentScore/5));if(currentScore===0&&gameMode!=='infinite')unlockAchievement('wall_collision_zero');triggerShake();spawnParticles(nh.x,nh.y,'#6fbf4c',20);playGameOverSound();animationProgress=1;drawBoard();return;}}
     snake=ns;
     if(bonusHit){if(bonusHit.type==='shield'){shieldActive=true;shieldTimer=100;}else if(bonusHit.type==='magnet'){magnetActive=true;magnetTimer=150;}else if(bonusHit.type==='diamond'){diamondActive=true;diamondTimer=200;}bonuses=bonuses.filter(b=>!(b.x===bonusHit.x&&b.y===bonusHit.y));spawnParticles(bonusHit.x,bonusHit.y,'#ffff00',15);}
-    if(fe){currentScore++;fruitsEatenThisGame++;if(diamondActive)currentScore++;currentScoreSpan.textContent=currentScore;saveCurrentHighScore(currentScore);let coinReward=1;if(gameMode==='bombs'&&bombs.some(b=>Math.abs(b.x-food.x)<=1&&Math.abs(b.y-food.y)<=1))coinReward=5;if(diamondActive)coinReward*=2;addCoins(coinReward);playAppleSound();spawnFruitParticles(food.x,food.y,'#ff7b6b');prevSnake=[prevSnake[0],...prevSnake];if(!generateRandomFood()){gameActive=false;gameOverFlag=false;winFlag=true;updateStats(currentScore,fruitsEatenThisGame,false,gameMode);updateGameStatus();clearGameLoop();saveCurrentHighScore(currentScore);addCoins(currentScore);if(GRID_SIZE===10)unlockAchievement('fill_10x10');if(GRID_SIZE===20)unlockAchievement('fill_20x20');playWinSound();animationProgress=1;drawBoard();return;}if(gameMode==='bombs'&&currentScore%3===0)spawnBomb();if(fruitsEatenThisGame%5===0)spawnBonus();}
+    if(fe){
+      currentScore++;fruitsEatenThisGame++;
+      if(diamondActive)currentScore++;
+      currentScoreSpan.textContent=currentScore;
+      saveCurrentHighScore(currentScore);
+      let coinReward=1;
+      if(gameMode==='bombs'&&bombs.some(b=>Math.abs(b.x-food.x)<=1&&Math.abs(b.y-food.y)<=1))coinReward=5;
+      if(diamondActive)coinReward*=2;
+      addCoins(coinReward);
+      playAppleSound();
+      spawnFruitParticles(food.x,food.y,'#ff7b6b');
+      // Плавное добавление сегмента
+      const tailPos = snake[snake.length - 1];
+      prevSnake = [prevSnake[0], ...prevSnake, tailPos];
+      if(!generateRandomFood()){
+        gameActive=false;gameOverFlag=false;winFlag=true;
+        updateStats(currentScore,fruitsEatenThisGame,false,gameMode);
+        updateGameStatus();clearGameLoop();saveCurrentHighScore(currentScore);
+        addCoins(currentScore);
+        if(GRID_SIZE===10)unlockAchievement('fill_10x10');
+        if(GRID_SIZE===20)unlockAchievement('fill_20x20');
+        playWinSound();animationProgress=1;drawBoard();return;
+      }
+      if(gameMode==='bombs'&&currentScore%3===0)spawnBomb();
+      if(fruitsEatenThisGame%5===0)spawnBonus();
+    }
     if(shieldActive){shieldTimer--;if(shieldTimer<=0)shieldActive=false;}if(magnetActive){magnetTimer--;if(magnetTimer<=0)magnetActive=false;}if(diamondActive){diamondTimer--;if(diamondTimer<=0)diamondActive=false;}
     updateBonusIndicators();animationProgress=0;lastMoveTime=performance.now();drawBoard();}
 
   function moveSnakeDuo(){prevSnake=snake.map(s=>({...s}));prevSnake2=snake2.map(s=>({...s}));direction={...nextDirection};direction2={...nextDirection2};
     const h1=snake[0],nh1={x:h1.x+direction.x,y:h1.y+direction.y};const h2=snake2[0],nh2={x:h2.x+direction2.x,y:h2.y+direction2.y};
-    applyMagnetPull(1);applyMagnetPull(2);
+    // Используем новую функцию для избежания конфликта магнитов
+    applyMagnetPullDuo();
     const fe1=(nh1.x===food.x&&nh1.y===food.y);const fe2=(nh2.x===food.x&&nh2.y===food.y);
     let ns1=fe1?[nh1,...snake]:[nh1,...snake.slice(0,-1)];let ns2=fe2?[nh2,...snake2]:[nh2,...snake2.slice(0,-1)];
     const bonusHit1=bonuses.find(b=>b.x===nh1.x&&b.y===nh1.y);const bonusHit2=bonuses.find(b=>b.x===nh2.x&&b.y===nh2.y);
@@ -660,7 +712,9 @@
         addCoins(diamondActive?2:1);
         playAppleSound();
         spawnFruitParticles(food.x,food.y,'#44ff44');
-        prevSnake=[prevSnake[0],...prevSnake];
+        // Плавное добавление сегмента
+        const tailPos1 = snake[snake.length - 1];
+        prevSnake = [prevSnake[0], ...prevSnake, tailPos1];
       }
       if(fe2){
         scoreP2++;fruitsEatenThisGame++;
@@ -669,7 +723,9 @@
         addCoins(diamondActive2?2:1);
         playAppleSound();
         spawnFruitParticles(food.x,food.y,getP2SnakeColor(0));
-        prevSnake2=[prevSnake2[0],...prevSnake2];
+        // Плавное добавление сегмента
+        const tailPos2 = snake2[snake2.length - 1];
+        prevSnake2 = [prevSnake2[0], ...prevSnake2, tailPos2];
       }
       if(!generateRandomFood()){
         gameActive=false;winFlag=true;
@@ -679,7 +735,8 @@
       }
     }
     
-    if(fruitsEatenThisGame > 0 && fruitsEatenThisGame % 5 === 0 && fe1 || fe2) {
+    // Исправлено условие появления бонусов
+    if(fruitsEatenThisGame > 0 && fruitsEatenThisGame % 5 === 0 && (fe1 || fe2)) {
       spawnBonus();
     }
     
@@ -726,7 +783,7 @@
   function showSettings(){mainMenu.classList.add('hidden');settingsMenu.classList.remove('hidden');nicknameError.classList.add('hidden');if(mobileControlType)mobileControlType.value=mobileControlMode;updateFruitSelect();renderStats();updateDuoCustomSkinSection();const tab=document.querySelector('.settings-tab[data-tab="gameplay"]');if(tab)tab.click();}
   function showShop(){mainMenu.classList.add('hidden');shopMenu.classList.remove('hidden');updateCoinsDisplay();const tab=document.querySelector('.shop-tab[data-tab="skins"]');if(tab)tab.click();renderShop();}
   function showAchievements(){mainMenu.classList.add('hidden');achievementsMenu.classList.remove('hidden');currentAchievementFilter='all';const tab=document.querySelector('.achievement-tab[data-filter="all"]');if(tab)tab.click();renderAchievements();}
-  function saveAllSettings(){const s={language:currentLang,snakeStyle:snakeStyle,p2SnakeStyle:p2SnakeStyle,p2UseCustomSkin:p2UseCustomSkin,soundType:currentSoundType,volume:Math.round(soundVolume*100),fruitSpawnVolume:Math.round(fruitSpawnVolume*100),fruitType:fruitType,fieldDesign:fieldDesign,gridSize:GRID_SIZE,nickname:playerNickname,mobileControlMode:mobileControlMode,enableShield:enableShield,enableMagnet:enableMagnet,enableDiamond:enableDiamond};try{localStorage.setItem('snakeSettings',JSON.stringify(s));}catch(e){}}
+  function saveAllSettings(){const s={language:currentLang,snakeStyle:snakeStyle,p2SnakeStyle:p2SnakeStyle,p2UseCustomSkin:p2UseCustomSkin,soundType:currentSoundType,volume:Math.round(soundVolume*100),fruitSpawnVolume:Math.round(fruitSpawnVolume*100),fruitType:fruitType,fieldDesign:fieldDesign,gridSize:GRID_SIZE,nickname:playerNickname,mobileControlMode:mobileControlMode,enableShield:enableShield,enableMagnet:enableMagnet,enableDiamond:enableDiamond,isMuted:isMuted};try{localStorage.setItem('snakeSettings',JSON.stringify(s));}catch(e){}}
   function loadSettings(){try{const s=localStorage.getItem('snakeSettings');return s?JSON.parse(s):{};}catch(e){return{};}}
 
   function bindEvents(){
@@ -792,6 +849,14 @@
     const es=document.getElementById('enableShield');if(es)es.checked=enableShield;
     const em=document.getElementById('enableMagnet');if(em)em.checked=enableMagnet;
     const ed=document.getElementById('enableDiamond');if(ed)ed.checked=enableDiamond;
+    // Восстановление isMuted
+    isMuted = ss.isMuted || false;
+    if(isMuted) {
+        previousVolume = soundVolume;
+        soundVolume = 0;
+        volumeSlider.value = 0;
+        volumeValue.textContent = '0';
+    }
     snake=getInitSnake();prevSnake=snake.map(s=>({...s}));
     bindEvents();updateUILanguage();updateNicknameDisplay();updateFieldDesignSelect();updateFruitSelect();updateDuoCustomSkinSection();updateMobileControlsVisibility();
     animationProgress=1;drawBoard();gameActive=false;showMainMenu();saveAllSettings();
