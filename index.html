@@ -389,8 +389,12 @@
     { id: 'wall_pass', name: { ru: 'Проход сквозь стену', en: 'Wall Pass' }, desc: { ru: 'Пройти сквозь стену в бесконечном режиме', en: 'Pass through a wall in infinite mode' }, icon: '🌀', hidden: true },
     { id: 'fill_10x10', name: { ru: '20x20 сможешь?', en: 'Can you do 20x20?' }, desc: { ru: 'Собрать все фрукты на поле 10x10', en: 'Collect all fruits on a 10x10 field' }, icon: '🏆', hidden: false },
     { id: 'fill_20x20', name: { ru: 'Всё собрал? Но какой ценой...', en: 'Collected everything? But at what cost...' }, desc: { ru: 'Собрать все фрукты на поле 20x20', en: 'Collect all fruits on a 20x20 field' }, icon: '👑', hidden: false },
-    { id: 'custom_bg', name: { ru: 'Эти линии не оптимальные', en: 'These lines are not optimal' }, desc: { ru: 'Установить свой фон для поля', en: 'Set a custom background for the field' }, icon: '🖼️', hidden: true }
-  ];
+    { id: 'custom_bg', name: { ru: 'Эти линии не оптимальные', en: 'These lines are not optimal' }, desc: { ru: 'Установить свой фон для поля', en: 'Set a custom background for the field' }, icon: '🖼️', hidden: true },
+    { id: 'all_skins', name: { ru: 'Змеиный гардероб', en: 'Snake Wardrobe' }, desc: { ru: 'Купить все скины в магазине', en: 'Buy all skins in the shop' }, icon: '🐍', hidden: false },
+    { id: 'all_backgrounds', name: { ru: 'Смена декораций', en: 'Scene Changer' }, desc: { ru: 'Купить все фоны в магазине', en: 'Buy all backgrounds in the shop' }, icon: '🎨', hidden: false },
+    { id: 'all_fruits', name: { ru: 'Фруктовый рай', en: 'Fruit Paradise' }, desc: { ru: 'Купить все фрукты в магазине', en: 'Buy all fruits in the shop' }, icon: '🍇', hidden: false },
+    { id: 'shop_complete', name: { ru: 'Империя змей', en: 'Snake Empire' }, desc: { ru: 'Купить всё в магазине (скины, фоны и фрукты)', en: 'Buy everything in the shop (skins, backgrounds and fruits)' }, icon: '👑', hidden: false }
+];
 
   const allFruits = [
     {id:0,name:{ru:'Яблоко',en:'Apple'},icon:'🍎',default:true},{id:1,name:{ru:'Банан',en:'Banana'},icon:'🍌',default:true},{id:2,name:{ru:'Слива',en:'Plum'},icon:'plum',default:true},
@@ -472,6 +476,20 @@
   function loadAchievements(){try{const s=localStorage.getItem('snakeAchievements');achievements=s?JSON.parse(s):{}}catch(e){achievements={}}}
   function saveAchievements(){try{localStorage.setItem('snakeAchievements',JSON.stringify(achievements))}catch(e){}}
   function unlockAchievement(id){if(!achievements[id]){achievements[id]={unlocked:true,timestamp:Date.now()};saveAchievements();const ach=achievementsList.find(a=>a.id===id);if(ach)showAchievementToast(ach);return true}return false}
+  function checkShopAchievements() {
+  const allSkinIds = shopSkins.map(s => s.id);
+  const allBgIds = shopBackgrounds.map(bg => bg.id);
+  const allFruitIds = allFruits.filter(f => !f.default).map(f => f.id);
+  
+  const hasAllSkins = allSkinIds.every(id => ownedSkins.includes(id)) && ownedSkins.includes('custom');
+  const hasAllBackgrounds = allBgIds.every(id => ownedBackgrounds.includes(id));
+  const hasAllFruits = allFruitIds.every(id => ownedFruits.includes(id));
+  
+  if (hasAllSkins) unlockAchievement('all_skins');
+  if (hasAllBackgrounds) unlockAchievement('all_backgrounds');
+  if (hasAllFruits) unlockAchievement('all_fruits');
+  if (hasAllSkins && hasAllBackgrounds && hasAllFruits) unlockAchievement('shop_complete');
+}
   function resetAchievements(){achievements={};saveAchievements();renderAchievements();}
   function isAchievementUnlocked(id){return achievements[id]&&achievements[id].unlocked}
 
