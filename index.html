@@ -51,6 +51,22 @@
     .achievement-toast-title { color: #ffd700; font-weight: bold; font-size: 0.9rem; }
     .achievement-toast-desc { color: #b9dbb0; font-size: 0.8rem; }
 
+    /* Стили для превью скинов в магазине */
+.shop-preview-fire { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #ff4500, #ff8c00, #ffd700); box-shadow: 0 0 12px rgba(255,69,0,0.6); }
+.shop-preview-ice { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #00ffff, #00bfff, #1e90ff); box-shadow: 0 0 12px rgba(0,191,255,0.6); }
+.shop-preview-toxic { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #7fff00, #32cd32, #006400); box-shadow: 0 0 12px rgba(127,255,0,0.6); }
+.shop-preview-shadow { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2f1a4a, #1a0a2e, #0d0015); box-shadow: 0 0 12px rgba(75,0,130,0.8); }
+.shop-preview-crystal { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #e0b0ff, #c0c0ff, #dda0dd); box-shadow: 0 0 12px rgba(216,191,216,0.7); }
+.shop-preview-lava { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #ff6347, #ff4500, #8b0000); box-shadow: 0 0 12px rgba(255,99,71,0.7); }
+.shop-preview-ocean { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #00ced1, #4682b4, #000080); box-shadow: 0 0 12px rgba(0,206,209,0.6); }
+.shop-preview-sunset { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #ff69b4, #ffa500, #ffd700); box-shadow: 0 0 12px rgba(255,105,180,0.6); }
+.shop-preview-galaxy { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #8a2be2, #4b0082, #191970); box-shadow: 0 0 12px rgba(138,43,226,0.7); animation: galaxyPulse 2s ease-in-out infinite; }
+@keyframes galaxyPulse { 0%, 100% { box-shadow: 0 0 12px rgba(138,43,226,0.7); } 50% { box-shadow: 0 0 20px rgba(138,43,226,1), 0 0 30px rgba(75,0,130,0.5); } }
+.shop-preview-candy { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #ff6b9d, #c44569, #ff9ff3); box-shadow: 0 0 12px rgba(255,107,157,0.6); }
+.shop-preview-emerald { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #00ff7f, #00fa9a, #2e8b57); box-shadow: 0 0 12px rgba(0,255,127,0.6); }
+.shop-preview-ruby { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #ff1493, #dc143c, #8b0000); box-shadow: 0 0 12px rgba(255,20,147,0.6); }
+.shop-preview-sapphire { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #4169e1, #0000cd, #00008b); box-shadow: 0 0 12px rgba(65,105,225,0.6); }
+.shop-preview-coral { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #ff7f50, #ff6347, #ff4500); box-shadow: 0 0 12px rgba(255,127,80,0.6); }
     .shop-item { background: #152b1f; border-radius: 1rem; padding: 1rem; margin: 0.8rem 0; display: flex; align-items: center; gap: 1rem; border: 2px solid #3a5a40; transition: all 0.2s; }
     .shop-item.owned { border-color: #7bbf6a; background: #1a3324; }
     .shop-item.equipped { border-color: #ffd700; box-shadow: 0 0 15px rgba(255,215,0,0.3); }
@@ -150,6 +166,18 @@
       .controls-hint { font-size: 0.75rem; gap: 1rem; }
       .menu-panel { width: 95%; padding: 1.2rem; min-width: 280px; }
     }
+    /* Стили для превью фонов в магазине */
+.shop-preview-underwater { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #0a1a2a, #1a3a5a, #0a2a4a); box-shadow: inset 0 0 10px rgba(0,150,255,0.3); }
+.shop-preview-desert { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #2a1a0a, #5a3a1a, #8a6a2a); box-shadow: inset 0 0 10px rgba(255,200,100,0.3); }
+.shop-preview-jungle { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #0a2a0a, #1a4a1a, #0a3a0a); box-shadow: inset 0 0 10px rgba(0,255,0,0.3); }
+.shop-preview-cyber { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #0a0a1a, #1a1a4a, #000033); box-shadow: inset 0 0 10px rgba(0,100,255,0.5); }
+.shop-preview-lavabg { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #1a0a0a, #3a1a1a, #5a0000); box-shadow: inset 0 0 10px rgba(255,50,0,0.4); }
+.shop-preview-sky { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #1a2a3a, #2a3a4a, #3a4a5a); box-shadow: inset 0 0 10px rgba(200,220,255,0.3); }
+.shop-preview-neongrid { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #0a0a2a, #2a1a5a, #1a0a3a); box-shadow: inset 0 0 10px rgba(150,0,255,0.5); }
+.shop-preview-space { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #0a0a1a, #1a1a3a, #000011); box-shadow: inset 0 0 10px rgba(255,255,255,0.2); }
+.shop-preview-aurora { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #0a1a2a, #2a4a3a, #1a3a2a); box-shadow: inset 0 0 10px rgba(0,255,150,0.3); }
+.shop-preview-rainbowbg { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #2a1a2a, #4a2a4a, #1a1a3a); box-shadow: inset 0 0 10px rgba(255,100,255,0.4); }
+.shop-preview-goldenfield { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #1a1a0a, #3a3a1a, #5a5a0a); box-shadow: inset 0 0 10px rgba(255,215,0,0.5); }
   </style>
 </head>
 <body>
@@ -264,6 +292,7 @@
     <label class="nickname-label-centered">🌐 Язык</label><select id="languageSelect"><option value="ru">Русский</option><option value="en">English</option></select><button id="backFromSettings" class="menu-btn" style="margin-top:1rem;">↩ НАЗАД</button></div></div>
 </div>
 
+</script>
 <script>
 (function() {
   const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
@@ -324,12 +353,11 @@
   let enableShield = true, enableMagnet = true, enableDiamond = true;
   let currentLang = 'ru';
   
-  // Новые переменные для системы ускорения
   let enableSpeedIncrease = false;
-  const BASE_MOVE_INTERVAL = 120; // базовая задержка в мс
-  const SPEED_INCREMENT = 3; // ускорение на 3мс за каждый фрукт
+  const BASE_MOVE_INTERVAL = 120;
+  const SPEED_INCREMENT = 3;
   let currentMoveInterval = BASE_MOVE_INTERVAL;
-  let speedLevel = 0; // количество съеденных фруктов (для расчёта скорости)
+  let speedLevel = 0;
 
   let stats = { totalGames: 0, totalScore: 0, totalFruits: 0, totalDeaths: 0, totalTime: 0, bestScore: 0, favoriteMode: '' };
   let snake2 = [], direction2 = {x:-1,y:0}, nextDirection2 = {x:-1,y:0};
@@ -348,19 +376,45 @@
     {id:0,name:{ru:'Яблоко',en:'Apple'},icon:'🍎',default:true},{id:1,name:{ru:'Банан',en:'Banana'},icon:'🍌',default:true},{id:2,name:{ru:'Слива',en:'Plum'},icon:'plum',default:true},
     {id:6,name:{ru:'Виноград',en:'Grapes'},icon:'grape',price:20,color:'#8e44ad'},{id:5,name:{ru:'Вишня',en:'Cherry'},icon:'🍒',price:25,color:'#e74c3c'},{id:3,name:{ru:'Арбуз',en:'Watermelon'},icon:'🍉',price:30,color:'#2ecc71'},{id:4,name:{ru:'Ананас',en:'Pineapple'},icon:'🍍',price:40,color:'#f39c12'}
   ];
+  
   const shopSkins = [
     {id:'golden',name:{ru:'Золотая',en:'Golden'},price:50,color:'#ffd700',preview:'coin',glow:true,glowColor:'#ffd700'},
     {id:'neon',name:{ru:'Неоновая',en:'Neon'},price:100,color:'#00ffcc',preview:'neon',glow:true,glowColor:'#00ffcc'},
-    {id:'rainbow',name:{ru:'Радужная',en:'Rainbow'},price:150,color:'rainbow',preview:'rainbow',rainbow:true}
+    {id:'rainbow',name:{ru:'Радужная',en:'Rainbow'},price:150,color:'rainbow',preview:'rainbow',rainbow:true},
+    {id:'fire',name:{ru:'Огненная',en:'Fire'},price:200,color:'#ff4500',preview:'fire',glow:true,glowColor:'#ff6347'},
+    {id:'ice',name:{ru:'Ледяная',en:'Ice'},price:200,color:'#00ffff',preview:'ice',glow:true,glowColor:'#00bfff'},
+    {id:'toxic',name:{ru:'Токсичная',en:'Toxic'},price:200,color:'#7fff00',preview:'toxic',glow:true,glowColor:'#32cd32'},
+    {id:'shadow',name:{ru:'Теневая',en:'Shadow'},price:250,color:'#2f1a4a',preview:'shadow',glow:true,glowColor:'#4b0082'},
+    {id:'crystal',name:{ru:'Хрустальная',en:'Crystal'},price:300,color:'#e0b0ff',preview:'crystal',glow:true,glowColor:'#dda0dd'},
+    {id:'lava',name:{ru:'Лавовая',en:'Lava'},price:300,color:'#ff6347',preview:'lava',glow:true,glowColor:'#ff4500'},
+    {id:'ocean',name:{ru:'Океанская',en:'Ocean'},price:300,color:'#00ced1',preview:'ocean',glow:true,glowColor:'#4682b4'},
+    {id:'sunset',name:{ru:'Закатная',en:'Sunset'},price:350,color:'#ff69b4',preview:'sunset',glow:true,glowColor:'#ffa500'},
+    {id:'galaxy',name:{ru:'Галактическая',en:'Galaxy'},price:400,color:'#8a2be2',preview:'galaxy',glow:true,glowColor:'#4b0082'},
+    {id:'candy',name:{ru:'Конфетная',en:'Candy'},price:400,color:'#ff6b9d',preview:'candy',glow:true,glowColor:'#ff9ff3'},
+    {id:'emerald',name:{ru:'Изумрудная',en:'Emerald'},price:450,color:'#00ff7f',preview:'emerald',glow:true,glowColor:'#00fa9a'},
+    {id:'ruby',name:{ru:'Рубиновая',en:'Ruby'},price:450,color:'#ff1493',preview:'ruby',glow:true,glowColor:'#dc143c'},
+    {id:'sapphire',name:{ru:'Сапфировая',en:'Sapphire'},price:450,color:'#4169e1',preview:'sapphire',glow:true,glowColor:'#0000cd'},
+    {id:'coral',name:{ru:'Коралловая',en:'Coral'},price:500,color:'#ff7f50',preview:'coral',glow:true,glowColor:'#ff6347'}
   ];
+  
   const shopBackgrounds = [
     { id: 5, name: { ru: 'Движущиеся облака', en: 'Moving Clouds' }, icon: '☁️', price: 60 },
     { id: 6, name: { ru: 'Мерцающие звёзды', en: 'Twinkling Stars' }, icon: '⭐', price: 80 },
     { id: 7, name: { ru: 'Глубокий лес', en: 'Deep Forest' }, icon: '🌲', price: 100 },
-    { id: 8, name: { ru: 'Горный', en: 'Mountain' }, icon: '🏔', price: 120 }
+    { id: 8, name: { ru: 'Горный', en: 'Mountain' }, icon: '🏔', price: 120 },
+    { id: 9, name: { ru: 'Подводный мир', en: 'Underwater' }, icon: '🐠', price: 150 },
+    { id: 10, name: { ru: 'Пустыня', en: 'Desert' }, icon: '🏜️', price: 180 },
+    { id: 11, name: { ru: 'Джунгли', en: 'Jungle' }, icon: '🌴', price: 200 },
+    { id: 12, name: { ru: 'Кибер-сетка', en: 'Cyber Grid' }, icon: '🔷', price: 220 },
+    { id: 13, name: { ru: 'Лава', en: 'Lava Field' }, icon: '🌋', price: 250 },
+    { id: 14, name: { ru: 'Облака', en: 'Sky' }, icon: '☁️', price: 280 },
+    { id: 15, name: { ru: 'Неоновая сетка', en: 'Neon Grid' }, icon: '💜', price: 300 },
+    { id: 16, name: { ru: 'Космос', en: 'Space' }, icon: '🚀', price: 320 },
+    { id: 17, name: { ru: 'Северное сияние', en: 'Aurora' }, icon: '🌌', price: 350 },
+    { id: 18, name: { ru: 'Радужное поле', en: 'Rainbow Field' }, icon: '🌈', price: 400 },
+    { id: 19, name: { ru: 'Золотое поле', en: 'Golden Field' }, icon: '👑', price: 500 }
   ];
 
-  // Функция для обновления отображения текущей скорости
   function updateSpeedDisplay() {
     if (currentSpeedDisplay) {
       if (enableSpeedIncrease) {
@@ -373,13 +427,10 @@
     }
   }
 
-  // Функция для расчёта текущей скорости на основе съеденных фруктов
   function calculateMoveInterval() {
     if (!enableSpeedIncrease) {
       return BASE_MOVE_INTERVAL;
     }
-    // Каждый фрукт уменьшает задержку на SPEED_INCREMENT мс
-    // Минимальная задержка - 40мс (чтобы игра оставалась играбельной)
     return Math.max(40, BASE_MOVE_INTERVAL - (speedLevel * SPEED_INCREMENT));
   }
 
@@ -528,12 +579,103 @@
   function updateCoinsDisplay(){coinsDisplay.textContent=coins;shopCoinsDisplay.textContent=coins;}
   
   function getP2SnakeColor(i){if(p2UseCustomSkin&&customSkinParams){if(customSkinParams.segments&&customSkinParams.segments.length>0)return customSkinParams.segments[i%customSkinParams.segments.length];return '#4488ff';}const styles=[['#4488ff','#2266cc'],['#4488ff','#2266cc'],['#ff4444','#cc2222'],['#aa44ff','#8822cc'],['#ff8844','#cc6622']];const s=styles[p2SnakeStyle]||styles[0];return i===0?s[0]:s[1];}
-  function getCurrentSkinColor(i,player){if(player===2)return getP2SnakeColor(i);if(equippedSkin==='custom'&&customSkinParams){if(customSkinParams.segments&&customSkinParams.segments.length>0)return customSkinParams.segments[i%customSkinParams.segments.length];return segmentColors[0]||'#6fbf4c';}if(equippedSkin==='default')return i===0?'#6fbf4c':shadeColor('#6fbf4c',-20);const s=shopSkins.find(s=>s.id===equippedSkin);if(!s)return i===0?'#6fbf4c':shadeColor('#6fbf4c',-20);if(s.rainbow){const c=['#ff0000','#ff8800','#ffff00','#00ff00','#0088ff','#0000ff','#8800ff'];return c[i%c.length];}return i===0?s.color:shadeColor(s.color,-20);}
+  
+  function getCurrentSkinColor(i,player){
+    if(player===2)return getP2SnakeColor(i);
+    
+    if(equippedSkin==='custom'&&customSkinParams){
+      if(customSkinParams.segments&&customSkinParams.segments.length>0)return customSkinParams.segments[i%customSkinParams.segments.length];
+      return segmentColors[0]||'#6fbf4c';
+    }
+    
+    if(equippedSkin==='default')return i===0?'#6fbf4c':shadeColor('#6fbf4c',-20);
+    
+    const s=shopSkins.find(s=>s.id===equippedSkin);
+    if(!s)return i===0?'#6fbf4c':shadeColor('#6fbf4c',-20);
+    
+    if(s.rainbow){
+      const c=['#ff0000','#ff8800','#ffff00','#00ff00','#0088ff','#0000ff','#8800ff'];
+      return c[i%c.length];
+    }
+    
+    if(s.id==='fire'){
+      const fireColors=['#ff4500','#ff6347','#ff8c00','#ffa500','#ffd700'];
+      return fireColors[i%fireColors.length];
+    }
+    
+    if(s.id==='ice'){
+      const iceColors=['#00ffff','#00bfff','#1e90ff','#4169e1','#0000ff'];
+      return iceColors[i%iceColors.length];
+    }
+    
+    if(s.id==='toxic'){
+      const toxicColors=['#7fff00','#32cd32','#00ff00','#228b22','#006400'];
+      return toxicColors[i%toxicColors.length];
+    }
+    
+    if(s.id==='shadow'){
+      const shadowColors=['#4b0082','#2f1a4a','#1a0a2e','#0d0015','#6a0dad'];
+      return shadowColors[i%shadowColors.length];
+    }
+    
+    if(s.id==='crystal'){
+      const crystalColors=['#e0b0ff','#c0c0ff','#dda0dd','#e6e6fa','#d8bfd8'];
+      return crystalColors[i%crystalColors.length];
+    }
+    
+    if(s.id==='lava'){
+      const lavaColors=['#ff6347','#ff4500','#8b0000','#b22222','#dc143c'];
+      return lavaColors[i%lavaColors.length];
+    }
+    
+    if(s.id==='ocean'){
+      const oceanColors=['#00ced1','#20b2aa','#4682b4','#5f9ea0','#000080'];
+      return oceanColors[i%oceanColors.length];
+    }
+    
+    if(s.id==='sunset'){
+      const sunsetColors=['#ff69b4','#ffa500','#ffd700','#ff6347','#ff7f50'];
+      return sunsetColors[i%sunsetColors.length];
+    }
+    
+    if(s.id==='galaxy'){
+      const galaxyColors=['#8a2be2','#4b0082','#191970','#6a0dad','#9370db'];
+      return galaxyColors[i%galaxyColors.length];
+    }
+    
+    if(s.id==='candy'){
+      const candyColors=['#ff6b9d','#c44569','#ff9ff3','#f368e0','#ff69b4'];
+      return candyColors[i%candyColors.length];
+    }
+    
+    if(s.id==='emerald'){
+      const emeraldColors=['#00ff7f','#00fa9a','#2e8b57','#3cb371','#66cdaa'];
+      return emeraldColors[i%emeraldColors.length];
+    }
+    
+    if(s.id==='ruby'){
+      const rubyColors=['#ff1493','#dc143c','#8b0000','#ff69b4','#ff0000'];
+      return rubyColors[i%rubyColors.length];
+    }
+    
+    if(s.id==='sapphire'){
+      const sapphireColors=['#4169e1','#0000cd','#00008b','#1e90ff','#6495ed'];
+      return sapphireColors[i%sapphireColors.length];
+    }
+    
+    if(s.id==='coral'){
+      const coralColors=['#ff7f50','#ff6347','#ff4500','#ff8c69','#fa8072'];
+      return coralColors[i%coralColors.length];
+    }
+    
+    return i===0?s.color:shadeColor(s.color,-20);
+  }
+  
   function isSkinGlow(player){if(player===2&&p2UseCustomSkin&&customSkinParams)return customSkinParams.glow;if(equippedSkin==='custom'&&customSkinParams)return customSkinParams.glow;const s=shopSkins.find(s=>s.id===equippedSkin);return s&&s.glow;}
   function getSkinGlowColor(player){if(player===2&&p2UseCustomSkin&&customSkinParams)return customSkinParams.glowColor;if(equippedSkin==='custom'&&customSkinParams)return customSkinParams.glowColor;const s=shopSkins.find(s=>s.id===equippedSkin);return s?s.glowColor:'#ffffff';}
 
   function updateFruitSelect(){fruitSelect.innerHTML='';allFruits.forEach(f=>{if(ownedFruits.includes(f.id)){const o=document.createElement('option');o.value=f.id;let ft='';if(f.icon==='plum')ft='🫐 '+f.name[currentLang];else if(f.icon==='grape')ft='🍇 '+f.name[currentLang];else ft=f.icon+' '+f.name[currentLang];o.textContent=ft;fruitSelect.appendChild(o);}});if(!ownedFruits.includes(fruitType))fruitType=ownedFruits[0]||0;fruitSelect.value=fruitType;}
-  function updateFieldDesignSelect(){const o=fieldDesignSelect.querySelectorAll('option');for(let i=0;i<o.length;i++){const v=parseInt(o[i].value);if((v===5||v===6||v===7||v===8)&&!ownedBackgrounds.includes(v))o[i].disabled=true;else o[i].disabled=false;}}
+  function updateFieldDesignSelect(){const o=fieldDesignSelect.querySelectorAll('option');for(let i=0;i<o.length;i++){const v=parseInt(o[i].value);if(v>=5&&!ownedBackgrounds.includes(v))o[i].disabled=true;else o[i].disabled=false;}}
 
   function updateDuoCustomSkinSection(){if(!duoCustomSkinSection) return;const hasCustom=ownedSkins.includes('custom');duoCustomSkinSection.innerHTML='';if(hasCustom){const div=document.createElement('div');div.style.cssText='margin-top:0.5rem;';div.innerHTML=`<div class="custom-color-row"><span>${currentLang==='ru'?'Использовать свой скин для 2 игрока':'Use custom skin for player 2'}</span><input type="checkbox" id="p2UseCustomSkinCheck" style="width:auto;margin:0;" ${p2UseCustomSkin?'checked':''}></div>`;duoCustomSkinSection.appendChild(div);const cb=document.getElementById('p2UseCustomSkinCheck');if(cb)cb.addEventListener('change',(e)=>{p2UseCustomSkin=e.target.checked;saveAllSettings();drawBoard();});}else{duoCustomSkinSection.innerHTML=`<p style="color:#b9dbb0;font-size:0.8rem;margin-top:0.5rem;">${t('buyCustomSkin')}</p>`;}}
 
@@ -542,10 +684,32 @@
   function renderShop(){if(!shopContent)return;shopContent.innerHTML='';const tab=document.querySelector('.shop-tab.active')?.dataset.tab||'skins';
     if(tab==='skins'){
       const co=ownedSkins.includes('custom');
-      const ci=document.createElement('div');ci.className=`shop-item ${equippedSkin==='custom'?'equipped':''} ${co?'owned':''}`;ci.innerHTML=`<div class="shop-preview" style="background:${customSkinParams?segmentColors[0]:'#ccc'};border-radius:0.8rem;"></div><div class="shop-info"><div class="shop-name">${t('customSkin')}</div><div class="shop-price">${co?t('owned'):`⭐ 250`}</div></div><button class="shop-btn" ${!co&&coins<250?'disabled':''}>${equippedSkin==='custom'?t('equipped'):co?t('equip'):`⭐ 250`}</button>`;
-      ci.querySelector('.shop-btn').onclick=()=>{if(!co&&coins>=250){coins-=250;ownedSkins.push('custom');saveCoins();saveSkins();updateCoinsDisplay();openCustomSkinEditor();}else if(co){if(equippedSkin!=='custom'){equippedSkin='custom';saveSkins();renderShop();drawBoard();}else{openCustomSkinEditor();}}};shopContent.appendChild(ci);
+      const ci=document.createElement('div');ci.className=`shop-item ${equippedSkin==='custom'?'equipped':''} ${co?'owned':''}`;ci.innerHTML=`<div class="shop-preview" style="background:${customSkinParams?segmentColors[0]:'#ccc'};border-radius:0.8rem;"></div><div class="shop-info"><div class="shop-name">${t('customSkin')}</div><div class="shop-price">${co?t('owned'):`⭐ 400`}</div></div><button class="shop-btn" ${!co&&coins<400?'disabled':''}>${equippedSkin==='custom'?t('equipped'):co?t('equip'):`⭐ 400`}</button>`;
+      ci.querySelector('.shop-btn').onclick=()=>{if(!co&&coins>=400){coins-=400;ownedSkins.push('custom');saveCoins();saveSkins();updateCoinsDisplay();openCustomSkinEditor();}else if(co){if(equippedSkin!=='custom'){equippedSkin='custom';saveSkins();renderShop();drawBoard();}else{openCustomSkinEditor();}}};shopContent.appendChild(ci);
       const d=document.createElement('div');d.className=`shop-item ${equippedSkin==='default'?'equipped':'owned'}`;d.innerHTML=`<div class="shop-preview" style="background:#6fbf4c;border-radius:0.8rem;"></div><div class="shop-info"><div class="shop-name">${t('default')}</div><div class="shop-price">${t('free')}</div></div><button class="shop-btn">${equippedSkin==='default'?t('equipped'):t('equip')}</button>`;d.querySelector('.shop-btn').onclick=()=>{equippedSkin='default';saveSkins();renderShop();drawBoard();};shopContent.appendChild(d);
-      shopSkins.forEach(s=>{const owned=ownedSkins.includes(s.id),eq=equippedSkin===s.id;const item=document.createElement('div');item.className=`shop-item ${eq?'equipped':''} ${owned?'owned':''}`;let p='';if(s.id==='golden')p='<span class="coin-sprite"></span>';else if(s.id==='neon')p='<div style="width:30px;height:30px;background:#00ffcc;border-radius:50%;box-shadow:0 0 15px #00ffcc;"></div>';else if(s.id==='rainbow')p='<div class="shop-preview-rainbow-circle"></div>';item.innerHTML=`<div class="shop-preview">${p}</div><div class="shop-info"><div class="shop-name">${s.name[currentLang]}</div><div class="shop-price">${owned?t('owned'):`⭐ ${s.price}`}</div></div><button class="shop-btn" ${!owned&&coins<s.price?'disabled':''}>${eq?t('equipped'):owned?t('equip'):`⭐ ${s.price}`}</button>`;item.querySelector('.shop-btn').onclick=()=>{if(!owned&&coins>=s.price){coins-=s.price;ownedSkins.push(s.id);equippedSkin=s.id;saveCoins();saveSkins();updateCoinsDisplay();renderShop();drawBoard();}else if(owned){equippedSkin=s.id;saveSkins();renderShop();drawBoard();}};shopContent.appendChild(item);});
+      shopSkins.forEach(s=>{const owned=ownedSkins.includes(s.id),eq=equippedSkin===s.id;const item=document.createElement('div');item.className=`shop-item ${eq?'equipped':''} ${owned?'owned':''}`;
+        let p='';
+        if(s.id==='golden')p='<span class="coin-sprite"></span>';
+        else if(s.id==='neon')p='<div style="width:30px;height:30px;background:#00ffcc;border-radius:50%;box-shadow:0 0 15px #00ffcc;"></div>';
+        else if(s.id==='rainbow')p='<div class="shop-preview-rainbow-circle"></div>';
+        else if(s.id==='fire')p='<div class="shop-preview-fire"></div>';
+        else if(s.id==='ice')p='<div class="shop-preview-ice"></div>';
+        else if(s.id==='toxic')p='<div class="shop-preview-toxic"></div>';
+        else if(s.id==='shadow')p='<div class="shop-preview-shadow"></div>';
+        else if(s.id==='crystal')p='<div class="shop-preview-crystal"></div>';
+        else if(s.id==='lava')p='<div class="shop-preview-lava"></div>';
+        else if(s.id==='ocean')p='<div class="shop-preview-ocean"></div>';
+        else if(s.id==='sunset')p='<div class="shop-preview-sunset"></div>';
+        else if(s.id==='galaxy')p='<div class="shop-preview-galaxy"></div>';
+        else if(s.id==='candy')p='<div class="shop-preview-candy"></div>';
+        else if(s.id==='emerald')p='<div class="shop-preview-emerald"></div>';
+        else if(s.id==='ruby')p='<div class="shop-preview-ruby"></div>';
+        else if(s.id==='sapphire')p='<div class="shop-preview-sapphire"></div>';
+        else if(s.id==='coral')p='<div class="shop-preview-coral"></div>';
+        
+        item.innerHTML=`<div class="shop-preview">${p}</div><div class="shop-info"><div class="shop-name">${s.name[currentLang]}</div><div class="shop-price">${owned?t('owned'):`⭐ ${s.price}`}</div></div><button class="shop-btn" ${!owned&&coins<s.price?'disabled':''}>${eq?t('equipped'):owned?t('equip'):`⭐ ${s.price}`}</button>`;
+        item.querySelector('.shop-btn').onclick=()=>{if(!owned&&coins>=s.price){coins-=s.price;ownedSkins.push(s.id);equippedSkin=s.id;saveCoins();saveSkins();updateCoinsDisplay();renderShop();drawBoard();}else if(owned){equippedSkin=s.id;saveSkins();renderShop();drawBoard();}};shopContent.appendChild(item);
+      });
     }else if(tab==='fruits'){
       allFruits.filter(f=>!f.default).sort((a,b)=>a.price-b.price).forEach(f=>{const owned=ownedFruits.includes(f.id);const item=document.createElement('div');item.className=`shop-item ${owned?'owned':''}`;let ph='';if(f.id===6){ph='<div style="position:relative;width:40px;height:40px;">';const gs=[{x:12,y:10},{x:22,y:10},{x:17,y:19},{x:8,y:15},{x:26,y:15},{x:14,y:26},{x:24,y:24}];gs.forEach(g=>{ph+=`<div style="position:absolute;left:${g.x}px;top:${g.y}px;width:10px;height:10px;background:radial-gradient(circle at 30% 30%, #a569bd, #7d3c98);border-radius:50%;box-shadow:1px 1px 2px rgba(0,0,0,0.3);"></div>`;});ph+='</div>';}else if(f.id===5){ph='<div style="position:relative;width:40px;height:40px;">';ph+='<div style="position:absolute;left:6px;top:10px;width:16px;height:16px;background:radial-gradient(circle at 30% 30%, #ff6b6b, #c0392b);border-radius:50%;"></div>';ph+='<div style="position:absolute;left:18px;top:14px;width:14px;height:14px;background:radial-gradient(circle at 30% 30%, #ff6b6b, #c0392b);border-radius:50%;"></div>';ph+='<div style="position:absolute;left:7px;top:3px;width:2px;height:8px;background:#5d8233;transform:rotate(-30deg);"></div>';ph+='<div style="position:absolute;left:18px;top:8px;width:2px;height:8px;background:#5d8233;transform:rotate(-20deg);"></div>';ph+='<div style="position:absolute;left:10px;top:0px;width:10px;height:6px;background:#2ecc71;border-radius:50%;transform:rotate(20deg);"></div>';ph+='</div>';}else{ph=`<span style="font-size:1.8rem;">${f.icon}</span>`;}item.innerHTML=`<div class="shop-preview" style="background:#1a2f1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">${ph}</div><div class="shop-info"><div class="shop-name">${f.name[currentLang]}</div><div class="shop-price">${owned?t('owned'):`⭐ ${f.price}`}</div></div><button class="shop-btn" ${!owned&&coins<f.price?'disabled':''}>${owned?'✓':`⭐ ${f.price}`}</button>`;item.querySelector('.shop-btn').onclick=()=>{if(!owned&&coins>=f.price){coins-=f.price;ownedFruits.push(f.id);saveCoins();saveOwnedFruits();updateCoinsDisplay();updateFruitSelect();renderShop();}};shopContent.appendChild(item);});
     }else if(tab==='backgrounds'){
@@ -568,7 +732,7 @@
   let gameLoopInterval=null,animationFrameId=null;
   let lastMoveTime=0,animationProgress=0,prevSnake=[],prevSnake2=[],wallPassTriggered=false;
   let fieldDesign=0,customBgImage=null,cloudOffset=0,starTwinkle=0;
-  const fieldDesigns={0:{bg:'#0b1b12',grid:'#2a462a'},1:{bg:'#1a2f1a',grid:'#3a5a2a'},2:{bg:'#2a2618',grid:'#5a4a2a'},3:{bg:'#1a2830',grid:'#3a4a5a'},4:{bg:'#0b1b12',grid:'#2a462a'},5:{bg:'#1a2f3a',grid:'#3a5a6a'},6:{bg:'#0a0a1a',grid:'#2a2a4a'},7:{bg:'#0d1f0d',grid:'#1a3a1a'},8:{bg:'#1a1a2e',grid:'#3a3a5a'}};
+  const fieldDesigns={0:{bg:'#0b1b12',grid:'#2a462a'},1:{bg:'#1a2f1a',grid:'#3a5a2a'},2:{bg:'#2a2618',grid:'#5a4a2a'},3:{bg:'#1a2830',grid:'#3a4a5a'},4:{bg:'#0b1b12',grid:'#2a462a'},5:{bg:'#1a2f3a',grid:'#3a5a6a'},6:{bg:'#0a0a1a',grid:'#2a2a4a'},7:{bg:'#0d1f0d',grid:'#1a3a1a'},8:{bg:'#1a1a2e',grid:'#3a3a5a'},9:{bg:'#0a1a2a',grid:'#1a3a5a'},10:{bg:'#2a1a0a',grid:'#5a3a1a'},11:{bg:'#0a2a0a',grid:'#1a4a1a'},12:{bg:'#0a0a1a',grid:'#1a1a4a'},13:{bg:'#1a0a0a',grid:'#3a1a1a'},14:{bg:'#1a2a3a',grid:'#2a3a4a'},15:{bg:'#0a0a2a',grid:'#2a1a5a'},16:{bg:'#0a0a1a',grid:'#1a1a3a'},17:{bg:'#0a1a2a',grid:'#2a4a3a'},18:{bg:'#2a1a2a',grid:'#4a2a4a'},19:{bg:'#1a1a0a',grid:'#3a3a1a'}};
   let fruitType=0,playerNickname='',audioCtx=null,currentSoundType=0,soundVolume=0.7;
   let fruitsEatenThisGame=0;
   let touchStartX=0,touchStartY=0,touchStartTime=0;
@@ -668,7 +832,6 @@
     return wrapped;
   }
 
-  // Функция для перезапуска игрового цикла с новой скоростью
   function restartGameLoopWithNewSpeed() {
     clearGameLoop();
     if (gameActive && !isPaused) {
@@ -703,12 +866,10 @@
     if(fe){
       currentScore++;fruitsEatenThisGame++;
       
-      // Применяем ускорение при съедании фрукта
       if (enableSpeedIncrease) {
         speedLevel++;
         currentMoveInterval = calculateMoveInterval();
         updateSpeedDisplay();
-        // Перезапускаем игровой цикл с новой скоростью
         restartGameLoopWithNewSpeed();
       }
       
@@ -784,7 +945,6 @@
         prevSnake2 = [prevSnake2[0], ...prevSnake2, tailPos2];
       }
       
-      // Применяем ускорение в дуо-режиме
       if (enableSpeedIncrease && (fe1 || fe2)) {
         speedLevel++;
         currentMoveInterval = calculateMoveInterval();
@@ -819,7 +979,6 @@
   function applyGridSize(){GRID_SIZE=parseInt(gridSizeSelect.value,10);CELL_SIZE=canvas.width/GRID_SIZE;snake=getInitSnake();prevSnake=snake.map(s=>({...s}));direction={x:1,y:0};nextDirection={x:1,y:0};currentScore=0;scoreP1=0;scoreP2=0;fruitsEatenThisGame=0;speedLevel=0;currentMoveInterval=BASE_MOVE_INTERVAL;updateSpeedDisplay();currentScoreSpan.textContent='0';p1ScoreDisplay.textContent='0';p2ScoreDisplay.textContent='0';bombs=[];particles=[];bonuses=[];snake2=[];wallPassTriggered=false;gameActive=true;gameOverFlag=false;winFlag=false;isPaused=false;pauseOverlay.classList.add('hidden');updateGameStatus();if(!generateRandomFood())food={x:Math.floor(GRID_SIZE/2)+2,y:Math.floor(GRID_SIZE/2)};clearGameLoop();animationProgress=1;drawBoard();startGameLoop();saveAllSettings();}
   
   function resetGame(){clearGameLoop();snake=getInitSnake();prevSnake=snake.map(s=>({...s}));shieldActive=false;shieldTimer=0;magnetActive=false;magnetTimer=0;diamondActive=false;diamondTimer=0;shieldActive2=false;shieldTimer2=0;magnetActive2=false;magnetTimer2=0;diamondActive2=false;diamondTimer2=0;wallPassTriggered=false;
-    // Сбрасываем скорость при новой игре
     speedLevel = 0;
     currentMoveInterval = calculateMoveInterval();
     updateSpeedDisplay();
@@ -907,18 +1066,15 @@
     const es=document.getElementById('enableShield');if(es)es.addEventListener('change',(e)=>{enableShield=e.target.checked;saveAllSettings();});
     const em=document.getElementById('enableMagnet');if(em)em.addEventListener('change',(e)=>{enableMagnet=e.target.checked;saveAllSettings();});
     const ed=document.getElementById('enableDiamond');if(ed)ed.addEventListener('change',(e)=>{enableDiamond=e.target.checked;saveAllSettings();});
-    // Обработчик для чекбокса ускорения
     if(enableSpeedIncreaseCheck)enableSpeedIncreaseCheck.addEventListener('change',(e)=>{
       enableSpeedIncrease=e.target.checked;
       if (!enableSpeedIncrease) {
-        // Если отключили ускорение - сбрасываем скорость до базовой
         speedLevel = 0;
         currentMoveInterval = BASE_MOVE_INTERVAL;
         if (gameActive && !isPaused) {
           restartGameLoopWithNewSpeed();
         }
       } else {
-        // Если включили - пересчитываем скорость на основе текущего уровня
         currentMoveInterval = calculateMoveInterval();
         if (gameActive && !isPaused) {
           restartGameLoopWithNewSpeed();
