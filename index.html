@@ -698,13 +698,9 @@
   function updateFruitSelect(){fruitSelect.innerHTML='';allFruits.forEach(f=>{if(ownedFruits.includes(f.id)){const o=document.createElement('option');o.value=f.id;let ft='';if(f.icon==='plum')ft='🫐 '+f.name[currentLang];else if(f.icon==='grape')ft='🍇 '+f.name[currentLang];else ft=f.icon+' '+f.name[currentLang];o.textContent=ft;fruitSelect.appendChild(o);}});if(!ownedFruits.includes(fruitType))fruitType=ownedFruits[0]||0;fruitSelect.value=fruitType;}
   
   function updateFieldDesignSelect(){
-    // Сохраняем текущее значение
     const currentValue = fieldDesignSelect.value;
-    
-    // Очищаем селект
     fieldDesignSelect.innerHTML = '';
     
-    // Добавляем все опции
     const allOptions = [
       { value: '4', text: currentLang === 'ru' ? '🖼️ Свой фон' : '🖼️ Custom background', alwaysAvailable: true },
       { value: '0', text: currentLang === 'ru' ? '🌑 Классический тёмный' : '🌑 Classic Dark', alwaysAvailable: true },
@@ -747,17 +743,14 @@
       
       fieldDesignSelect.appendChild(option);
       
-      // Проверяем, должна ли эта опция быть выбрана
       if (opt.value === currentValue && !option.disabled) {
         selectedOption = currentValue;
       }
     });
     
-    // Устанавливаем выбранное значение
     if (selectedOption !== null) {
       fieldDesignSelect.value = selectedOption;
     } else if (!ownedBackgrounds.includes(parseInt(currentValue))) {
-      // Если текущий фон больше не доступен, переключаем на классический
       fieldDesignSelect.value = '0';
       fieldDesign = 0;
       drawBoard();
@@ -819,7 +812,28 @@
   let gameLoopInterval=null,animationFrameId=null;
   let lastMoveTime=0,animationProgress=0,prevSnake=[],prevSnake2=[],wallPassTriggered=false;
   let fieldDesign=0,customBgImage=null,cloudOffset=0,starTwinkle=0;
-  const fieldDesigns={0:{bg:'#0b1b12',grid:'#2a462a'},1:{bg:'#1a2f1a',grid:'#3a5a2a'},2:{bg:'#2a2618',grid:'#5a4a2a'},3:{bg:'#1a2830',grid:'#3a4a5a'},4:{bg:'#0b1b12',grid:'#2a462a'},5:{bg:'#1a2f3a',grid:'#3a5a6a'},6:{bg:'#0a0a1a',grid:'#2a2a4a'},7:{bg:'#0d1f0d',grid:'#1a3a1a'},8:{bg:'#1a1a2e',grid:'#3a3a5a'},9:{bg:'#0a1a2a',grid:'#1a3a5a'},10:{bg:'#2a1a0a',grid:'#5a3a1a'},11:{bg:'#0a2a0a',grid:'#1a4a1a'},12:{bg:'#0a0a1a',grid:'#1a1a4a'},13:{bg:'#1a0a0a',grid:'#3a1a1a'},14:{bg:'#1a2a3a',grid:'#2a3a4a'},15:{bg:'#0a0a2a',grid:'#2a1a5a'},16:{bg:'#0a0a1a',grid:'#1a1a3a'},17:{bg:'#0a1a2a',grid:'#2a4a3a'},18:{bg:'#2a1a2a',grid:'#4a2a4a'},19:{bg:'#1a1a0a',grid:'#3a3a1a'}};
+  const fieldDesigns = {
+    0: { bg: '#0b1b12', grid: '#2a462a' },
+    1: { bg: '#1a2f1a', grid: '#3a5a2a' },
+    2: { bg: '#2a2618', grid: '#5a4a2a' },
+    3: { bg: '#1a2830', grid: '#3a4a5a' },
+    4: { bg: '#0b1b12', grid: '#2a462a' },
+    5: { bg: '#1a2f3a', grid: '#3a5a6a' },
+    6: { bg: '#0a0a1a', grid: '#2a2a4a' },
+    7: { bg: '#0d1f0d', grid: '#1a3a1a' },
+    8: { bg: '#1a1a2e', grid: '#3a3a5a' },
+    9: { bg: '#0a1628', grid: '#1a3a5a' },
+    10: { bg: '#2a1a0a', grid: '#5a3a1a' },
+    11: { bg: '#0a2a0a', grid: '#1a4a1a' },
+    12: { bg: '#0a0a1a', grid: '#1a1a4a' },
+    13: { bg: '#1a0a0a', grid: '#3a1a1a' },
+    14: { bg: '#1a2a3a', grid: '#2a3a4a' },
+    15: { bg: '#0a0a2a', grid: '#2a1a5a' },
+    16: { bg: '#0a0a1a', grid: '#1a1a3a' },
+    17: { bg: '#0a1a2a', grid: '#2a4a3a' },
+    18: { bg: '#2a1a2a', grid: '#4a2a4a' },
+    19: { bg: '#1a1a0a', grid: '#3a3a1a' }
+  };
   let fruitType=0,playerNickname='',audioCtx=null,currentSoundType=0,soundVolume=0.7;
   let fruitsEatenThisGame=0;
   let touchStartX=0,touchStartY=0,touchStartTime=0;
@@ -1100,7 +1114,295 @@
 
   function drawCloud(cx,cy,seed){ctx.fillStyle='rgba(255,255,255,0.9)';ctx.beginPath();ctx.arc(cx,cy,25+Math.sin(seed)*5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx-20,cy+5,20+Math.cos(seed)*3,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx+20,cy+5,22+Math.sin(seed+1)*3,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx-10,cy-10,18,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx+10,cy-8,19,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx,cy+10,23,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(200,210,220,0.4)';ctx.beginPath();ctx.arc(cx-5,cy+15,18,0,Math.PI*2);ctx.fill();}
 
-  function drawBoard(){ctx.clearRect(0,0,canvas.width,canvas.height);if(fieldDesign===4&&customBgImage)ctx.drawImage(customBgImage,0,0,canvas.width,canvas.height);else if(fieldDesign===5){const skyGrad=ctx.createLinearGradient(0,0,0,canvas.height);skyGrad.addColorStop(0,'#87CEEB');skyGrad.addColorStop(0.4,'#B0E0E6');skyGrad.addColorStop(0.7,'#E0F0FF');skyGrad.addColorStop(1,'#F5F5FF');ctx.fillStyle=skyGrad;ctx.fillRect(0,0,canvas.width,canvas.height);const sunX=canvas.width*0.8,sunY=canvas.height*0.2;const sunGrad=ctx.createRadialGradient(sunX,sunY,10,sunX,sunY,60);sunGrad.addColorStop(0,'rgba(255,255,200,1)');sunGrad.addColorStop(0.3,'rgba(255,255,150,0.8)');sunGrad.addColorStop(0.7,'rgba(255,200,100,0.2)');sunGrad.addColorStop(1,'rgba(255,200,100,0)');ctx.fillStyle=sunGrad;ctx.beginPath();ctx.arc(sunX,sunY,60,0,Math.PI*2);ctx.fill();for(let i=0;i<4;i++){const cx=((i*200+cloudOffset*0.5)%(canvas.width+200))-100;const cy=40+Math.sin(i*1.5+cloudOffset*0.03)*15;drawCloud(cx,cy,i);}for(let i=0;i<3;i++){const cx=((i*250+cloudOffset*0.3+100)%(canvas.width+200))-100;const cy=100+Math.sin(i*2+cloudOffset*0.04)*10;drawCloud(cx,cy,i+4);}}else if(fieldDesign===6){const skyGrad=ctx.createLinearGradient(0,0,canvas.width,canvas.height);skyGrad.addColorStop(0,'#0a0a2e');skyGrad.addColorStop(0.3,'#0d0d3a');skyGrad.addColorStop(0.5,'#0f0f2a');skyGrad.addColorStop(0.7,'#1a1a3e');skyGrad.addColorStop(1,'#0a0a1e');ctx.fillStyle=skyGrad;ctx.fillRect(0,0,canvas.width,canvas.height);for(let i=0;i<50;i++){const sx=(i*37+173)%canvas.width,sy=(i*53+97)%canvas.height;const twinkle=Math.sin(starTwinkle*1.5+i*0.8)*0.5+0.5;const size=0.5+(i%3)*0.8;ctx.fillStyle=`rgba(255,255,${200+i%56},${twinkle*0.9+0.1})`;ctx.shadowColor=`rgba(255,255,200,${twinkle*0.6})`;ctx.shadowBlur=size*4;ctx.beginPath();ctx.arc(sx,sy,size,0,Math.PI*2);ctx.fill();ctx.shadowColor='transparent';ctx.shadowBlur=0;}}else{const d=fieldDesigns[fieldDesign]||fieldDesigns[0];ctx.fillStyle=d.bg;ctx.fillRect(0,0,canvas.width,canvas.height);}ctx.strokeStyle=fieldDesigns[fieldDesign]?fieldDesigns[fieldDesign].grid:'#2a462a';ctx.lineWidth=0.6;for(let i=0;i<=GRID_SIZE;i++){ctx.beginPath();ctx.moveTo(i*CELL_SIZE,0);ctx.lineTo(i*CELL_SIZE,canvas.height);ctx.stroke();ctx.moveTo(0,i*CELL_SIZE);ctx.lineTo(canvas.width,i*CELL_SIZE);ctx.stroke();}bombs.forEach(b=>drawBomb(b.x,b.y,b.timer));bonuses.forEach(b=>drawBonus(b.x,b.y,b.type));if(food){const fx=food.x*CELL_SIZE,fy=food.y*CELL_SIZE;drawFruit(fx,fy);}particles.forEach(p=>{ctx.globalAlpha=p.life;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();});ctx.globalAlpha=1;const pr=Math.min(1,Math.max(0,animationProgress));if(gameActive||isPaused){for(let i=snake.length-1;i>=0;i--){const seg=snake[i];let dx=seg.x*CELL_SIZE,dy=seg.y*CELL_SIZE;if(prevSnake[i]&&pr<1&&gameActive&&!isPaused){dx=prevSnake[i].x*CELL_SIZE+(seg.x-prevSnake[i].x)*CELL_SIZE*pr;dy=prevSnake[i].y*CELL_SIZE+(seg.y-prevSnake[i].y)*CELL_SIZE*pr;}const radius=(CELL_SIZE/2)-(i===0?CELL_SIZE/10:CELL_SIZE/6);drawSnakeSegment(dx,dy,radius,i===0,i,1);}if(snake2.length){for(let i=snake2.length-1;i>=0;i--){const seg=snake2[i];let dx=seg.x*CELL_SIZE,dy=seg.y*CELL_SIZE;if(prevSnake2[i]&&pr<1&&gameActive&&!isPaused){dx=prevSnake2[i].x*CELL_SIZE+(seg.x-prevSnake2[i].x)*CELL_SIZE*pr;dy=prevSnake2[i].y*CELL_SIZE+(seg.y-prevSnake2[i].y)*CELL_SIZE*pr;}const radius=(CELL_SIZE/2)-(i===0?CELL_SIZE/10:CELL_SIZE/6);drawSnakeSegment(dx,dy,radius,i===0,i,2);}}}if(!gameActive&&!isPaused){ctx.globalAlpha=0.7;ctx.fillStyle='#0a140e';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.globalAlpha=1;ctx.font='bold 20px "Segoe UI", Inter';ctx.fillStyle='#f9e7b3';ctx.shadowColor='#000';ctx.shadowBlur=14;ctx.textAlign='center';if(winFlag)ctx.fillText(t('win'),canvas.width/2,canvas.height/2-10);else if(gameOverFlag)ctx.fillText(t('gameOver'),canvas.width/2,canvas.height/2-10);ctx.shadowColor='transparent';ctx.shadowBlur=0;}}
+  function drawBoard(){ctx.clearRect(0,0,canvas.width,canvas.height);if(fieldDesign===4&&customBgImage)ctx.drawImage(customBgImage,0,0,canvas.width,canvas.height);else if(fieldDesign===5){const skyGrad=ctx.createLinearGradient(0,0,0,canvas.height);skyGrad.addColorStop(0,'#87CEEB');skyGrad.addColorStop(0.4,'#B0E0E6');skyGrad.addColorStop(0.7,'#E0F0FF');skyGrad.addColorStop(1,'#F5F5FF');ctx.fillStyle=skyGrad;ctx.fillRect(0,0,canvas.width,canvas.height);const sunX=canvas.width*0.8,sunY=canvas.height*0.2;const sunGrad=ctx.createRadialGradient(sunX,sunY,10,sunX,sunY,60);sunGrad.addColorStop(0,'rgba(255,255,200,1)');sunGrad.addColorStop(0.3,'rgba(255,255,150,0.8)');sunGrad.addColorStop(0.7,'rgba(255,200,100,0.2)');sunGrad.addColorStop(1,'rgba(255,200,100,0)');ctx.fillStyle=sunGrad;ctx.beginPath();ctx.arc(sunX,sunY,60,0,Math.PI*2);ctx.fill();for(let i=0;i<4;i++){const cx=((i*200+cloudOffset*0.5)%(canvas.width+200))-100;const cy=40+Math.sin(i*1.5+cloudOffset*0.03)*15;drawCloud(cx,cy,i);}for(let i=0;i<3;i++){const cx=((i*250+cloudOffset*0.3+100)%(canvas.width+200))-100;const cy=100+Math.sin(i*2+cloudOffset*0.04)*10;drawCloud(cx,cy,i+4);}}else if(fieldDesign===6){const skyGrad=ctx.createLinearGradient(0,0,canvas.width,canvas.height);skyGrad.addColorStop(0,'#0a0a2e');skyGrad.addColorStop(0.3,'#0d0d3a');skyGrad.addColorStop(0.5,'#0f0f2a');skyGrad.addColorStop(0.7,'#1a1a3e');skyGrad.addColorStop(1,'#0a0a1e');ctx.fillStyle=skyGrad;ctx.fillRect(0,0,canvas.width,canvas.height);for(let i=0;i<50;i++){const sx=(i*37+173)%canvas.width,sy=(i*53+97)%canvas.height;const twinkle=Math.sin(starTwinkle*1.5+i*0.8)*0.5+0.5;const size=0.5+(i%3)*0.8;ctx.fillStyle=`rgba(255,255,${200+i%56},${twinkle*0.9+0.1})`;ctx.shadowColor=`rgba(255,255,200,${twinkle*0.6})`;ctx.shadowBlur=size*4;ctx.beginPath();ctx.arc(sx,sy,size,0,Math.PI*2);ctx.fill();ctx.shadowColor='transparent';ctx.shadowBlur=0;}
+    }else if(fieldDesign === 9){
+      const waterGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      waterGrad.addColorStop(0, '#0a1628');
+      waterGrad.addColorStop(0.5, '#0d2040');
+      waterGrad.addColorStop(1, '#061020');
+      ctx.fillStyle = waterGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for(let i = 0; i < 15; i++) {
+        const bx = ((i * 73 + cloudOffset * 0.3) % canvas.width);
+        const by = ((i * 47 + cloudOffset * 0.5) % canvas.height);
+        ctx.fillStyle = 'rgba(100, 180, 255, 0.15)';
+        ctx.beginPath();
+        ctx.arc(bx, by, 3 + Math.sin(cloudOffset * 0.1 + i) * 1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(150, 200, 255, 0.2)';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+      for(let i = 0; i < 3; i++) {
+        const fx = ((i * 150 + cloudOffset * 0.8) % (canvas.width + 40)) - 20;
+        const fy = 50 + i * 60 + Math.sin(cloudOffset * 0.05 + i) * 15;
+        ctx.fillStyle = 'rgba(255, 165, 0, 0.3)';
+        ctx.beginPath();
+        ctx.ellipse(fx, fy, 8, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255, 200, 0, 0.4)';
+        ctx.beginPath();
+        ctx.moveTo(fx + 8, fy);
+        ctx.lineTo(fx + 15, fy - 4);
+        ctx.lineTo(fx + 15, fy + 4);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }else if(fieldDesign === 10){
+      const desertGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      desertGrad.addColorStop(0, '#ff8c42');
+      desertGrad.addColorStop(0.4, '#e67e22');
+      desertGrad.addColorStop(0.7, '#d35400');
+      desertGrad.addColorStop(1, '#a04000');
+      ctx.fillStyle = desertGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const sunGrad = ctx.createRadialGradient(canvas.width * 0.8, 30, 5, canvas.width * 0.8, 30, 35);
+      sunGrad.addColorStop(0, 'rgba(255, 255, 200, 0.9)');
+      sunGrad.addColorStop(0.5, 'rgba(255, 200, 100, 0.5)');
+      sunGrad.addColorStop(1, 'rgba(255, 150, 50, 0)');
+      ctx.fillStyle = sunGrad;
+      ctx.beginPath();
+      ctx.arc(canvas.width * 0.8, 30, 35, 0, Math.PI * 2);
+      ctx.fill();
+      for(let i = 0; i < 4; i++) {
+        ctx.fillStyle = `rgba(210, 150, 80, ${0.2 + i * 0.1})`;
+        ctx.beginPath();
+        const bx = i * 120;
+        ctx.moveTo(bx, canvas.height);
+        ctx.quadraticCurveTo(bx + 60, canvas.height - 40 - i * 10, bx + 120, canvas.height);
+        ctx.fill();
+      }
+    }else if(fieldDesign === 11){
+      const jungleGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      jungleGrad.addColorStop(0, '#0a2a0a');
+      jungleGrad.addColorStop(0.5, '#0d3d0d');
+      jungleGrad.addColorStop(1, '#052005');
+      ctx.fillStyle = jungleGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for(let i = 0; i < 8; i++) {
+        const lx = i * 50 + Math.sin(cloudOffset * 0.02 + i) * 5;
+        ctx.strokeStyle = 'rgba(34, 139, 34, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(lx, 0);
+        for(let y = 0; y < canvas.height; y += 20) {
+          ctx.lineTo(lx + Math.sin(y * 0.05 + i) * 10, y);
+        }
+        ctx.stroke();
+      }
+      for(let i = 0; i < 12; i++) {
+        const fx = ((i * 67 + cloudOffset * 0.2) % canvas.width);
+        const fy = ((i * 43 + cloudOffset * 0.15) % canvas.height);
+        const twinkle = Math.sin(cloudOffset * 0.1 + i) * 0.5 + 0.5;
+        ctx.fillStyle = `rgba(255, 255, 100, ${twinkle * 0.4})`;
+        ctx.shadowColor = `rgba(255, 255, 100, ${twinkle * 0.6})`;
+        ctx.shadowBlur = 3;
+        ctx.beginPath();
+        ctx.arc(fx, fy, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }else if(fieldDesign === 12){
+      const cyberGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      cyberGrad.addColorStop(0, '#0a0a2a');
+      cyberGrad.addColorStop(0.5, '#0f0f3a');
+      cyberGrad.addColorStop(1, '#0a0a1a');
+      ctx.fillStyle = cyberGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const scanY = (cloudOffset * 2) % canvas.height;
+      ctx.fillStyle = 'rgba(0, 255, 255, 0.05)';
+      ctx.fillRect(0, scanY, canvas.width, 3);
+      ctx.fillRect(0, (scanY + canvas.height/2) % canvas.height, canvas.width, 2);
+      for(let i = 0; i < 20; i++) {
+        const rx = i * 20;
+        const ry = ((i * 15 + cloudOffset * 2) % canvas.height);
+        ctx.fillStyle = 'rgba(0, 255, 200, 0.15)';
+        ctx.font = '8px monospace';
+        ctx.fillText(Math.random() > 0.5 ? '1' : '0', rx, ry);
+      }
+    }else if(fieldDesign === 13){
+      const lavaGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      lavaGrad.addColorStop(0, '#1a0a0a');
+      lavaGrad.addColorStop(0.5, '#2a0f0f');
+      lavaGrad.addColorStop(1, '#0d0505');
+      ctx.fillStyle = lavaGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for(let i = 0; i < 5; i++) {
+        const lx = i * 80 + Math.sin(cloudOffset * 0.03 + i) * 20;
+        ctx.strokeStyle = 'rgba(255, 69, 0, 0.2)';
+        ctx.lineWidth = 3 + i;
+        ctx.beginPath();
+        ctx.moveTo(lx, canvas.height);
+        for(let y = canvas.height; y > 0; y -= 15) {
+          ctx.lineTo(lx + Math.sin(y * 0.02 + i) * 15, y);
+        }
+        ctx.stroke();
+      }
+      for(let i = 0; i < 10; i++) {
+        const sx = ((i * 89 + cloudOffset * 0.5) % canvas.width);
+        const sy = ((i * 37 + cloudOffset * 0.3) % canvas.height);
+        const sparkle = Math.sin(cloudOffset * 0.2 + i) * 0.5 + 0.5;
+        ctx.fillStyle = `rgba(255, ${100 + sparkle * 155}, 0, ${sparkle * 0.5})`;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 1 + sparkle, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }else if(fieldDesign === 14){
+      const skyGrad2 = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      skyGrad2.addColorStop(0, '#4a90d9');
+      skyGrad2.addColorStop(0.3, '#87ceeb');
+      skyGrad2.addColorStop(0.6, '#b0d4f1');
+      skyGrad2.addColorStop(1, '#e8f4f8');
+      ctx.fillStyle = skyGrad2;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for(let i = 0; i < 6; i++) {
+        const cx = ((i * 130 + cloudOffset * 0.4) % (canvas.width + 100)) - 50;
+        const cy = 30 + i * 30 + Math.sin(i * 1.5) * 10;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        drawCloud(cx, cy, i);
+      }
+    }else if(fieldDesign === 15){
+      const neonGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      neonGrad.addColorStop(0, '#0a0020');
+      neonGrad.addColorStop(0.5, '#0f0035');
+      neonGrad.addColorStop(1, '#0a0015');
+      ctx.fillStyle = neonGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for(let i = 0; i < 8; i++) {
+        const ny = ((i * 50 + cloudOffset * 0.5) % canvas.height);
+        ctx.strokeStyle = 'rgba(255, 0, 255, 0.15)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, ny);
+        ctx.lineTo(canvas.width, ny);
+        ctx.stroke();
+      }
+      for(let i = 0; i < 5; i++) {
+        const nx = ((i * 80 + cloudOffset * 0.3) % canvas.width);
+        const ny2 = ((i * 60 + 30) % canvas.height);
+        ctx.strokeStyle = `rgba(0, 255, 255, ${0.1 + Math.sin(cloudOffset * 0.1 + i) * 0.05})`;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(nx, ny2, 20 + Math.sin(i) * 5, 20 + Math.cos(i) * 5);
+      }
+    }else if(fieldDesign === 16){
+      const spaceGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      spaceGrad.addColorStop(0, '#000011');
+      spaceGrad.addColorStop(0.3, '#000022');
+      spaceGrad.addColorStop(0.6, '#0a0a1a');
+      spaceGrad.addColorStop(1, '#000011');
+      ctx.fillStyle = spaceGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const nebulaGrad = ctx.createRadialGradient(canvas.width * 0.3, canvas.height * 0.4, 10, canvas.width * 0.3, canvas.height * 0.4, 100);
+      nebulaGrad.addColorStop(0, 'rgba(138, 43, 226, 0.1)');
+      nebulaGrad.addColorStop(0.5, 'rgba(75, 0, 130, 0.05)');
+      nebulaGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = nebulaGrad;
+      ctx.beginPath();
+      ctx.arc(canvas.width * 0.3, canvas.height * 0.4, 100, 0, Math.PI * 2);
+      ctx.fill();
+      for(let i = 0; i < 80; i++) {
+        const sx = ((i * 47 + 173) % canvas.width);
+        const sy = ((i * 53 + 97) % canvas.height);
+        const twinkle = Math.sin(starTwinkle * 1.5 + i * 0.8) * 0.5 + 0.5;
+        const size = 0.3 + (i % 3) * 0.5;
+        ctx.fillStyle = `rgba(255, 255, ${200 + Math.floor(i * 7) % 56}, ${twinkle * 0.9 + 0.1})`;
+        ctx.shadowColor = `rgba(255, 255, 255, ${twinkle * 0.6})`;
+        ctx.shadowBlur = size * 3;
+        ctx.beginPath();
+        ctx.arc(sx, sy, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+    }else if(fieldDesign === 17){
+      const auroraGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      auroraGrad.addColorStop(0, '#0a1a2a');
+      auroraGrad.addColorStop(0.3, '#0d2540');
+      auroraGrad.addColorStop(0.6, '#1a3a3a');
+      auroraGrad.addColorStop(1, '#0a1a1a');
+      ctx.fillStyle = auroraGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for(let i = 0; i < 5; i++) {
+        const ay = 30 + i * 40 + Math.sin(cloudOffset * 0.03 + i) * 20;
+        ctx.strokeStyle = `rgba(${i * 30}, ${180 + i * 15}, ${200 + i * 10}, 0.15)`;
+        ctx.lineWidth = 15 + i * 5;
+        ctx.beginPath();
+        for(let x = 0; x < canvas.width; x += 10) {
+          const y = ay + Math.sin(x * 0.02 + cloudOffset * 0.05 + i) * 20;
+          if(x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      for(let i = 0; i < 30; i++) {
+        const sx = ((i * 61 + 103) % canvas.width);
+        const sy = ((i * 41 + 67) % (canvas.height * 0.6));
+        const twinkle = Math.sin(starTwinkle * 2 + i) * 0.5 + 0.5;
+        ctx.fillStyle = `rgba(255, 255, 255, ${twinkle * 0.5})`;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 0.5 + twinkle, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }else if(fieldDesign === 18){
+      const rainbowGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      rainbowGrad.addColorStop(0, '#1a0a2a');
+      rainbowGrad.addColorStop(0.25, '#2a1a2a');
+      rainbowGrad.addColorStop(0.5, '#1a2a1a');
+      rainbowGrad.addColorStop(0.75, '#2a2a1a');
+      rainbowGrad.addColorStop(1, '#1a1a2a');
+      ctx.fillStyle = rainbowGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for(let i = 0; i < 7; i++) {
+        const colors = ['#ff0000', '#ff8800', '#ffff00', '#00ff00', '#0088ff', '#0000ff', '#8800ff'];
+        ctx.strokeStyle = colors[i];
+        ctx.globalAlpha = 0.08;
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        for(let x = 0; x < canvas.width; x += 5) {
+          const y = canvas.height/2 + Math.sin(x * 0.03 + cloudOffset * 0.1 + i * 1.2) * (30 + i * 5);
+          if(x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }else if(fieldDesign === 19){
+      const goldGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      goldGrad.addColorStop(0, '#1a1a0a');
+      goldGrad.addColorStop(0.3, '#2a2a0f');
+      goldGrad.addColorStop(0.6, '#3a3a15');
+      goldGrad.addColorStop(1, '#1a1a05');
+      ctx.fillStyle = goldGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for(let i = 0; i < 25; i++) {
+        const px = ((i * 67 + cloudOffset * 0.3) % canvas.width);
+        const py = ((i * 43 + cloudOffset * 0.2) % canvas.height);
+        const sparkle = Math.sin(cloudOffset * 0.15 + i) * 0.5 + 0.5;
+        ctx.fillStyle = `rgba(255, 215, 0, ${sparkle * 0.3})`;
+        ctx.shadowColor = `rgba(255, 215, 0, ${sparkle * 0.5})`;
+        ctx.shadowBlur = 3;
+        ctx.beginPath();
+        ctx.arc(px, py, 1 + sparkle, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      for(let i = 0; i < 3; i++) {
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.05)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const y = canvas.height * 0.3 + i * 60;
+        for(let x = 0; x < canvas.width; x += 10) {
+          const waveY = y + Math.sin(x * 0.02 + cloudOffset * 0.05 + i) * 10;
+          if(x === 0) ctx.moveTo(x, waveY);
+          else ctx.lineTo(x, waveY);
+        }
+        ctx.stroke();
+      }
+    }else{
+      const d = fieldDesigns[fieldDesign] || fieldDesigns[0];
+      ctx.fillStyle = d.bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    ctx.strokeStyle=fieldDesigns[fieldDesign]?fieldDesigns[fieldDesign].grid:'#2a462a';ctx.lineWidth=0.6;for(let i=0;i<=GRID_SIZE;i++){ctx.beginPath();ctx.moveTo(i*CELL_SIZE,0);ctx.lineTo(i*CELL_SIZE,canvas.height);ctx.stroke();ctx.moveTo(0,i*CELL_SIZE);ctx.lineTo(canvas.width,i*CELL_SIZE);ctx.stroke();}bombs.forEach(b=>drawBomb(b.x,b.y,b.timer));bonuses.forEach(b=>drawBonus(b.x,b.y,b.type));if(food){const fx=food.x*CELL_SIZE,fy=food.y*CELL_SIZE;drawFruit(fx,fy);}particles.forEach(p=>{ctx.globalAlpha=p.life;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();});ctx.globalAlpha=1;const pr=Math.min(1,Math.max(0,animationProgress));if(gameActive||isPaused){for(let i=snake.length-1;i>=0;i--){const seg=snake[i];let dx=seg.x*CELL_SIZE,dy=seg.y*CELL_SIZE;if(prevSnake[i]&&pr<1&&gameActive&&!isPaused){dx=prevSnake[i].x*CELL_SIZE+(seg.x-prevSnake[i].x)*CELL_SIZE*pr;dy=prevSnake[i].y*CELL_SIZE+(seg.y-prevSnake[i].y)*CELL_SIZE*pr;}const radius=(CELL_SIZE/2)-(i===0?CELL_SIZE/10:CELL_SIZE/6);drawSnakeSegment(dx,dy,radius,i===0,i,1);}if(snake2.length){for(let i=snake2.length-1;i>=0;i--){const seg=snake2[i];let dx=seg.x*CELL_SIZE,dy=seg.y*CELL_SIZE;if(prevSnake2[i]&&pr<1&&gameActive&&!isPaused){dx=prevSnake2[i].x*CELL_SIZE+(seg.x-prevSnake2[i].x)*CELL_SIZE*pr;dy=prevSnake2[i].y*CELL_SIZE+(seg.y-prevSnake2[i].y)*CELL_SIZE*pr;}const radius=(CELL_SIZE/2)-(i===0?CELL_SIZE/10:CELL_SIZE/6);drawSnakeSegment(dx,dy,radius,i===0,i,2);}}}if(!gameActive&&!isPaused){ctx.globalAlpha=0.7;ctx.fillStyle='#0a140e';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.globalAlpha=1;ctx.font='bold 20px "Segoe UI", Inter';ctx.fillStyle='#f9e7b3';ctx.shadowColor='#000';ctx.shadowBlur=14;ctx.textAlign='center';if(winFlag)ctx.fillText(t('win'),canvas.width/2,canvas.height/2-10);else if(gameOverFlag)ctx.fillText(t('gameOver'),canvas.width/2,canvas.height/2-10);ctx.shadowColor='transparent';ctx.shadowBlur=0;}}
 
   function updateNicknameDisplay(){if(nicknameDisplay)nicknameDisplay.textContent=playerNickname||t('noNickname');}
   function saveNickname(){const nn=nicknameInput.value.trim();if(!nn){nicknameError.textContent='';nicknameError.classList.add('hidden');return;}nicknameError.classList.add('hidden');playerNickname=nn;updateNicknameDisplay();nicknameInput.value='';saveAllSettings();}
@@ -1144,13 +1446,11 @@
     fruitSelect.addEventListener('change',(e)=>{fruitType=parseInt(e.target.value,10);drawBoard();saveAllSettings();});
     fieldDesignSelect.addEventListener('change',(e)=>{
       const newValue = parseInt(e.target.value, 10);
-      // Проверяем, куплен ли фон или это бесплатный
       if (newValue === 4 || ownedBackgrounds.includes(newValue)) {
         fieldDesign = newValue;
         drawBoard();
         saveAllSettings();
       } else {
-        // Если фон не куплен, возвращаем предыдущее значение
         fieldDesignSelect.value = fieldDesign;
         alert(currentLang === 'ru' ? 'Этот фон нужно купить в магазине!' : 'You need to buy this background in the shop!');
       }
