@@ -696,7 +696,73 @@
   function getSkinGlowColor(player){if(player===2&&p2UseCustomSkin&&customSkinParams)return customSkinParams.glowColor;if(equippedSkin==='custom'&&customSkinParams)return customSkinParams.glowColor;const s=shopSkins.find(s=>s.id===equippedSkin);return s?s.glowColor:'#ffffff';}
 
   function updateFruitSelect(){fruitSelect.innerHTML='';allFruits.forEach(f=>{if(ownedFruits.includes(f.id)){const o=document.createElement('option');o.value=f.id;let ft='';if(f.icon==='plum')ft='🫐 '+f.name[currentLang];else if(f.icon==='grape')ft='🍇 '+f.name[currentLang];else ft=f.icon+' '+f.name[currentLang];o.textContent=ft;fruitSelect.appendChild(o);}});if(!ownedFruits.includes(fruitType))fruitType=ownedFruits[0]||0;fruitSelect.value=fruitType;}
-  function updateFieldDesignSelect(){const o=fieldDesignSelect.querySelectorAll('option');for(let i=0;i<o.length;i++){const v=parseInt(o[i].value);if(v>=5&&!ownedBackgrounds.includes(v))o[i].disabled=true;else o[i].disabled=false;}}
+  
+  function updateFieldDesignSelect(){
+    // Сохраняем текущее значение
+    const currentValue = fieldDesignSelect.value;
+    
+    // Очищаем селект
+    fieldDesignSelect.innerHTML = '';
+    
+    // Добавляем все опции
+    const allOptions = [
+      { value: '4', text: currentLang === 'ru' ? '🖼️ Свой фон' : '🖼️ Custom background', alwaysAvailable: true },
+      { value: '0', text: currentLang === 'ru' ? '🌑 Классический тёмный' : '🌑 Classic Dark', alwaysAvailable: true },
+      { value: '1', text: currentLang === 'ru' ? '🌲 Лесной' : '🌲 Forest', alwaysAvailable: true },
+      { value: '2', text: currentLang === 'ru' ? '🏜️ Пустынный' : '🏜️ Desert', alwaysAvailable: true },
+      { value: '3', text: currentLang === 'ru' ? '❄️ Зимний' : '❄️ Winter', alwaysAvailable: true },
+      { value: '5', text: '☁️ ' + (currentLang === 'ru' ? 'Движущиеся облака' : 'Moving Clouds'), alwaysAvailable: false },
+      { value: '6', text: '⭐ ' + (currentLang === 'ru' ? 'Мерцающие звёзды' : 'Twinkling Stars'), alwaysAvailable: false },
+      { value: '7', text: '🌲 ' + (currentLang === 'ru' ? 'Глубокий лес' : 'Deep Forest'), alwaysAvailable: false },
+      { value: '8', text: '🏔️ ' + (currentLang === 'ru' ? 'Горный' : 'Mountain'), alwaysAvailable: false },
+      { value: '9', text: '🐠 ' + (currentLang === 'ru' ? 'Подводный мир' : 'Underwater'), alwaysAvailable: false },
+      { value: '10', text: '🏜️ ' + (currentLang === 'ru' ? 'Пустыня' : 'Desert'), alwaysAvailable: false },
+      { value: '11', text: '🌴 ' + (currentLang === 'ru' ? 'Джунгли' : 'Jungle'), alwaysAvailable: false },
+      { value: '12', text: '🔷 ' + (currentLang === 'ru' ? 'Кибер-сетка' : 'Cyber Grid'), alwaysAvailable: false },
+      { value: '13', text: '🌋 ' + (currentLang === 'ru' ? 'Лава' : 'Lava Field'), alwaysAvailable: false },
+      { value: '14', text: '☁️ ' + (currentLang === 'ru' ? 'Облака' : 'Sky'), alwaysAvailable: false },
+      { value: '15', text: '💜 ' + (currentLang === 'ru' ? 'Неоновая сетка' : 'Neon Grid'), alwaysAvailable: false },
+      { value: '16', text: '🚀 ' + (currentLang === 'ru' ? 'Космос' : 'Space'), alwaysAvailable: false },
+      { value: '17', text: '🌌 ' + (currentLang === 'ru' ? 'Северное сияние' : 'Aurora'), alwaysAvailable: false },
+      { value: '18', text: '🌈 ' + (currentLang === 'ru' ? 'Радужное поле' : 'Rainbow Field'), alwaysAvailable: false },
+      { value: '19', text: '👑 ' + (currentLang === 'ru' ? 'Золотое поле' : 'Golden Field'), alwaysAvailable: false }
+    ];
+    
+    let selectedOption = null;
+    
+    allOptions.forEach(opt => {
+      const option = document.createElement('option');
+      option.value = opt.value;
+      
+      const valueNum = parseInt(opt.value);
+      const isOwned = ownedBackgrounds.includes(valueNum);
+      
+      if (opt.alwaysAvailable || isOwned) {
+        option.textContent = opt.text;
+        option.disabled = false;
+      } else {
+        option.textContent = '🔒 ' + opt.text;
+        option.disabled = true;
+      }
+      
+      fieldDesignSelect.appendChild(option);
+      
+      // Проверяем, должна ли эта опция быть выбрана
+      if (opt.value === currentValue && !option.disabled) {
+        selectedOption = currentValue;
+      }
+    });
+    
+    // Устанавливаем выбранное значение
+    if (selectedOption !== null) {
+      fieldDesignSelect.value = selectedOption;
+    } else if (!ownedBackgrounds.includes(parseInt(currentValue))) {
+      // Если текущий фон больше не доступен, переключаем на классический
+      fieldDesignSelect.value = '0';
+      fieldDesign = 0;
+      drawBoard();
+    }
+  }
 
   function updateDuoCustomSkinSection(){if(!duoCustomSkinSection) return;const hasCustom=ownedSkins.includes('custom');duoCustomSkinSection.innerHTML='';if(hasCustom){const div=document.createElement('div');div.style.cssText='margin-top:0.5rem;';div.innerHTML=`<div class="custom-color-row"><span>${currentLang==='ru'?'Использовать свой скин для 2 игрока':'Use custom skin for player 2'}</span><input type="checkbox" id="p2UseCustomSkinCheck" style="width:auto;margin:0;" ${p2UseCustomSkin?'checked':''}></div>`;duoCustomSkinSection.appendChild(div);const cb=document.getElementById('p2UseCustomSkinCheck');if(cb)cb.addEventListener('change',(e)=>{p2UseCustomSkin=e.target.checked;saveAllSettings();drawBoard();});}else{duoCustomSkinSection.innerHTML=`<p style="color:#b9dbb0;font-size:0.8rem;margin-top:0.5rem;">${t('buyCustomSkin')}</p>`;}}
 
@@ -1041,7 +1107,7 @@
   function showMainMenu(){mainMenu.classList.remove('hidden');modeSelectMenu.classList.add('hidden');shopMenu.classList.add('hidden');customSkinMenu.classList.add('hidden');achievementsMenu.classList.add('hidden');settingsMenu.classList.add('hidden');pauseMenu.classList.add('hidden');pauseOverlay.classList.add('hidden');updateMenuHighScores();}
   function hideAllMenus(){mainMenu.classList.add('hidden');modeSelectMenu.classList.add('hidden');shopMenu.classList.add('hidden');customSkinMenu.classList.add('hidden');achievementsMenu.classList.add('hidden');settingsMenu.classList.add('hidden');pauseMenu.classList.add('hidden');}
   function showModeSelect(){mainMenu.classList.add('hidden');modeSelectMenu.classList.remove('hidden');selectedMode=gameMode;document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===selectedMode));}
-  function showSettings(){mainMenu.classList.add('hidden');settingsMenu.classList.remove('hidden');nicknameError.classList.add('hidden');if(mobileControlType)mobileControlType.value=mobileControlMode;updateFruitSelect();renderStats();updateDuoCustomSkinSection();updateSpeedDisplay();const tab=document.querySelector('.settings-tab[data-tab="gameplay"]');if(tab)tab.click();}
+  function showSettings(){mainMenu.classList.add('hidden');settingsMenu.classList.remove('hidden');nicknameError.classList.add('hidden');if(mobileControlType)mobileControlType.value=mobileControlMode;updateFruitSelect();updateFieldDesignSelect();renderStats();updateDuoCustomSkinSection();updateSpeedDisplay();const tab=document.querySelector('.settings-tab[data-tab="gameplay"]');if(tab)tab.click();}
   function showShop(){mainMenu.classList.add('hidden');shopMenu.classList.remove('hidden');updateCoinsDisplay();const tab=document.querySelector('.shop-tab[data-tab="skins"]');if(tab)tab.click();renderShop();}
   function showAchievements(){mainMenu.classList.add('hidden');achievementsMenu.classList.remove('hidden');currentAchievementFilter='all';const tab=document.querySelector('.achievement-tab[data-filter="all"]');if(tab)tab.click();renderAchievements();}
   function saveAllSettings(){const s={language:currentLang,snakeStyle:snakeStyle,p2SnakeStyle:p2SnakeStyle,p2UseCustomSkin:p2UseCustomSkin,soundType:currentSoundType,volume:Math.round(soundVolume*100),fruitSpawnVolume:Math.round(fruitSpawnVolume*100),fruitType:fruitType,fieldDesign:fieldDesign,gridSize:GRID_SIZE,nickname:playerNickname,mobileControlMode:mobileControlMode,enableShield:enableShield,enableMagnet:enableMagnet,enableDiamond:enableDiamond,isMuted:isMuted,enableSpeedIncrease:enableSpeedIncrease};try{localStorage.setItem('snakeSettings',JSON.stringify(s));}catch(e){}}
@@ -1066,7 +1132,7 @@
     confirmYes.addEventListener('click',()=>{resetAchievements();confirmReset.classList.add('hidden');});
     confirmNo.addEventListener('click',()=>{confirmReset.classList.add('hidden');});
     document.querySelectorAll('.mode-btn').forEach(b=>{b.addEventListener('click',()=>{selectedMode=b.dataset.mode;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x.dataset.mode===selectedMode));});});
-    document.querySelectorAll('.settings-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const target=tab.dataset.tab;if(tabContentGameplay)tabContentGameplay.classList.toggle('hidden',target!=='gameplay');if(tabContentSound)tabContentSound.classList.toggle('hidden',target!=='sound');if(tabContentDesign)tabContentDesign.classList.toggle('hidden',target!=='design');if(tabContentStats)tabContentStats.classList.toggle('hidden',target!=='stats');if(target==='design')updateFruitSelect();if(target==='gameplay'){updateDuoCustomSkinSection();updateSpeedDisplay();}if(target==='stats')renderStats();});});
+    document.querySelectorAll('.settings-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const target=tab.dataset.tab;if(tabContentGameplay)tabContentGameplay.classList.toggle('hidden',target!=='gameplay');if(tabContentSound)tabContentSound.classList.toggle('hidden',target!=='sound');if(tabContentDesign){tabContentDesign.classList.toggle('hidden',target!=='design');if(target==='design'){updateFruitSelect();updateFieldDesignSelect();}}if(tabContentStats)tabContentStats.classList.toggle('hidden',target!=='stats');if(target==='gameplay'){updateDuoCustomSkinSection();updateSpeedDisplay();}if(target==='stats')renderStats();});});
     document.querySelectorAll('.shop-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.shop-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');renderShop();});});
     document.querySelectorAll('.achievement-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.achievement-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');currentAchievementFilter=tab.dataset.filter;renderAchievements();});});
     snakeStyleSelect.addEventListener('change',(e)=>{snakeStyle=parseInt(e.target.value,10);drawBoard();saveAllSettings();});
@@ -1076,7 +1142,19 @@
     volumeSlider.addEventListener('input',(e)=>{soundVolume=parseInt(e.target.value,10)/100;volumeValue.textContent=e.target.value;saveAllSettings();});
     fruitSpawnVolumeSlider.addEventListener('input',(e)=>{fruitSpawnVolume=parseInt(e.target.value,10)/100;fruitSpawnVolumeValue.textContent=e.target.value;saveAllSettings();});
     fruitSelect.addEventListener('change',(e)=>{fruitType=parseInt(e.target.value,10);drawBoard();saveAllSettings();});
-    fieldDesignSelect.addEventListener('change',(e)=>{fieldDesign=parseInt(e.target.value,10);drawBoard();saveAllSettings();});
+    fieldDesignSelect.addEventListener('change',(e)=>{
+      const newValue = parseInt(e.target.value, 10);
+      // Проверяем, куплен ли фон или это бесплатный
+      if (newValue === 4 || ownedBackgrounds.includes(newValue)) {
+        fieldDesign = newValue;
+        drawBoard();
+        saveAllSettings();
+      } else {
+        // Если фон не куплен, возвращаем предыдущее значение
+        fieldDesignSelect.value = fieldDesign;
+        alert(currentLang === 'ru' ? 'Этот фон нужно купить в магазине!' : 'You need to buy this background in the shop!');
+      }
+    });
     customBgInput.addEventListener('change',(e)=>{const f=e.target.files[0];if(f){const r=new FileReader();r.onload=function(ev){const img=new Image();img.onload=function(){customBgImage=img;if(fieldDesign===4)drawBoard();};img.src=ev.target.result;};r.readAsDataURL(f);}});
     gridSizeSelect.addEventListener('change',()=>{applyGridSize();});
     languageSelect.addEventListener('change',(e)=>{currentLang=e.target.value;languageSelect.value=currentLang;updateUILanguage();drawBoard();saveAllSettings();});
