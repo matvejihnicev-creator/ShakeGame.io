@@ -286,7 +286,28 @@
         <p style="color:#b9dbb0;font-size:0.75rem;margin-top:0.3rem;">Кнопки: стрелки внизу экрана. Свайп: проведите пальцем по игровому полю в нужном направлении.</p>
       </div>
     </div>
-    <div class="settings-group hidden" id="tabContentSound"><label>🔊 Звук сбора</label><select id="soundSelect"><option value="0">Классический</option><option value="1">Весёлый день</option><option value="2">Глубокий хлопок</option></select><button id="previewSound" class="preview-btn">▶ Прослушать</button><label>🔈 Громкость: <span id="volumeValue">70</span>%</label><input type="range" id="volumeSlider" min="0" max="100" value="70"><label>🍎 Громкость появления: <span id="fruitSpawnVolumeValue">50</span>%</label><input type="range" id="fruitSpawnVolumeSlider" min="0" max="100" value="50"></div>
+    <div class="settings-group hidden" id="tabContentSound">
+  <label>🔊 Звук сбора</label>
+  <select id="soundSelect">
+    <option value="0">Классический</option>
+    <option value="1">Весёлый день</option>
+    <option value="2">Глубокий хлопок</option>
+    <option value="3">🎵 Свой звук</option>
+  </select>
+  <div style="margin-top:0.5rem;">
+    <label style="font-size:0.8rem;">📁 Загрузить свой звук (MP3, WAV, OGG)</label>
+    <input type="file" id="customSoundInput" accept="audio/*" style="margin-bottom:0.3rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <span id="customSoundName" style="color:#b9dbb0;font-size:0.8rem;">Не выбран</span>
+      <button id="clearCustomSoundBtn" class="preview-btn reset-btn" style="display:none;padding:0.2rem 0.8rem;font-size:0.7rem;">✕ Сбросить</button>
+    </div>
+  </div>
+  <button id="previewSound" class="preview-btn">▶ Прослушать</button>
+  <label>🔈 Громкость: <span id="volumeValue">70</span>%</label>
+  <input type="range" id="volumeSlider" min="0" max="100" value="70">
+  <label>🍎 Громкость появления: <span id="fruitSpawnVolumeValue">50</span>%</label>
+  <input type="range" id="fruitSpawnVolumeSlider" min="0" max="100" value="50">
+</div>
     <div class="settings-group hidden" id="tabContentDesign"><label>🐍 Стиль змейки</label><select id="snakeStyleSelect"><option value="0">Круглая</option><option value="1">Квадратная</option></select><label>🍎 Фрукт</label><select id="fruitSelect"></select><label>🎨 Дизайн поля</label><select id="fieldDesignSelect">
   <option value="4">🖼️ Свой фон</option>
   <option value="0">🌑 Классический тёмный</option>
