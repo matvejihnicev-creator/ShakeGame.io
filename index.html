@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Змейка • Обновление v3.2</title>
+    <title>Змейка • Обновление v3.3</title>
     <style>
         * {
             margin: 0;
@@ -1185,7 +1185,7 @@
                             <input type="checkbox" id="enableSpeedIncrease" style="width:auto;margin:2px 0 0 0;flex-shrink:0;">
                             <div>
                                 <span style="color:#ff6b6b;font-weight:bold;">⚡ Ускорение при съедании</span>
-                                <span style="color:#b9dbb0;font-size:0.75rem;display:block;">Каждый фрукт ускоряет змейку на 3мс. Смерть сбрасывает скорость.</span>
+                                <span style="color:#b9dbb0;font-size:0.75rem;display:block;">Каждый фрукт ускоряет змейку на 3мс. Смерть сбрасывает скорость. <span style="color:#ffd700;">Множитель x2 к очкам и монетам!</span></span>
                                 <span id="currentSpeedDisplay" style="color:#ffd966;font-size:0.7rem;display:block;margin-top:0.2rem;">Текущая задержка: 120мс</span>
                             </div>
                         </div>
@@ -1236,16 +1236,7 @@
                         <option value="0">Классический</option>
                         <option value="1">Весёлый день</option>
                         <option value="2">Глубокий хлопок</option>
-                        <option value="3">🎵 Свой звук</option>
                     </select>
-                    <div style="margin-top:0.5rem;">
-                        <label style="font-size:0.8rem;">📁 Загрузить свой звук (MP3, WAV, OGG)</label>
-                        <input type="file" id="customSoundInput" accept="audio/*" style="margin-bottom:0.3rem;">
-                        <div style="display:flex;align-items:center;gap:0.5rem;">
-                            <span id="customSoundName" style="color:#b9dbb0;font-size:0.8rem;">Не выбран</span>
-                            <button id="clearCustomSoundBtn" class="preview-btn reset-btn" style="display:none;padding:0.2rem 0.8rem;font-size:0.7rem;">✕ Сбросить</button>
-                        </div>
-                    </div>
                     <button id="previewSound" class="preview-btn">▶ Прослушать</button>
                     <label>🔈 Громкость: <span id="volumeValue">70</span>%</label>
                     <input type="range" id="volumeSlider" min="0" max="100" value="70">
@@ -2180,9 +2171,13 @@
                     fruitsEatenThisGame++; if (enableSpeedIncrease) { speedLevel++;
                         currentMoveInterval = calculateMoveInterval();
                         updateSpeedDisplay();
-                        restartGameLoopWithNewSpeed(); } if (diamondActive) currentScore++;
+                        restartGameLoopWithNewSpeed(); } let scoreMultiplier = 1; let coinMultiplier = 1; if (enableSpeedIncrease) { scoreMultiplier *= 2;
+                        coinMultiplier *= 2; } if (diamondActive) { scoreMultiplier *= 2;
+                        coinMultiplier *= 2; }
+                    currentScore += (scoreMultiplier - 1);
                     currentScoreSpan.textContent = currentScore;
-                    saveCurrentHighScore(currentScore); let coinReward = 1; if (gameMode === 'bombs' && bombs.some(b => Math.abs(b.x - food.x) <= 1 && Math.abs(b.y - food.y) <= 1)) coinReward = 5; if (diamondActive) coinReward *= 2;
+                    saveCurrentHighScore(currentScore); let coinReward = 1; if (gameMode === 'bombs' && bombs.some(b => Math.abs(b.x - food.x) <= 1 && Math.abs(b.y - food.y) <= 1)) coinReward = 5;
+                    coinReward *= coinMultiplier;
                     addCoins(coinReward);
                     playAppleSound();
                     spawnFruitParticles(food.x, food.y, '#ff7b6b'); const tailPos = snake[snake.length - 1];
@@ -2247,16 +2242,22 @@
                         magnetTimer2 = 150; } else if (bonusHit2.type === 'diamond') { diamondActive2 = true;
                         diamondTimer2 = 200; }
                     bonuses = bonuses.filter(b => !(b.x === bonusHit2.x && b.y === bonusHit2.y));
-                    spawnParticles(bonusHit2.x, bonusHit2.y, '#ffff00', 15); } if (fe1 || fe2) { let speedChanged = false; if (fe1) { scoreP1++;
-                        fruitsEatenThisGame++; if (diamondActive) scoreP1++;
+                    spawnParticles(bonusHit2.x, bonusHit2.y, '#ffff00', 15); } if (fe1 || fe2) { let speedChanged = false; if (fe1) { let p1ScoreAdd = 1; let p1CoinAdd = 1; if (enableSpeedIncrease) { p1ScoreAdd *= 2;
+                            p1CoinAdd *= 2; } if (diamondActive) { p1ScoreAdd *= 2;
+                            p1CoinAdd *= 2; }
+                        scoreP1 += p1ScoreAdd;
+                        fruitsEatenThisGame++;
                         p1ScoreDisplay.textContent = scoreP1;
-                        addCoins(diamondActive ? 2 : 1);
+                        addCoins(p1CoinAdd);
                         playAppleSound();
                         spawnFruitParticles(food.x, food.y, '#44ff44'); const tailPos1 = snake[snake.length - 1];
-                        prevSnake = [prevSnake[0], ...prevSnake, tailPos1]; } if (fe2) { scoreP2++;
-                        fruitsEatenThisGame++; if (diamondActive2) scoreP2++;
+                        prevSnake = [prevSnake[0], ...prevSnake, tailPos1]; } if (fe2) { let p2ScoreAdd = 1; let p2CoinAdd = 1; if (enableSpeedIncrease) { p2ScoreAdd *= 2;
+                            p2CoinAdd *= 2; } if (diamondActive2) { p2ScoreAdd *= 2;
+                            p2CoinAdd *= 2; }
+                        scoreP2 += p2ScoreAdd;
+                        fruitsEatenThisGame++;
                         p2ScoreDisplay.textContent = scoreP2;
-                        addCoins(diamondActive2 ? 2 : 1);
+                        addCoins(p2CoinAdd);
                         playAppleSound();
                         spawnFruitParticles(food.x, food.y, getP2SnakeColor(0)); const tailPos2 = snake2[snake2.length - 1];
                         prevSnake2 = [prevSnake2[0], ...prevSnake2, tailPos2]; } if (enableSpeedIncrease && (fe1 || fe2)) { speedLevel++;
