@@ -349,7 +349,6 @@
   const shopMenu = document.getElementById('shopMenu'); const customSkinMenu = document.getElementById('customSkinMenu');
   const achievementsMenu = document.getElementById('achievementsMenu'); const settingsMenu = document.getElementById('settingsMenu'); const pauseMenu = document.getElementById('pauseMenu');
   const playButton = document.getElementById('playButton'); const shopButton = document.getElementById('shopButton'); const achievementsButton = document.getElementById('achievementsButton'); const settingsButton = document.getElementById('settingsButton');
-  const addCoinsBtn = document.getElementById('addCoinsBtn');
   const startGameBtn = document.getElementById('startGameBtn'); const backFromModeSelect = document.getElementById('backFromModeSelect');
   const backFromShop = document.getElementById('backFromShop'); const backFromAchievements = document.getElementById('backFromAchievements'); const backFromSettings = document.getElementById('backFromSettings');
   const saveCustomSkinBtn = document.getElementById('saveCustomSkin'); const cancelCustomSkinBtn = document.getElementById('cancelCustomSkin');
@@ -617,7 +616,6 @@
   function openCustomSkinEditor(){customSkinMenu.classList.remove('hidden');shopMenu.classList.add('hidden');if(customSkinParams){segmentColors=[...customSkinParams.segments];customGlow.checked=customSkinParams.glow;customGlowColor.value=customSkinParams.glowColor;}updateSegmentEditor();updateCustomSkinPreviewFn();customGlow.onchange=updateCustomSkinPreviewFn;customGlowColor.oninput=updateCustomSkinPreviewFn;}
   if(saveCustomSkinBtn)saveCustomSkinBtn.onclick=()=>{customSkinParams={segments:[...segmentColors],glow:customGlow.checked,glowColor:customGlowColor.value};localStorage.setItem('snakeCustomSkin',JSON.stringify(customSkinParams));equippedSkin='custom';saveSkins();customSkinMenu.classList.add('hidden');shopMenu.classList.remove('hidden');renderShop();updateDuoCustomSkinSection();drawBoard();};
   if(cancelCustomSkinBtn)cancelCustomSkinBtn.onclick=()=>{customSkinMenu.classList.add('hidden');shopMenu.classList.remove('hidden');};
-  if(addCoinsBtn)addCoinsBtn.onclick=()=>{addCoins(500);};
 
   function updateModeIndicator(){if(gameMode==='classic')modeIndicator.textContent=t('modeClassicLabel');else if(gameMode==='infinite')modeIndicator.textContent=t('modeInfiniteLabel');else if(gameMode==='bombs')modeIndicator.textContent=t('modeBombsLabel');else modeIndicator.textContent=t('modeDuoLabel');}
   function updateGameStatus(){if(!gameStatusDiv)return;if(isPaused){gameStatusDiv.textContent=t('paused');gameStatusDiv.style.color='#ffd966';}else if(gameActive){gameStatusDiv.textContent=t('playing');gameStatusDiv.style.color='#f7da7c';}else if(winFlag){gameStatusDiv.textContent=t('win');gameStatusDiv.style.color='#ffd966';}else if(gameOverFlag){gameStatusDiv.textContent=t('gameOver');gameStatusDiv.style.color='#ff8a7a';}}
