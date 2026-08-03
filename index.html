@@ -26,7 +26,7 @@
     button:active { transform: translateY(3px); box-shadow: 0 3px 0 #7a5d2c, 0 6px 12px black; }
     .achievement-item, .quest-item, .upgrade-item { background: #152b1f; border-radius: 1rem; padding: 1rem 1.2rem; margin: 0.8rem 0; display: flex; align-items: center; gap: 1rem; border: 2px solid #3a5a40; transition: all 0.2s; width: 100%; min-width: 0; }
     .achievement-item.unlocked, .quest-item.completed, .upgrade-item.owned { border-color: #ffd700; background: #1a3324; box-shadow: 0 0 10px rgba(255,215,0,0.2); }
-    .achievement-item.locked, .quest-item.locked { opacity: 0.6; }
+    .achievement-item.locked { opacity: 0.6; }
     .achievement-item.easy.unlocked { border-color: #4CAF50; background: #1a3324; box-shadow: 0 0 10px rgba(76,175,80,0.2); }
     .achievement-item.easy.locked { border-color: #2a4a2a; }
     .achievement-item.medium.unlocked { border-color: #FF9800; background: #2a2a1a; box-shadow: 0 0 10px rgba(255,152,0,0.2); }
@@ -90,34 +90,10 @@
     .settings-tabs, .shop-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; width: 100%; flex-wrap: wrap; }
     .settings-tab, .shop-tab { flex: 1; min-width: 70px; padding: 0.5rem; font-size: 0.7rem; background: #0d1f15; border: 1px solid #4a6b4a; color: #b9dbb0; cursor: pointer; border-radius: 1rem; transition: all 0.2s; text-transform: uppercase; font-weight: 600; }
     .settings-tab.active, .shop-tab.active { background: #3a6b4a; color: #f5ffdd; border-color: #7bbf6a; }
-    /* Вкладки достижений — две строки */
-    .achievement-tabs, .achievement-difficulty-tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0.8rem;
-      width: 100%;
-      flex-wrap: wrap;
-    }
-    .achievement-tab, .achievement-difficulty-tab {
-      flex: 1;
-      min-width: 70px;
-      padding: 0.5rem 0.5rem;
-      font-size: 0.7rem;
-      background: #0d1f15;
-      border: 1px solid #4a6b4a;
-      color: #b9dbb0;
-      cursor: pointer;
-      border-radius: 1rem;
-      transition: all 0.2s;
-      text-transform: uppercase;
-      font-weight: 600;
-      text-align: center;
-    }
-    .achievement-tab.active, .achievement-difficulty-tab.active {
-      background: #3a6b4a;
-      color: #f5ffdd;
-      border-color: #7bbf6a;
-    }
+    .achievement-tabs-row { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; margin-bottom: 1rem; }
+    .achievement-tabs, .achievement-tabs-difficulty { display: flex; gap: 0.6rem; width: 100%; flex-wrap: wrap; }
+    .achievement-tab { flex: 1; min-width: 70px; padding: 0.5rem; font-size: 0.7rem; background: #0d1f15; border: 1px solid #4a6b4a; color: #b9dbb0; cursor: pointer; border-radius: 1rem; transition: all 0.2s; text-transform: uppercase; font-weight: 600; }
+    .achievement-tab.active { background: #3a6b4a; color: #f5ffdd; border-color: #7bbf6a; }
     .settings-group { background: #152b1f; border-radius: 2rem; padding: 1.5rem; margin: 0.5rem 0; text-align: left; width: 100%; max-height: 35vh; overflow-y: auto; }
     .settings-group label { color: #cfebc3; font-weight: 600; display: block; margin: 0.8rem 0 0.3rem; font-size: 0.85rem; }
     .nickname-label-centered { color: #cfebc3; font-weight: 600; display: block; margin-bottom: 0.5rem; font-size: 0.9rem; text-align: center; width: 100%; }
@@ -181,11 +157,6 @@
     .difficulty-epic { background: #6a1b9a; color: #ce93d8; }
     .reset-single-btn { background: transparent; border: none; color: #ff6b6b; font-size: 1.2rem; cursor: pointer; padding: 0 0.2rem; margin-left: 0.5rem; transition: transform 0.2s; box-shadow: none; text-transform: none; font-weight: normal; }
     .reset-single-btn:hover { transform: scale(1.2); }
-    .confirm-overlay-single { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 300; }
-    .confirm-panel-single { background: #1e3a2f; border: 2px solid #ff6b6b; border-radius: 2rem; padding: 2rem; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-width: 90%; }
-    .confirm-panel-single h3 { color: #ff6b6b; margin-bottom: 1rem; }
-    .confirm-panel-single p { color: #d4edc9; margin-bottom: 1.5rem; }
-    .confirm-buttons-single { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
     @media (max-width: 800px) { .main-layout { flex-direction: column; align-items: center; } .mobile-controls { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0.3rem; width: 160px; } .mobile-btn.up { grid-column: 2; grid-row: 1; } .mobile-btn.left { grid-column: 1; grid-row: 2; } .mobile-btn.right { grid-column: 3; grid-row: 2; } .mobile-btn.down { grid-column: 2; grid-row: 2; } .menu-panel { min-width: 300px; padding: 1.5rem; border-radius: 2rem; } }
     @media (max-width: 500px) { .game-container { padding: 1rem 1rem 1rem; } .info-panel { flex-direction: column; gap: 0.8rem; padding: 0.8rem 1rem; } .score-block { gap: 1rem; } canvas { max-width: 90vw; } .controls-hint { font-size: 0.75rem; gap: 1rem; } .menu-panel { width: 95%; padding: 1.2rem; min-width: 280px; } }
     .shop-preview-underwater { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #0a1a2a, #1a3a5a, #0a2a4a); box-shadow: inset 0 0 10px rgba(0,150,255,0.3); }
@@ -199,6 +170,11 @@
     .shop-preview-aurora { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #0a1a2a, #2a4a3a, #1a3a2a); box-shadow: inset 0 0 10px rgba(0,255,150,0.3); }
     .shop-preview-rainbowbg { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #2a1a2a, #4a2a4a, #1a1a3a); box-shadow: inset 0 0 10px rgba(255,100,255,0.4); }
     .shop-preview-goldenfield { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #1a1a0a, #3a3a1a, #5a5a0a); box-shadow: inset 0 0 10px rgba(255,215,0,0.5); }
+    .confirm-overlay-single { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 300; }
+    .confirm-panel-single { background: #1e3a2f; border: 2px solid #ff6b6b; border-radius: 2rem; padding: 2rem; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-width: 90%; }
+    .confirm-panel-single h3 { color: #ff6b6b; margin-bottom: 1rem; }
+    .confirm-panel-single p { color: #d4edc9; margin-bottom: 1.5rem; }
+    .confirm-buttons-single { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
   </style>
 </head>
 <body>
@@ -238,24 +214,23 @@
   <div id="questsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>📋 <span id="questsTitle">ЗАДАНИЯ</span></h2><div class="settings-group" id="questsContent"></div><p style="color:#b9dbb0;font-size:0.8rem;margin-top:0.5rem;">Задания обновляются каждый день</p><button id="backFromQuests" class="menu-btn">↩ <span id="backFromQuestsText">НАЗАД</span></button></div></div>
   <div id="customSkinMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🎨 РЕДАКТОР СКИНА</h2><div class="settings-group"><div class="custom-skin-preview" id="customSkinPreview"></div><div class="segment-editor" id="segmentEditor"></div><div class="custom-color-row"><span>Свечение</span><input type="checkbox" id="customGlow" style="width:auto;margin:0;"><span style="flex:none;">Включить</span></div><div class="custom-color-row"><span>Цвет свечения</span><input type="color" id="customGlowColor" value="#6fbf4c"></div></div><div class="menu-buttons"><button id="saveCustomSkin" class="menu-btn">💾 СОХРАНИТЬ</button><button id="cancelCustomSkin" class="menu-btn">↩ НАЗАД</button></div></div></div>
   <div id="achievementsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🏆 <span id="achievementsTitle">ДОСТИЖЕНИЯ</span></h2>
-    <!-- Первая строка: статус -->
-    <div class="achievement-tabs">
-      <button class="achievement-tab active" data-filter="all">✅ Все</button>
-      <button class="achievement-tab" data-filter="unlocked">🔓 Полученные</button>
-      <button class="achievement-tab" data-filter="locked">🔒 Заблокированные</button>
-    </div>
-    <!-- Вторая строка: сложность -->
-    <div class="achievement-difficulty-tabs">
-      <button class="achievement-difficulty-tab active" data-difficulty="all">📊 Все сложности</button>
-      <button class="achievement-difficulty-tab" data-difficulty="easy">🟢 Easy</button>
-      <button class="achievement-difficulty-tab" data-difficulty="medium">🟡 Medium</button>
-      <button class="achievement-difficulty-tab" data-difficulty="hard">🔴 Hard</button>
-      <button class="achievement-difficulty-tab" data-difficulty="epic">🟣 Epic</button>
+    <div class="achievement-tabs-row">
+      <div class="achievement-tabs">
+        <button class="achievement-tab active" data-filter="all">✅ Все</button>
+        <button class="achievement-tab" data-filter="unlocked">🔓 Полученные</button>
+        <button class="achievement-tab" data-filter="locked">🔒 Заблокированные</button>
+      </div>
+      <div class="achievement-tabs-difficulty">
+        <button class="achievement-tab" data-filter="easy">🟢 Easy</button>
+        <button class="achievement-tab" data-filter="medium">🟡 Medium</button>
+        <button class="achievement-tab" data-filter="hard">🔴 Hard</button>
+        <button class="achievement-tab" data-filter="epic">🟣 Epic</button>
+      </div>
     </div>
     <div class="settings-group" id="achievementsContent"></div>
     <button id="resetAchievementsBtn" class="menu-btn reset-btn">🗑 Сбросить все</button>
     <button id="backFromAchievements" class="menu-btn" style="margin-top:0.5rem;">↩ НАЗАД</button>
-  </div>
+  </div></div>
   <div id="confirmReset" class="confirm-overlay hidden"><div class="confirm-panel"><h3>⚠️ <span id="confirmTitle">Сброс достижений</span></h3><p id="confirmText">Вы точно хотите удалить все достижения? Это действие нельзя отменить.</p><div class="confirm-buttons"><button id="confirmYes" class="menu-btn reset-btn">✅ Да, сбросить</button><button id="confirmNo" class="menu-btn">❌ Отмена</button></div></div></div>
   <div id="confirmResetSingle" class="confirm-overlay-single hidden"><div class="confirm-panel-single"><h3>⚠️ Сброс достижения</h3><p id="confirmSingleText">Вы точно хотите сбросить это достижение?</p><div class="confirm-buttons-single"><button id="confirmSingleYes" class="menu-btn reset-btn" style="font-size:1rem;padding:0.5rem 1.5rem;">✅ Да</button><button id="confirmSingleNo" class="menu-btn" style="font-size:1rem;padding:0.5rem 1.5rem;">❌ Отмена</button></div></div></div>
   <div id="pauseMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>⏸ ПАУЗА</h2><div class="menu-buttons"><button id="resumeButton" class="menu-btn">▶ ПРОДОЛЖИТЬ</button><button id="pauseRestartButton" class="menu-btn">↺ НОВАЯ ИГРА</button><button id="pauseMainMenuButton" class="menu-btn">🏠 ГЛАВНОЕ МЕНЮ</button></div></div></div>
@@ -320,7 +295,6 @@
   let coins = 0, ownedSkins = ['default'], equippedSkin = 'default', ownedFruits = [0, 1, 2], ownedBackgrounds = [0,1,3,4];
   let customSkinParams = null;
   let achievements = {}, currentAchievementFilter = 'all';
-  let currentDifficultyFilter = 'all'; // <-- Новая переменная
   let dailyQuests = [], questsDate = '';
   let totalFruitsEaten = 0, totalWallPasses = 0, totalBonusesCollected = 0, totalGoldenFruits = 0;
   let gameMode = 'classic'; let selectedMode = 'classic';
@@ -364,18 +338,15 @@
     { id: 'fill_10x10', name: { ru: '20x20 сможешь?', en: 'Can you do 20x20?' }, desc: { ru: 'Собрать все фрукты на поле 10x10', en: 'Collect all fruits on a 10x10 field' }, icon: '🏆', hidden: false, difficulty: 'medium' },
     { id: 'fill_20x20', name: { ru: 'Всё собрал? Но какой ценой...', en: 'Collected everything? But at what cost...' }, desc: { ru: 'Собрать все фрукты на поле 20x20', en: 'Collect all fruits on a 20x20 field' }, icon: '👑', hidden: false, difficulty: 'hard' },
     { id: 'fill_20x20_hard', name: { ru: 'Ползучее безумие', en: 'Crawling Madness' }, desc: { ru: 'Собрать все фрукты на поле 20x20 с включённым ускорением', en: 'Collect all fruits on 20x20 field with speed increase enabled' }, icon: '💀', hidden: false, difficulty: 'epic' },
-    // Достижения за сбор фруктов — все с 🍎
     { id: 'total_fruits_100', name: { ru: 'Дальше больше', en: 'More to come' }, desc: { ru: 'Собрать 100 фруктов за всё время', en: 'Collect 100 fruits total' }, icon: '🍎', hidden: false, difficulty: 'easy' },
     { id: 'total_fruits_500', name: { ru: 'Может уже хватит?', en: 'Can you stop already?' }, desc: { ru: 'Собрать 500 фруктов за всё время', en: 'Collect 500 fruits total' }, icon: '🍎', hidden: false, difficulty: 'medium' },
     { id: 'total_fruits_1000', name: { ru: 'Ты всё ещё продолжаешь в это играть...', en: 'You\'re still playing this...' }, desc: { ru: 'Собрать 1000 фруктов за всё время', en: 'Collect 1000 fruits total' }, icon: '🍎', hidden: false, difficulty: 'medium' },
     { id: 'total_fruits_10000', name: { ru: 'Теперь попробуй сбросить все достижения', en: 'Now try resetting all achievements' }, desc: { ru: 'Собрать 10000 фруктов за всё время', en: 'Collect 10000 fruits total' }, icon: '🍎', hidden: false, difficulty: 'hard' },
     { id: 'total_fruits_100000', name: { ru: 'Дальше бога нет...', en: 'There is no god further...' }, desc: { ru: 'Собрать 100000 фруктов за всё время', en: 'Collect 100000 fruits total' }, icon: '🍎', hidden: false, difficulty: 'epic' },
-    // Достижения за золотые яблоки
     { id: 'golden_10_total', name: { ru: 'Так держать!', en: 'Keep it up!' }, desc: { ru: 'Собрать 10 золотых яблок за всё время', en: 'Collect 10 golden apples total' }, icon: '⭐', hidden: false, difficulty: 'easy' },
     { id: 'golden_25_total', name: { ru: 'Это было не так сложно', en: 'That wasn\'t so hard' }, desc: { ru: 'Собрать 25 золотых яблок за всё время', en: 'Collect 25 golden apples total' }, icon: '⭐', hidden: false, difficulty: 'medium' },
     { id: 'golden_50_total', name: { ru: 'Зубы ещё целые?', en: 'Teeth still intact?' }, desc: { ru: 'Собрать 50 золотых яблок за всё время', en: 'Collect 50 golden apples total' }, icon: '⭐', hidden: false, difficulty: 'hard' },
     { id: 'golden_100_total', name: { ru: 'Беззубик', en: 'Toothless' }, desc: { ru: 'Собрать 100 золотых яблок за всё время', en: 'Collect 100 golden apples total' }, icon: '⭐', hidden: false, difficulty: 'epic' },
-    // Достижение за бонусы
     { id: 'bonus_100_total', name: { ru: 'Коллекционер бонусов', en: 'Bonus Collector' }, desc: { ru: 'Собрать 100 бонусов за всё время', en: 'Collect 100 bonuses total' }, icon: '🎁', hidden: false, difficulty: 'medium' },
     { id: 'custom_bg', name: { ru: 'Эти линии не оптимальные', en: 'These lines are not optimal' }, desc: { ru: 'Установить свой фон для поля', en: 'Set a custom background for the field' }, icon: '🖼️', hidden: true, difficulty: 'easy' },
     { id: 'all_skins', name: { ru: 'Змеиный гардероб', en: 'Snake Wardrobe' }, desc: { ru: 'Купить все скины в магазине', en: 'Buy all skins in the shop' }, icon: '🐍', hidden: false, difficulty: 'hard' },
@@ -445,7 +416,6 @@
   function resetAchievements(){
     achievements={};
     saveAchievements();
-    // Перепроверяем все достижения, зависящие от состояния
     checkShopAchievements();
     checkTotalFruitsAchievements();
     checkGoldenFruitsAchievements();
@@ -476,26 +446,62 @@
 
   function updateDuoCustomSkinSection(){if(!duoCustomSkinSection)return;const hasCustom=ownedSkins.includes('custom');duoCustomSkinSection.innerHTML='';if(hasCustom){const div=document.createElement('div');div.style.cssText='margin-top:0.5rem;';div.innerHTML=`<div class="custom-color-row"><span>${currentLang==='ru'?'Использовать свой скин для 2 игрока':'Use custom skin for player 2'}</span><input type="checkbox" id="p2UseCustomSkinCheck" style="width:auto;margin:0;" ${p2UseCustomSkin?'checked':''}></div>`;duoCustomSkinSection.appendChild(div);const cb=document.getElementById('p2UseCustomSkinCheck');if(cb)cb.addEventListener('change',(e)=>{p2UseCustomSkin=e.target.checked;saveAllSettings();drawBoard();});}else{duoCustomSkinSection.innerHTML=`<p style="color:#b9dbb0;font-size:0.8rem;margin-top:0.5rem;">${t('buyCustomSkin')}</p>`;}}
 
-  function renderAchievements(){if(!achievementsContent)return;achievementsContent.innerHTML='';achievementsList.forEach(a=>{const u=isAchievementUnlocked(a.id);const difficulty=a.difficulty||'easy';
-    // Фильтр по статусу
-    let statusOk=false;
-    if(currentAchievementFilter==='all') statusOk=true;
-    else if(currentAchievementFilter==='unlocked'&&u) statusOk=true;
-    else if(currentAchievementFilter==='locked'&&!u) statusOk=true;
-    if(!statusOk)return;
-    // Фильтр по сложности
-    let diffOk=false;
-    if(currentDifficultyFilter==='all') diffOk=true;
-    else if(currentDifficultyFilter===difficulty) diffOk=true;
-    if(!diffOk)return;
+  function renderAchievements(){
+    if(!achievementsContent)return;
+    achievementsContent.innerHTML='';
+    const filter = currentAchievementFilter;
 
-    const item=document.createElement('div');
-    item.className=`achievement-item ${u?'unlocked':'locked'} ${difficulty}`;
-    if(!u&&a.hidden){item.innerHTML=`<div class="achievement-icon">❓</div><div class="achievement-info"><div class="achievement-name">???</div><div class="achievement-desc">???</div></div><span class="achievement-status" style="color:#666;">🔒</span>`;}else{const diffLabels={easy:'🟢',medium:'🟡',hard:'🔴',epic:'🟣'};const diffLabel=diffLabels[difficulty]||'🟢';let resetBtn='';if(u){resetBtn=`<button class="reset-single-btn" data-id="${a.id}" title="Сбросить это достижение">🗑</button>`;}item.innerHTML=`<div class="achievement-icon">${a.icon}</div><div class="achievement-info"><div class="achievement-name">${a.name[currentLang]} <span class="difficulty-badge difficulty-${difficulty}">${difficulty}</span>${resetBtn}</div><div class="achievement-desc">${a.desc[currentLang]}</div></div><span class="achievement-status" style="color:${u?'#ffd700':'#666'};">${u?'✅':'🔒'}</span>`;}
-    achievementsContent.appendChild(item);});
-    if(achievementsContent.innerHTML===''){const empty=document.createElement('div');empty.style.cssText='color:#b9dbb0;text-align:center;padding:2rem;';empty.textContent=t('noAchievements');achievementsContent.appendChild(empty);}
-    // Обработчики для кнопок сброса отдельных достижений
-    document.querySelectorAll('.reset-single-btn').forEach(btn=>{btn.addEventListener('click',function(e){e.stopPropagation();const id=this.dataset.id;pendingSingleResetId=id;const ach=achievementsList.find(a=>a.id===id);if(ach){confirmSingleText.textContent=`Вы точно хотите сбросить достижение "${ach.name[currentLang]}"?`;}else{confirmSingleText.textContent='Вы точно хотите сбросить это достижение?';}confirmResetSingle.classList.remove('hidden');});});
+    achievementsList.forEach(a=>{
+      const u = isAchievementUnlocked(a.id);
+      let show = false;
+
+      if(filter === 'all') show = true;
+      else if(filter === 'unlocked' && u) show = true;
+      else if(filter === 'locked' && !u) show = true;
+      else if(filter === 'easy' && a.difficulty === 'easy') show = true;
+      else if(filter === 'medium' && a.difficulty === 'medium') show = true;
+      else if(filter === 'hard' && a.difficulty === 'hard') show = true;
+      else if(filter === 'epic' && a.difficulty === 'epic') show = true;
+
+      if(!show) return;
+
+      const item=document.createElement('div');
+      item.className=`achievement-item ${u?'unlocked':'locked'} ${a.difficulty||'easy'}`;
+      if(!u && a.hidden){
+        item.innerHTML=`<div class="achievement-icon">❓</div><div class="achievement-info"><div class="achievement-name">???</div><div class="achievement-desc">???</div></div><span class="achievement-status" style="color:#666;">🔒</span>`;
+      }else{
+        const diffLabels={easy:'🟢',medium:'🟡',hard:'🔴',epic:'🟣'};
+        const diffLabel=diffLabels[a.difficulty]||'🟢';
+        let resetBtn='';
+        if(u){
+          resetBtn=`<button class="reset-single-btn" data-id="${a.id}" title="Сбросить это достижение">🗑</button>`;
+        }
+        item.innerHTML=`<div class="achievement-icon">${a.icon}</div><div class="achievement-info"><div class="achievement-name">${a.name[currentLang]} <span class="difficulty-badge difficulty-${a.difficulty||'easy'}">${a.difficulty||'easy'}</span>${resetBtn}</div><div class="achievement-desc">${a.desc[currentLang]}</div></div><span class="achievement-status" style="color:${u?'#ffd700':'#666'};">${u?'✅':'🔒'}</span>`;
+      }
+      achievementsContent.appendChild(item);
+    });
+
+    if(achievementsContent.innerHTML===''){
+      const empty=document.createElement('div');
+      empty.style.cssText='color:#b9dbb0;text-align:center;padding:2rem;';
+      empty.textContent=t('noAchievements');
+      achievementsContent.appendChild(empty);
+    }
+
+    document.querySelectorAll('.reset-single-btn').forEach(btn=>{
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        const id=this.dataset.id;
+        pendingSingleResetId=id;
+        const ach=achievementsList.find(a=>a.id===id);
+        if(ach){
+          confirmSingleText.textContent=`Вы точно хотите сбросить достижение "${ach.name[currentLang]}"?`;
+        } else {
+          confirmSingleText.textContent=`Вы точно хотите сбросить это достижение?`;
+        }
+        confirmResetSingle.classList.remove('hidden');
+      });
+    });
   }
 
   function renderShop(){if(!shopContent)return;shopContent.innerHTML='';const tab=document.querySelector('.shop-tab.active')?.dataset.tab||'skins';
@@ -661,45 +667,37 @@
   function showSettings(){mainMenu.classList.add('hidden');settingsMenu.classList.remove('hidden');nicknameError.classList.add('hidden');if(mobileControlType)mobileControlType.value=mobileControlMode;updateFruitSelect();updateFieldDesignSelect();renderStats();updateDuoCustomSkinSection();updateSpeedDisplay();const tab=document.querySelector('.settings-tab[data-tab="gameplay"]');if(tab)tab.click();}
   function showShop(){mainMenu.classList.add('hidden');shopMenu.classList.remove('hidden');updateCoinsDisplay();const tab=document.querySelector('.shop-tab[data-tab="skins"]');if(tab)tab.click();renderShop();}
   function showQuests(){mainMenu.classList.add('hidden');questsMenu.classList.remove('hidden');checkQuestCompletion();renderQuests();}
-  function showAchievements(){
-    mainMenu.classList.add('hidden');
-    achievementsMenu.classList.remove('hidden');
-    // Сбрасываем фильтры
-    currentAchievementFilter = 'all';
-    currentDifficultyFilter = 'all';
-    // Активируем нужные кнопки
-    document.querySelectorAll('.achievement-tab').forEach(t => t.classList.remove('active'));
-    document.querySelector('.achievement-tab[data-filter="all"]')?.classList.add('active');
-    document.querySelectorAll('.achievement-difficulty-tab').forEach(t => t.classList.remove('active'));
-    document.querySelector('.achievement-difficulty-tab[data-difficulty="all"]')?.classList.add('active');
-    renderAchievements();
-  }
+  function showAchievements(){mainMenu.classList.add('hidden');achievementsMenu.classList.remove('hidden');currentAchievementFilter='all';const tab=document.querySelector('.achievement-tab[data-filter="all"]');if(tab)tab.click();renderAchievements();}
   function saveAllSettings(){const s={language:currentLang,snakeStyle:snakeStyle,p2SnakeStyle:p2SnakeStyle,p2UseCustomSkin:p2UseCustomSkin,soundType:currentSoundType,volume:Math.round(soundVolume*100),fruitSpawnVolume:Math.round(fruitSpawnVolume*100),fruitType:fruitType,fieldDesign:fieldDesign,gridSize:GRID_SIZE,nickname:playerNickname,mobileControlMode:mobileControlMode,enableShield:enableShield,enableMagnet:enableMagnet,enableDiamond:enableDiamond,enableSpeedBonus:enableSpeedBonus,isMuted:isMuted,enableSpeedIncrease:enableSpeedIncrease};try{localStorage.setItem('snakeSettings',JSON.stringify(s));}catch(e){}}
   function loadSettings(){try{const s=localStorage.getItem('snakeSettings');return s?JSON.parse(s):{};}catch(e){return{};}}
 
   function bindEvents(){
     window.addEventListener('keydown',handleKeyDown);restartBtn.addEventListener('click',resetGame);playButton.addEventListener('click',showModeSelect);shopButton.addEventListener('click',showShop);questsButton.addEventListener('click',showQuests);achievementsButton.addEventListener('click',showAchievements);settingsButton.addEventListener('click',showSettings);
-    backFromModeSelect.addEventListener('click',()=>{modeSelectMenu.classList.add('hidden');mainMenu.classList.remove('hidden');});
-    startGameBtn.addEventListener('click',()=>{gameMode=selectedMode;updateModeIndicator();highScoreSpan.textContent=getCurrentHighScore();initAudio();resetGame();modeSelectMenu.classList.add('hidden');});
-    backFromShop.addEventListener('click',()=>{shopMenu.classList.add('hidden');mainMenu.classList.remove('hidden');});
-    backFromQuests.addEventListener('click',()=>{questsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');});
-    backFromAchievements.addEventListener('click',()=>{achievementsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');});
-    backFromSettings.addEventListener('click',()=>{settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');});
-    resumeButton.addEventListener('click',resumeGame);pauseRestartButton.addEventListener('click',restartFromPause);pauseMainMenuButton.addEventListener('click',goToMainMenu);
-    resetAchievementsBtn.addEventListener('click',()=>{confirmReset.classList.remove('hidden');});
-    confirmYes.addEventListener('click',()=>{resetAchievements();confirmReset.classList.add('hidden');});
-    confirmNo.addEventListener('click',()=>{confirmReset.classList.add('hidden');});
-    confirmSingleYes.addEventListener('click',()=>{if(pendingSingleResetId){removeAchievement(pendingSingleResetId);pendingSingleResetId=null;}confirmResetSingle.classList.add('hidden');});
-    confirmSingleNo.addEventListener('click',()=>{pendingSingleResetId=null;confirmResetSingle.classList.add('hidden');});
-
+    backFromModeSelect.addEventListener('click',()=>{modeSelectMenu.classList.add('hidden');mainMenu.classList.remove('hidden');});startGameBtn.addEventListener('click',()=>{gameMode=selectedMode;updateModeIndicator();highScoreSpan.textContent=getCurrentHighScore();initAudio();resetGame();modeSelectMenu.classList.add('hidden');});
+    backFromShop.addEventListener('click',()=>{shopMenu.classList.add('hidden');mainMenu.classList.remove('hidden');});backFromQuests.addEventListener('click',()=>{questsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');});backFromAchievements.addEventListener('click',()=>{achievementsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');});backFromSettings.addEventListener('click',()=>{settingsMenu.classList.add('hidden');mainMenu.classList.remove('hidden');});
+    resumeButton.addEventListener('click',resumeGame);pauseRestartButton.addEventListener('click',restartFromPause);pauseMainMenuButton.addEventListener('click',goToMainMenu);resetAchievementsBtn.addEventListener('click',()=>{confirmReset.classList.remove('hidden');});confirmYes.addEventListener('click',()=>{resetAchievements();confirmReset.classList.add('hidden');});confirmNo.addEventListener('click',()=>{confirmReset.classList.add('hidden');});
+    confirmSingleYes.addEventListener('click',()=>{
+      if(pendingSingleResetId){
+        removeAchievement(pendingSingleResetId);
+        pendingSingleResetId=null;
+      }
+      confirmResetSingle.classList.add('hidden');
+    });
+    confirmSingleNo.addEventListener('click',()=>{
+      pendingSingleResetId=null;
+      confirmResetSingle.classList.add('hidden');
+    });
     document.querySelectorAll('.mode-btn').forEach(b=>{b.addEventListener('click',()=>{selectedMode=b.dataset.mode;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x.dataset.mode===selectedMode));});});
     document.querySelectorAll('.settings-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const target=tab.dataset.tab;if(tabContentGameplay)tabContentGameplay.classList.toggle('hidden',target!=='gameplay');if(tabContentSound)tabContentSound.classList.toggle('hidden',target!=='sound');if(tabContentDesign){tabContentDesign.classList.toggle('hidden',target!=='design');if(target==='design'){updateFruitSelect();updateFieldDesignSelect();}}if(tabContentStats)tabContentStats.classList.toggle('hidden',target!=='stats');if(target==='gameplay'){updateDuoCustomSkinSection();updateSpeedDisplay();}if(target==='stats')renderStats();});});
     document.querySelectorAll('.shop-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.shop-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');renderShop();});});
-    // Обработчики для вкладок достижений (статус)
-    document.querySelectorAll('.achievement-tab').forEach(tab=>{tab.addEventListener('click',function(){document.querySelectorAll('.achievement-tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');currentAchievementFilter=this.dataset.filter;renderAchievements();});});
-    // Обработчики для вкладок сложности
-    document.querySelectorAll('.achievement-difficulty-tab').forEach(tab=>{tab.addEventListener('click',function(){document.querySelectorAll('.achievement-difficulty-tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');currentDifficultyFilter=this.dataset.difficulty;renderAchievements();});});
-
+    document.querySelectorAll('.achievement-tab').forEach(tab=>{
+      tab.addEventListener('click',()=>{
+        document.querySelectorAll('.achievement-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        currentAchievementFilter=tab.dataset.filter;
+        renderAchievements();
+      });
+    });
     snakeStyleSelect.addEventListener('change',(e)=>{snakeStyle=parseInt(e.target.value,10);drawBoard();saveAllSettings();});p2SnakeStyleSelect.addEventListener('change',(e)=>{p2SnakeStyle=parseInt(e.target.value,10);drawBoard();saveAllSettings();});soundSelect.addEventListener('change',(e)=>{currentSoundType=parseInt(e.target.value,10);saveAllSettings();if(volumeSlider.value>0)initAudio();playAppleSound();});
     volumeSlider.addEventListener('input',(e)=>{soundVolume=parseInt(e.target.value,10)/100;volumeValue.textContent=e.target.value;saveAllSettings();if(soundVolume>0){initAudio();playAppleSound();}});
     fruitSpawnVolumeSlider.addEventListener('input',(e)=>{fruitSpawnVolume=parseInt(e.target.value,10)/100;fruitSpawnVolumeValue.textContent=e.target.value;saveAllSettings();if(fruitSpawnVolume>0){initAudio();playFruitSpawnSound();}});
