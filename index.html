@@ -207,45 +207,45 @@
   <div id="mainMenu" class="menu-overlay"><div class="menu-panel"><h2>🐍 <span id="menuTitle">ЗМЕЙКА</span></h2>
   <div class="menu-buttons"><button id="playButton" class="menu-btn">▶ <span id="playText">ИГРАТЬ</span></button><button id="shopButton" class="menu-btn">🛒 <span id="shopText">МАГАЗИН</span></button><button id="questsButton" class="menu-btn">📋 <span id="questsText">ЗАДАНИЯ</span></button><button id="achievementsButton" class="menu-btn">🏆 <span id="achievementsText">ДОСТИЖЕНИЯ</span></button><button id="settingsButton" class="menu-btn">⚙ <span id="settingsText">НАСТРОЙКИ</span></button></div></div></div>
   <div id="modeSelectMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🎮 <span id="modeSelectTitle">ВЫБОР РЕЖИМА</span></h2><div class="mode-select"><button class="mode-btn active" data-mode="classic">🐍 <span id="modeClassic">Обычный</span></button><button class="mode-btn" data-mode="infinite">🌀 <span id="modeInfinite">Бесконечный</span></button><button class="mode-btn" data-mode="bombs">💣 <span id="modeBombs">С бомбами</span></button><button class="mode-btn" data-mode="duo">👥 <span id="modeDuo">Два игрока</span></button><button class="mode-btn" data-mode="fog">🌫️ <span id="modeFog">Туман</span></button></div><div class="menu-buttons"><button id="startGameBtn" class="menu-btn">▶ <span id="startGameText">НАЧАТЬ ИГРУ</span></button><button id="backFromModeSelect" class="menu-btn">↩ <span id="backFromModeSelectText">НАЗАД</span></button></div></div></div>
-  <div id="shopMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🛒 <span id="shopTitle">МАГАЗИН</span></h2><div class="coins-display" style="margin-bottom:0.8rem;"><span class="coin-sprite"></span><span class="coins-value" id="shopCoinsDisplay">0</span></div><div class="shop-tabs"><button class="shop-tab active" data-tab="skins">🐍 Скины</button><button class="shop-tab" data-tab="fruits">🍉 Фрукты</button><button class="shop-tab" data-tab="backgrounds">🖼️ Фоны</button><button class="shop-tab" data-tab="upgrades">⚡ Улучшения</button></div><div class="settings-group" id="shopContent"></div><button id="backFromShop" class="menu-btn">↩ <span id="backFromShopText">НАЗАД</span></button></div></div>
-  <div id="questsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>📋 <span id="questsTitle">ЗАДАНИЯ</span></h2><div class="settings-group" id="questsContent"></div><p style="color:#b9dbb0;font-size:0.8rem;margin-top:0.5rem;">Задания обновляются каждый день</p><button id="backFromQuests" class="menu-btn">↩ <span id="backFromQuestsText">НАЗАД</span></button></div></div>
+  <div id="shopMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🛒 <span id="shopTitle">МАГАЗИН</span></h2><div class="coins-display" style="margin-bottom:0.8rem;"><span class="coin-sprite"></span><span class="coins-value" id="shopCoinsDisplay">0</span></div><div class="shop-tabs"><button class="shop-tab active" data-tab="skins">🐍 <span id="shopTabSkins">Скины</span></button><button class="shop-tab" data-tab="fruits">🍉 <span id="shopTabFruits">Фрукты</span></button><button class="shop-tab" data-tab="backgrounds">🖼️ <span id="shopTabBg">Фоны</span></button><button class="shop-tab" data-tab="upgrades">⚡ <span id="shopTabUpgrades">Улучшения</span></button></div><div class="settings-group" id="shopContent"></div><button id="backFromShop" class="menu-btn">↩ <span id="backFromShopText">НАЗАД</span></button></div></div>
+  <div id="questsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>📋 <span id="questsTitle">ЗАДАНИЯ</span></h2><div class="settings-group" id="questsContent"></div><p style="color:#b9dbb0;font-size:0.8rem;margin-top:0.5rem;" id="questsUpdateText">Задания обновляются каждый день</p><button id="backFromQuests" class="menu-btn">↩ <span id="backFromQuestsText">НАЗАД</span></button></div></div>
   <div id="customSkinMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🎨 РЕДАКТОР СКИНА</h2><div class="settings-group"><div class="custom-skin-preview" id="customSkinPreview"></div><div class="segment-editor" id="segmentEditor"></div><div class="custom-color-row"><span>Свечение</span><input type="checkbox" id="customGlow" style="width:auto;margin:0;"><span style="flex:none;">Включить</span></div><div class="custom-color-row"><span>Цвет свечения</span><input type="color" id="customGlowColor" value="#6fbf4c"></div></div><div class="menu-buttons"><button id="saveCustomSkin" class="menu-btn">💾 СОХРАНИТЬ</button><button id="cancelCustomSkin" class="menu-btn">↩ НАЗАД</button></div></div></div>
   <div id="achievementsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>🏆 <span id="achievementsTitle">ДОСТИЖЕНИЯ</span></h2>
     <div class="achievement-tabs-row">
       <div class="achievement-tabs">
-        <button class="achievement-tab active" data-filter="all">✅ Все</button>
-        <button class="achievement-tab" data-filter="unlocked">🔓 Полученные</button>
-        <button class="achievement-tab" data-filter="locked">🔒 Заблокированные</button>
+        <button class="achievement-tab active" data-filter="all">✅ <span id="achAll">Все</span></button>
+        <button class="achievement-tab" data-filter="unlocked">🔓 <span id="achUnlocked">Полученные</span></button>
+        <button class="achievement-tab" data-filter="locked">🔒 <span id="achLocked">Заблокированные</span></button>
       </div>
       <div class="achievement-tabs-difficulty">
-        <button class="achievement-tab" data-filter="easy">🟢 Easy</button>
-        <button class="achievement-tab" data-filter="medium">🟡 Medium</button>
-        <button class="achievement-tab" data-filter="hard">🔴 Hard</button>
-        <button class="achievement-tab" data-filter="epic">🟣 Epic</button>
+        <button class="achievement-tab" data-filter="easy">🟢 <span id="achEasy">Easy</span></button>
+        <button class="achievement-tab" data-filter="medium">🟡 <span id="achMedium">Medium</span></button>
+        <button class="achievement-tab" data-filter="hard">🔴 <span id="achHard">Hard</span></button>
+        <button class="achievement-tab" data-filter="epic">🟣 <span id="achEpic">Epic</span></button>
       </div>
     </div>
     <div class="settings-group" id="achievementsContent"></div>
-    <button id="resetAchievementsBtn" class="menu-btn reset-btn">🗑 Сбросить все</button>
-    <button id="backFromAchievements" class="menu-btn" style="margin-top:0.5rem;">↩ НАЗАД</button>
+    <button id="resetAchievementsBtn" class="menu-btn reset-btn">🗑 <span id="achResetBtn">Сбросить все</span></button>
+    <button id="backFromAchievements" class="menu-btn" style="margin-top:0.5rem;">↩ <span id="backFromAchievementsText">НАЗАД</span></button>
   </div></div>
-  <div id="confirmReset" class="confirm-overlay hidden"><div class="confirm-panel"><h3>⚠️ <span id="confirmTitle">Сброс достижений</span></h3><p id="confirmText">Вы точно хотите удалить все достижения? Это действие нельзя отменить.</p><div class="confirm-buttons"><button id="confirmYes" class="menu-btn reset-btn">✅ Да, сбросить</button><button id="confirmNo" class="menu-btn">❌ Отмена</button></div></div></div>
-  <div id="confirmResetSingle" class="confirm-overlay-single hidden"><div class="confirm-panel-single"><h3>⚠️ Сброс достижения</h3><p id="confirmSingleText">Вы точно хотите сбросить это достижение?</p><div class="confirm-buttons-single"><button id="confirmSingleYes" class="menu-btn reset-btn" style="font-size:1rem;padding:0.5rem 1.5rem;">✅ Да</button><button id="confirmSingleNo" class="menu-btn" style="font-size:1rem;padding:0.5rem 1.5rem;">❌ Отмена</button></div></div></div>
-  <div id="pauseMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>⏸ ПАУЗА</h2><div class="menu-buttons"><button id="resumeButton" class="menu-btn">▶ ПРОДОЛЖИТЬ</button><button id="pauseRestartButton" class="menu-btn">↺ НОВАЯ ИГРА</button><button id="pauseMainMenuButton" class="menu-btn">🏠 ГЛАВНОЕ МЕНЮ</button></div></div></div>
-  <div id="settingsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>⚙ НАСТРОЙКИ</h2><label class="nickname-label-centered">👤 Никнейм</label><div class="nickname-section"><input type="text" id="nicknameInput" placeholder="Введите никнейм" maxlength="15" autocomplete="off"><button id="saveNicknameBtn">✓</button></div><div class="error-msg hidden" id="nicknameError"></div><div class="settings-tabs"><button class="settings-tab active" data-tab="gameplay">🎮 Геймплей</button><button class="settings-tab" data-tab="sound">🔊 Звук</button><button class="settings-tab" data-tab="design">🎨 Дизайн</button><button class="settings-tab" data-tab="stats">📊 Статистика</button></div>
+  <div id="confirmReset" class="confirm-overlay hidden"><div class="confirm-panel"><h3>⚠️ <span id="confirmTitle">Сброс достижений</span></h3><p id="confirmText">Вы точно хотите удалить все достижения? Это действие нельзя отменить.</p><div class="confirm-buttons"><button id="confirmYes" class="menu-btn reset-btn">✅ <span id="confirmYesText">Да, сбросить</span></button><button id="confirmNo" class="menu-btn">❌ <span id="confirmNoText">Отмена</span></button></div></div></div>
+  <div id="confirmResetSingle" class="confirm-overlay-single hidden"><div class="confirm-panel-single"><h3>⚠️ Сброс достижения</h3><p id="confirmSingleText">Вы точно хотите сбросить это достижение?</p><div class="confirm-buttons-single"><button id="confirmSingleYes" class="menu-btn reset-btn" style="font-size:1rem;padding:0.5rem 1.5rem;">✅ <span id="confirmSingleYesText">Да</span></button><button id="confirmSingleNo" class="menu-btn" style="font-size:1rem;padding:0.5rem 1.5rem;">❌ <span id="confirmSingleNoText">Отмена</span></button></div></div></div>
+  <div id="pauseMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>⏸ <span id="pauseTitle">ПАУЗА</span></h2><div class="menu-buttons"><button id="resumeButton" class="menu-btn">▶ <span id="pauseResume">ПРОДОЛЖИТЬ</span></button><button id="pauseRestartButton" class="menu-btn">↺ <span id="pauseRestart">НОВАЯ ИГРА</span></button><button id="pauseMainMenuButton" class="menu-btn">🏠 <span id="pauseMenuBtn">ГЛАВНОЕ МЕНЮ</span></button></div></div></div>
+  <div id="settingsMenu" class="menu-overlay hidden"><div class="menu-panel"><h2>⚙ <span id="settingsTitle">НАСТРОЙКИ</span></h2><label class="nickname-label-centered">👤 <span id="settingsNickname">Никнейм</span></label><div class="nickname-section"><input type="text" id="nicknameInput" placeholder="Введите никнейм" maxlength="15" autocomplete="off"><button id="saveNicknameBtn">✓</button></div><div class="error-msg hidden" id="nicknameError"></div><div class="settings-tabs"><button class="settings-tab active" data-tab="gameplay">🎮 <span id="settingsTabGameplay">Геймплей</span></button><button class="settings-tab" data-tab="sound">🔊 <span id="settingsTabSound">Звук</span></button><button class="settings-tab" data-tab="design">🎨 <span id="settingsTabDesign">Дизайн</span></button><button class="settings-tab" data-tab="stats">📊 <span id="settingsTabStats">Статистика</span></button></div>
     <div class="settings-group" id="tabContentGameplay">
-      <div class="gameplay-section"><div class="gameplay-section-title">🌫️ Режим Туман</div><p style="color:#b9dbb0;font-size:0.75rem;margin-bottom:0.8rem;">В этом режиме видна только область вокруг головы змейки. Остальное скрыто туманом.</p><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableFogMode" style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#aabbcc;font-weight:bold;">🌫️ Включить туман</span><span style="color:#b9dbb0;font-size:0.75rem;display:block;">Радиус обзора: <span id="fogRadiusDisplay">4</span> клетки</span><input type="range" id="fogRadiusSlider" min="2" max="7" value="4" step="1" style="width:100%;margin-top:0.3rem;"></div></div>
-      <div class="bonus-option" style="margin-bottom:0.3rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableFlashlight" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#ffff44;font-weight:bold;">🔦 Бонус "Фонарик"</span><span style="color:#b9dbb0;font-size:0.75rem;display:block;">Увеличивает радиус видимости на 3 клетки на 10 секунд. Работает только в режиме туман.</span></div></div></div>
-      <div class="gameplay-section"><div class="gameplay-section-title">⚡ Усложнения</div><p style="color:#b9dbb0;font-size:0.75rem;margin-bottom:0.8rem;">Эти настройки делают игру сложнее. Используйте с осторожностью!</p><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableSpeedIncrease" style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#ff6b6b;font-weight:bold;">⚡ Ускорение при съедании</span><span style="color:#b9dbb0;font-size:0.75rem;display:block;">Каждый фрукт ускоряет змейку на 3мс. Смерть сбрасывает скорость. <span style="color:#ffd700;">Множитель x2 к очкам и монетам!</span></span><span id="currentSpeedDisplay" style="color:#ffd966;font-size:0.7rem;display:block;margin-top:0.2rem;">Текущая задержка: 120мс</span></div></div></div>
-      <div class="gameplay-section"><div class="gameplay-section-title">🎁 Бонусы</div><p style="color:#b9dbb0;font-size:0.75rem;margin-bottom:0.8rem;">Бонусы появляются на поле каждые 5 съеденных фруктов и исчезают через 7 секунд</p><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableShield" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#44aaff;font-weight:bold;">🛡 Щит</span><span style="color:#b9dbb0;font-size:0.75rem;display:block;">Защищает от удара. При ударе о стену — проходит сквозь! 10 секунд.</span></div></div><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableMagnet" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#ff44ff;font-weight:bold;">🧲 Магнит</span><span style="color:#b9dbb0;font-size:0.75rem;display:block;">Притягивает фрукты в радиусе 3 клеток. 15 секунд.</span></div></div><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableDiamond" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#44ffff;font-weight:bold;">💎 Алмаз</span><span style="color:#b9dbb0;font-size:0.75rem;display:block;">Удваивает очки и монеты за фрукт. 20 секунд.</span></div></div><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableSpeed" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#ffaa00;font-weight:bold;">⚡ Энергетик</span><span style="color:#b9dbb0;font-size:0.75rem;display:block;">Ускоряет змейку на 15% на 10 секунд.</span></div></div></div>
-      <div class="gameplay-section"><div class="gameplay-section-title">👥 Режим двух игроков</div><label>🔵 Дизайн змейки 2 игрока</label><select id="p2SnakeStyleSelect"><option value="0">Синяя классическая</option><option value="1">Синяя квадратная</option><option value="2">Красная</option><option value="3">Фиолетовая</option><option value="4">Оранжевая</option></select><div id="duoCustomSkinSection"></div></div>
-      <div class="gameplay-section"><div class="gameplay-section-title">📱 Управление на телефоне</div><select id="mobileControlType"><option value="buttons">Кнопки (стрелки внизу)</option><option value="swipe">Свайп по экрану</option></select>
-      <div class="bonus-option" style="margin-top:0.5rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableVibration" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#ff6b9d;font-weight:bold;">📳 Вибрация</span><span style="color:#b9dbb0;font-size:0.75rem;display:block;">Вибрация при столкновениях и сборе бонусов (только на мобильных устройствах)</span></div></div>
-      <p style="color:#b9dbb0;font-size:0.75rem;margin-top:0.3rem;">Кнопки: стрелки внизу экрана. Свайп: проведите пальцем по игровому полю.</p></div>
+      <div class="gameplay-section"><div class="gameplay-section-title">🌫️ <span id="settingsFogTitle">Режим Туман</span></div><p style="color:#b9dbb0;font-size:0.75rem;margin-bottom:0.8rem;" id="settingsFogDesc">В этом режиме видна только область вокруг головы змейки. Остальное скрыто туманом.</p><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableFogMode" style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#aabbcc;font-weight:bold;">🌫️ <span id="settingsFogEnable">Включить туман</span></span><span style="color:#b9dbb0;font-size:0.75rem;display:block;"><span id="settingsFogRadiusLabel">Радиус обзора</span>: <span id="fogRadiusDisplay">4</span> <span id="settingsFogCells">клетки</span></span><input type="range" id="fogRadiusSlider" min="2" max="7" value="4" step="1" style="width:100%;margin-top:0.3rem;"></div></div>
+      <div class="bonus-option" style="margin-bottom:0.3rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableFlashlight" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#ffff44;font-weight:bold;">🔦 <span id="settingsFlashlightTitle">Бонус "Фонарик"</span></span><span style="color:#b9dbb0;font-size:0.75rem;display:block;" id="settingsFlashlightDesc">Увеличивает радиус видимости на 3 клетки на 10 секунд. Работает только в режиме туман.</span></div></div></div>
+      <div class="gameplay-section"><div class="gameplay-section-title">⚡ <span id="settingsDifficultyTitle">Усложнения</span></div><p style="color:#b9dbb0;font-size:0.75rem;margin-bottom:0.8rem;" id="settingsDifficultyDesc">Эти настройки делают игру сложнее. Используйте с осторожностью!</p><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableSpeedIncrease" style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#ff6b6b;font-weight:bold;">⚡ <span id="settingsSpeedTitle">Ускорение при съедании</span></span><span style="color:#b9dbb0;font-size:0.75rem;display:block;" id="settingsSpeedDesc">Каждый фрукт ускоряет змейку на 3мс. Смерть сбрасывает скорость. <span style="color:#ffd700;">Множитель x2 к очкам и монетам!</span></span><span id="currentSpeedDisplay" style="color:#ffd966;font-size:0.7rem;display:block;margin-top:0.2rem;">Текущая задержка: 120мс</span></div></div></div>
+      <div class="gameplay-section"><div class="gameplay-section-title">🎁 <span id="settingsBonusesTitle">Бонусы</span></div><p style="color:#b9dbb0;font-size:0.75rem;margin-bottom:0.8rem;" id="settingsBonusesDesc">Бонусы появляются на поле каждые 5 съеденных фруктов и исчезают через 7 секунд</p><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableShield" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#44aaff;font-weight:bold;">🛡 <span id="settingsShieldTitle">Щит</span></span><span style="color:#b9dbb0;font-size:0.75rem;display:block;" id="settingsShieldDesc">Защищает от удара. При ударе о стену — проходит сквозь! 10 секунд.</span></div></div><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableMagnet" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#ff44ff;font-weight:bold;">🧲 <span id="settingsMagnetTitle">Магнит</span></span><span style="color:#b9dbb0;font-size:0.75rem;display:block;" id="settingsMagnetDesc">Притягивает фрукты в радиусе 3 клеток. 15 секунд.</span></div></div><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableDiamond" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#44ffff;font-weight:bold;">💎 <span id="settingsDiamondTitle">Алмаз</span></span><span style="color:#b9dbb0;font-size:0.75rem;display:block;" id="settingsDiamondDesc">Удваивает очки и монеты за фрукт. 20 секунд.</span></div></div><div class="bonus-option" style="margin-bottom:0.6rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableSpeed" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#ffaa00;font-weight:bold;">⚡ <span id="settingsEnergyTitle">Энергетик</span></span><span style="color:#b9dbb0;font-size:0.75rem;display:block;" id="settingsEnergyDesc">Ускоряет змейку на 15% на 10 секунд.</span></div></div></div>
+      <div class="gameplay-section"><div class="gameplay-section-title">👥 <span id="settingsDuoTitle">Режим двух игроков</span></div><label id="settingsDuoStyleLabel">🔵 Дизайн змейки 2 игрока</label><select id="p2SnakeStyleSelect"><option value="0">Синяя классическая</option><option value="1">Синяя квадратная</option><option value="2">Красная</option><option value="3">Фиолетовая</option><option value="4">Оранжевая</option></select><div id="duoCustomSkinSection"></div></div>
+      <div class="gameplay-section"><div class="gameplay-section-title">📱 <span id="settingsMobileTitle">Управление на телефоне</span></div><select id="mobileControlType"><option value="buttons"><span id="settingsMobileButtons">Кнопки (стрелки внизу)</span></option><option value="swipe"><span id="settingsMobileSwipe">Свайп по экрану</span></option></select>
+      <div class="bonus-option" style="margin-top:0.5rem;align-items:flex-start;gap:0.5rem;"><input type="checkbox" id="enableVibration" checked style="width:auto;margin:2px 0 0 0;flex-shrink:0;"><div><span style="color:#ff6b9d;font-weight:bold;">📳 <span id="settingsVibrationTitle">Вибрация</span></span><span style="color:#b9dbb0;font-size:0.75rem;display:block;" id="settingsVibrationDesc">Вибрация при столкновениях и сборе бонусов (только на мобильных устройствах)</span></div></div>
+      <p style="color:#b9dbb0;font-size:0.75rem;margin-top:0.3rem;" id="settingsMobileHint">Кнопки: стрелки внизу экрана. Свайп: проведите пальцем по игровому полю.</p></div>
     </div>
-    <div class="settings-group hidden" id="tabContentSound"><label>🔊 Звук сбора</label><select id="soundSelect"><option value="0">Классический</option><option value="1">Весёлый день</option><option value="2">Глубокий хлопок</option></select><label>🔈 Громкость: <span id="volumeValue">70</span>%</label><input type="range" id="volumeSlider" min="0" max="100" value="70"><label>🍎 Громкость появления: <span id="fruitSpawnVolumeValue">50</span>%</label><input type="range" id="fruitSpawnVolumeSlider" min="0" max="100" value="50"></div>
-    <div class="settings-group hidden" id="tabContentDesign"><label>🐍 Стиль змейки</label><select id="snakeStyleSelect"><option value="0">Круглая</option><option value="1">Квадратная</option></select><label>🍎 Фрукт</label><select id="fruitSelect"></select><label>🎨 Дизайн поля</label><select id="fieldDesignSelect"><option value="4">🖼️ Свой фон</option><option value="0">🌑 Классический тёмный</option><option value="1">🌲 Лесной</option><option value="7">🌲 Глубокий лес</option><option value="3">❄️ Зимний</option><option value="5">☁️ Движущиеся облака</option><option value="6">⭐ Мерцающие звёзды</option><option value="8">🏔️ Горный</option><option value="9">🐠 Подводный мир</option><option value="10">🏜️ Пустыня</option><option value="11">🌴 Джунгли</option><option value="12">🔷 Кибер-сетка</option><option value="15">💜 Неоновая сетка</option><option value="16">🚀 Космос</option><option value="17">🌌 Северное сияние</option><option value="18">🌈 Радужное поле</option></select><input type="file" id="customBgInput" accept="image/*"><label>📐 Размер поля</label><select id="gridSizeSelect"><option value="10">10x10</option><option value="20" selected>20x20</option></select></div>
+    <div class="settings-group hidden" id="tabContentSound"><label>🔊 <span id="settingsSoundLabel">Звук сбора</span></label><select id="soundSelect"><option value="0"><span id="soundClassic">Классический</span></option><option value="1"><span id="soundHappy">Весёлый день</span></option><option value="2"><span id="soundDeep">Глубокий хлопок</span></option></select><label>🔈 <span id="settingsVolumeLabel">Громкость</span>: <span id="volumeValue">70</span>%</label><input type="range" id="volumeSlider" min="0" max="100" value="70"><label>🍎 <span id="settingsSpawnVolumeLabel">Громкость появления</span>: <span id="fruitSpawnVolumeValue">50</span>%</label><input type="range" id="fruitSpawnVolumeSlider" min="0" max="100" value="50"></div>
+    <div class="settings-group hidden" id="tabContentDesign"><label>🐍 <span id="settingsSnakeStyleLabel">Стиль змейки</span></label><select id="snakeStyleSelect"><option value="0"><span id="styleRound">Круглая</span></option><option value="1"><span id="styleSquare">Квадратная</span></option></select><label>🍎 <span id="settingsFruitLabel">Фрукт</span></label><select id="fruitSelect"></select><label>🎨 <span id="settingsBgLabel">Дизайн поля</span></label><select id="fieldDesignSelect"><option value="4">🖼️ Свой фон</option><option value="0">🌑 Классический тёмный</option><option value="1">🌲 Лесной</option><option value="7">🌲 Глубокий лес</option><option value="3">❄️ Зимний</option><option value="5">☁️ Движущиеся облака</option><option value="6">⭐ Мерцающие звёзды</option><option value="8">🏔️ Горный</option><option value="9">🐠 Подводный мир</option><option value="10">🏜️ Пустыня</option><option value="11">🌴 Джунгли</option><option value="12">🔷 Кибер-сетка</option><option value="15">💜 Неоновая сетка</option><option value="16">🚀 Космос</option><option value="17">🌌 Северное сияние</option><option value="18">🌈 Радужное поле</option></select><input type="file" id="customBgInput" accept="image/*"><label>📐 <span id="settingsGridLabel">Размер поля</span></label><select id="gridSizeSelect"><option value="10">10x10</option><option value="20" selected>20x20</option></select></div>
     <div class="settings-group hidden" id="tabContentStats"><div id="statsContent"></div></div>
-    <label class="nickname-label-centered">🌐 Язык</label><select id="languageSelect"><option value="ru">Русский</option><option value="en">English</option><option value="tr">Türkçe</option></select><button id="backFromSettings" class="menu-btn" style="margin-top:1rem;">↩ НАЗАД</button></div></div>
+    <label class="nickname-label-centered">🌐 <span id="settingsLanguageLabel">Язык</span></label><select id="languageSelect"><option value="ru">Русский</option><option value="en">English</option><option value="tr">Türkçe</option></select><button id="backFromSettings" class="menu-btn" style="margin-top:1rem;">↩ <span id="backFromSettingsText">НАЗАД</span></button></div></div>
 </div>
 
 <script>
@@ -261,11 +261,10 @@
       'en-GB': 'en',
       'tr-TR': 'tr'
     };
-    // Проверяем точное совпадение или начало строки
     for (const [key, value] of Object.entries(langMap)) {
       if (browserLang.startsWith(key)) return value;
     }
-    return 'ru'; // по умолчанию русский
+    return 'ru';
   }
 
   const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
@@ -408,9 +407,120 @@
   function calculateMoveInterval(){let base=enableSpeedIncrease?Math.max(40,BASE_MOVE_INTERVAL-(speedLevel*SPEED_INCREMENT)):BASE_MOVE_INTERVAL;if(speedActive)base=Math.max(30,Math.floor(base*0.85));if(speedActive2)base=Math.max(30,Math.floor(base*0.85));return base;}
 
   const translations = {
-    ru: {menuTitle:'ЗМЕЙКА',play:'ИГРАТЬ',shop:'МАГАЗИН',quests:'ЗАДАНИЯ',achievements:'ДОСТИЖЕНИЯ',settings:'НАСТРОЙКИ',modeSelectTitle:'ВЫБОР РЕЖИМА',modeClassic:'Обычный',modeInfinite:'Бесконечный',modeBombs:'С бомбами',modeDuo:'Два игрока',modeFog:'Туман',startGame:'НАЧАТЬ ИГРУ',back:'НАЗАД',shopTitle:'МАГАЗИН',questsTitle:'ЗАДАНИЯ',achievementsTitle:'ДОСТИЖЕНИЯ',currentScore:'🍎 Текущий',highScore:'🏆 Рекорд',restart:'Новая игра',playing:'▶ Игра идёт',paused:'⏸ Пауза',gameOver:'💔 Игра окончена',win:'🏆 Поле заполнено! Победа!',noNickname:'Аноним',modeClassicLabel:'🐍 Обычный',modeInfiniteLabel:'🌀 Бесконечный',modeBombsLabel:'💣 С бомбами',modeDuoLabel:'👥 Два игрока',modeFogLabel:'🌫️ Туман',all:'Все',unlocked:'Полученные',locked:'Заблокированные',totalGames:'Всего игр',totalScore:'Всего очков',fruitsEaten:'Съедено фруктов',deaths:'Смертей',bestScore:'Лучший счёт',favoriteMode:'Любимый режим',noAchievements:'Нет достижений',owned:'Куплено',free:'Бесплатно',equipped:'Надет',equip:'Надеть',customSkin:'Свой скин',default:'Стандартный',duoControls:'P1: WASD | P2: Стрелки',resume:'ПРОДОЛЖИТЬ',pauseRestart:'НОВАЯ ИГРА',pauseMainMenu:'ГЛАВНОЕ МЕНЮ',nicknameTaken:'Этот никнейм уже занят другим игроком!',nicknameSaved:'Никнейм сохранён!',confirmTitle:'Сброс достижений',confirmText:'Вы точно хотите удалить все достижения? Это действие нельзя отменить.',confirmYes:'Да, сбросить',confirmNo:'Отмена',buyCustomSkin:'Купите "Свой скин" в магазине, чтобы использовать его для второго игрока',achievementUnlocked:'🏆 Достижение разблокировано!',revive:'💚 ВОСКРЕСИТЬ (50⭐)',reviveUsed:'Воскрешение уже использовано',notEnoughCoins:'Недостаточно монет!'},
-    en: {menuTitle:'SNAKE',play:'PLAY',shop:'SHOP',quests:'QUESTS',achievements:'ACHIEVEMENTS',settings:'SETTINGS',modeSelectTitle:'SELECT MODE',modeClassic:'Classic',modeInfinite:'Infinite',modeBombs:'Bombs',modeDuo:'Two Players',modeFog:'Fog',startGame:'START GAME',back:'BACK',shopTitle:'SHOP',questsTitle:'QUESTS',achievementsTitle:'ACHIEVEMENTS',currentScore:'🍎 Current',highScore:'🏆 High Score',restart:'New Game',playing:'▶ Playing',paused:'⏸ Paused',gameOver:'💔 Game Over',win:'🏆 Field full! You win!',noNickname:'Anonymous',modeClassicLabel:'🐍 Classic',modeInfiniteLabel:'🌀 Infinite',modeBombsLabel:'💣 Bombs',modeDuoLabel:'👥 Two Players',modeFogLabel:'🌫️ Fog',all:'All',unlocked:'Unlocked',locked:'Locked',totalGames:'Total games',totalScore:'Total score',fruitsEaten:'Fruits eaten',deaths:'Deaths',bestScore:'Best score',favoriteMode:'Favorite mode',noAchievements:'No achievements',owned:'Owned',free:'Free',equipped:'Equipped',equip:'Equip',customSkin:'Custom Skin',default:'Default',duoControls:'P1: WASD | P2: Arrows',resume:'RESUME',pauseRestart:'NEW GAME',pauseMainMenu:'MAIN MENU',nicknameTaken:'This nickname is already taken!',nicknameSaved:'Nickname saved!',confirmTitle:'Reset Achievements',confirmText:'Are you sure you want to delete all achievements? This action cannot be undone.',confirmYes:'Yes, reset',confirmNo:'Cancel',buyCustomSkin:'Buy "Custom Skin" in shop to use it for second player',achievementUnlocked:'🏆 Achievement unlocked!',revive:'💚 REVIVE (50⭐)',reviveUsed:'Revive already used',notEnoughCoins:'Not enough coins!'},
-    tr: {menuTitle:'YILAN',play:'OYNA',shop:'MAĞAZA',quests:'GÖREVLER',achievements:'BAŞARIMLAR',settings:'AYARLAR',modeSelectTitle:'MOD SEÇ',modeClassic:'Klasik',modeInfinite:'Sonsuz',modeBombs:'Bombalar',modeDuo:'İki Oyuncu',modeFog:'Sis',startGame:'OYNA',back:'GERİ',shopTitle:'MAĞAZA',questsTitle:'GÖREVLER',achievementsTitle:'BAŞARIMLAR',currentScore:'🍎 Mevcut',highScore:'🏆 En İyi Skor',restart:'Yeni Oyun',playing:'▶ Oynanıyor',paused:'⏸ Durduruldu',gameOver:'💔 Oyun Bitti',win:'🏆 Alan dolu! Kazandın!',noNickname:'İsimsiz',modeClassicLabel:'🐍 Klasik',modeInfiniteLabel:'🌀 Sonsuz',modeBombsLabel:'💣 Bombalar',modeDuoLabel:'👥 İki Oyuncu',modeFogLabel:'🌫️ Sis',all:'Tümü',unlocked:'Açılanlar',locked:'Kilitliler',totalGames:'Toplam oyun',totalScore:'Toplam puan',fruitsEaten:'Yenilen meyveler',deaths:'Ölümler',bestScore:'En iyi skor',favoriteMode:'Favori mod',noAchievements:'Başarım yok',owned:'Satın alındı',free:'Ücretsiz',equipped:'Giyili',equip:'Giy',customSkin:'Özel Görünüm',default:'Standart',duoControls:'P1: WASD | P2: Oklar',resume:'DEVAM ET',pauseRestart:'YENİ OYUN',pauseMainMenu:'ANA MENÜ',nicknameTaken:'Bu isim zaten kullanılıyor!',nicknameSaved:'İsim kaydedildi!',confirmTitle:'Başarımları Sıfırla',confirmText:'Tüm başarımları silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',confirmYes:'Evet, sıfırla',confirmNo:'İptal',buyCustomSkin:'İkinci oyuncu için kullanmak üzere mağazadan "Özel Görünüm" satın alın',achievementUnlocked:'🏆 Başarım açıldı!',revive:'💚 CANLANDIR (50⭐)',reviveUsed:'Canlandırma zaten kullanıldı',notEnoughCoins:'Yeterli coin yok!'}
+    ru: {
+      menuTitle:'ЗМЕЙКА',play:'ИГРАТЬ',shop:'МАГАЗИН',quests:'ЗАДАНИЯ',achievements:'ДОСТИЖЕНИЯ',settings:'НАСТРОЙКИ',
+      modeSelectTitle:'ВЫБОР РЕЖИМА',modeClassic:'Обычный',modeInfinite:'Бесконечный',modeBombs:'С бомбами',modeDuo:'Два игрока',modeFog:'Туман',
+      startGame:'НАЧАТЬ ИГРУ',back:'НАЗАД',shopTitle:'МАГАЗИН',shopTabSkins:'Скины',shopTabFruits:'Фрукты',shopTabBg:'Фоны',shopTabUpgrades:'Улучшения',
+      questsTitle:'ЗАДАНИЯ',questsUpdateText:'Задания обновляются каждый день',
+      achievementsTitle:'ДОСТИЖЕНИЯ',achAll:'Все',achUnlocked:'Полученные',achLocked:'Заблокированные',achEasy:'Easy',achMedium:'Medium',achHard:'Hard',achEpic:'Epic',achResetBtn:'Сбросить все',
+      currentScore:'🍎 Текущий',highScore:'🏆 Рекорд',restart:'Новая игра',playing:'▶ Игра идёт',paused:'⏸ Пауза',gameOver:'💔 Игра окончена',win:'🏆 Поле заполнено! Победа!',
+      noNickname:'Аноним',modeClassicLabel:'🐍 Обычный',modeInfiniteLabel:'🌀 Бесконечный',modeBombsLabel:'💣 С бомбами',modeDuoLabel:'👥 Два игрока',modeFogLabel:'🌫️ Туман',
+      all:'Все',unlocked:'Полученные',locked:'Заблокированные',totalGames:'Всего игр',totalScore:'Всего очков',fruitsEaten:'Съедено фруктов',deaths:'Смертей',bestScore:'Лучший счёт',favoriteMode:'Любимый режим',
+      noAchievements:'Нет достижений',owned:'Куплено',free:'Бесплатно',equipped:'Надет',equip:'Надеть',customSkin:'Свой скин',default:'Стандартный',
+      duoControls:'P1: WASD | P2: Стрелки',resume:'ПРОДОЛЖИТЬ',pauseRestart:'НОВАЯ ИГРА',pauseMainMenu:'ГЛАВНОЕ МЕНЮ',
+      nicknameTaken:'Этот никнейм уже занят другим игроком!',nicknameSaved:'Никнейм сохранён!',
+      confirmTitle:'Сброс достижений',confirmText:'Вы точно хотите удалить все достижения? Это действие нельзя отменить.',confirmYes:'Да, сбросить',confirmNo:'Отмена',
+      buyCustomSkin:'Купите "Свой скин" в магазине, чтобы использовать его для второго игрока',achievementUnlocked:'🏆 Достижение разблокировано!',
+      revive:'💚 ВОСКРЕСИТЬ (50⭐)',reviveUsed:'Воскрешение уже использовано',notEnoughCoins:'Недостаточно монет!',
+      settingsTitle:'НАСТРОЙКИ',settingsNickname:'Никнейм',settingsTabGameplay:'Геймплей',settingsTabSound:'Звук',settingsTabDesign:'Дизайн',settingsTabStats:'Статистика',
+      settingsFogTitle:'Режим Туман',settingsFogDesc:'В этом режиме видна только область вокруг головы змейки. Остальное скрыто туманом.',settingsFogEnable:'Включить туман',settingsFogRadiusLabel:'Радиус обзора',settingsFogCells:'клетки',
+      settingsFlashlightTitle:'Бонус "Фонарик"',settingsFlashlightDesc:'Увеличивает радиус видимости на 3 клетки на 10 секунд. Работает только в режиме туман.',
+      settingsDifficultyTitle:'Усложнения',settingsDifficultyDesc:'Эти настройки делают игру сложнее. Используйте с осторожностью!',
+      settingsSpeedTitle:'Ускорение при съедании',settingsSpeedDesc:'Каждый фрукт ускоряет змейку на 3мс. Смерть сбрасывает скорость. Множитель x2 к очкам и монетам!',
+      settingsBonusesTitle:'Бонусы',settingsBonusesDesc:'Бонусы появляются на поле каждые 5 съеденных фруктов и исчезают через 7 секунд',
+      settingsShieldTitle:'Щит',settingsShieldDesc:'Защищает от удара. При ударе о стену — проходит сквозь! 10 секунд.',
+      settingsMagnetTitle:'Магнит',settingsMagnetDesc:'Притягивает фрукты в радиусе 3 клеток. 15 секунд.',
+      settingsDiamondTitle:'Алмаз',settingsDiamondDesc:'Удваивает очки и монеты за фрукт. 20 секунд.',
+      settingsEnergyTitle:'Энергетик',settingsEnergyDesc:'Ускоряет змейку на 15% на 10 секунд.',
+      settingsDuoTitle:'Режим двух игроков',settingsDuoStyleLabel:'Дизайн змейки 2 игрока',
+      settingsMobileTitle:'Управление на телефоне',settingsMobileButtons:'Кнопки (стрелки внизу)',settingsMobileSwipe:'Свайп по экрану',
+      settingsVibrationTitle:'Вибрация',settingsVibrationDesc:'Вибрация при столкновениях и сборе бонусов (только на мобильных устройствах)',
+      settingsMobileHint:'Кнопки: стрелки внизу экрана. Свайп: проведите пальцем по игровому полю.',
+      settingsSoundLabel:'Звук сбора',soundClassic:'Классический',soundHappy:'Весёлый день',soundDeep:'Глубокий хлопок',
+      settingsVolumeLabel:'Громкость',settingsSpawnVolumeLabel:'Громкость появления',
+      settingsSnakeStyleLabel:'Стиль змейки',styleRound:'Круглая',styleSquare:'Квадратная',
+      settingsFruitLabel:'Фрукт',settingsBgLabel:'Дизайн поля',settingsGridLabel:'Размер поля',
+      settingsLanguageLabel:'Язык',backFromSettingsText:'НАЗАД',
+      pauseTitle:'ПАУЗА',pauseResume:'ПРОДОЛЖИТЬ',pauseRestart:'НОВАЯ ИГРА',pauseMenuBtn:'ГЛАВНОЕ МЕНЮ',
+      confirmSingleYes:'Да',confirmSingleNo:'Отмена',
+      backFromAchievementsText:'НАЗАД',backFromQuestsText:'НАЗАД',backFromShopText:'НАЗАД'
+    },
+    en: {
+      menuTitle:'SNAKE',play:'PLAY',shop:'SHOP',quests:'QUESTS',achievements:'ACHIEVEMENTS',settings:'SETTINGS',
+      modeSelectTitle:'SELECT MODE',modeClassic:'Classic',modeInfinite:'Infinite',modeBombs:'Bombs',modeDuo:'Two Players',modeFog:'Fog',
+      startGame:'START GAME',back:'BACK',shopTitle:'SHOP',shopTabSkins:'Skins',shopTabFruits:'Fruits',shopTabBg:'Backgrounds',shopTabUpgrades:'Upgrades',
+      questsTitle:'QUESTS',questsUpdateText:'Quests update every day',
+      achievementsTitle:'ACHIEVEMENTS',achAll:'All',achUnlocked:'Unlocked',achLocked:'Locked',achEasy:'Easy',achMedium:'Medium',achHard:'Hard',achEpic:'Epic',achResetBtn:'Reset all',
+      currentScore:'🍎 Current',highScore:'🏆 High Score',restart:'New Game',playing:'▶ Playing',paused:'⏸ Paused',gameOver:'💔 Game Over',win:'🏆 Field full! You win!',
+      noNickname:'Anonymous',modeClassicLabel:'🐍 Classic',modeInfiniteLabel:'🌀 Infinite',modeBombsLabel:'💣 Bombs',modeDuoLabel:'👥 Two Players',modeFogLabel:'🌫️ Fog',
+      all:'All',unlocked:'Unlocked',locked:'Locked',totalGames:'Total games',totalScore:'Total score',fruitsEaten:'Fruits eaten',deaths:'Deaths',bestScore:'Best score',favoriteMode:'Favorite mode',
+      noAchievements:'No achievements',owned:'Owned',free:'Free',equipped:'Equipped',equip:'Equip',customSkin:'Custom Skin',default:'Default',
+      duoControls:'P1: WASD | P2: Arrows',resume:'RESUME',pauseRestart:'NEW GAME',pauseMainMenu:'MAIN MENU',
+      nicknameTaken:'This nickname is already taken!',nicknameSaved:'Nickname saved!',
+      confirmTitle:'Reset Achievements',confirmText:'Are you sure you want to delete all achievements? This action cannot be undone.',confirmYes:'Yes, reset',confirmNo:'Cancel',
+      buyCustomSkin:'Buy "Custom Skin" in shop to use it for second player',achievementUnlocked:'🏆 Achievement unlocked!',
+      revive:'💚 REVIVE (50⭐)',reviveUsed:'Revive already used',notEnoughCoins:'Not enough coins!',
+      settingsTitle:'SETTINGS',settingsNickname:'Nickname',settingsTabGameplay:'Gameplay',settingsTabSound:'Sound',settingsTabDesign:'Design',settingsTabStats:'Statistics',
+      settingsFogTitle:'Fog Mode',settingsFogDesc:'Only the area around the snake\'s head is visible. The rest is hidden by fog.',settingsFogEnable:'Enable fog',settingsFogRadiusLabel:'View radius',settingsFogCells:'cells',
+      settingsFlashlightTitle:'Bonus "Flashlight"',settingsFlashlightDesc:'Increases view radius by 3 cells for 10 seconds. Works only in fog mode.',
+      settingsDifficultyTitle:'Difficulty',settingsDifficultyDesc:'These settings make the game harder. Use with caution!',
+      settingsSpeedTitle:'Speed increase on eating',settingsSpeedDesc:'Each fruit speeds up the snake by 3ms. Death resets speed. x2 multiplier to points and coins!',
+      settingsBonusesTitle:'Bonuses',settingsBonusesDesc:'Bonuses appear on the field every 5 eaten fruits and disappear after 7 seconds',
+      settingsShieldTitle:'Shield',settingsShieldDesc:'Protects from impact. When hitting a wall — passes through! 10 seconds.',
+      settingsMagnetTitle:'Magnet',settingsMagnetDesc:'Attracts fruits within 3 cells radius. 15 seconds.',
+      settingsDiamondTitle:'Diamond',settingsDiamondDesc:'Doubles points and coins for fruit. 20 seconds.',
+      settingsEnergyTitle:'Energy Drink',settingsEnergyDesc:'Speeds up the snake by 15% for 10 seconds.',
+      settingsDuoTitle:'Two Players Mode',settingsDuoStyleLabel:'Player 2 snake design',
+      settingsMobileTitle:'Mobile Control',settingsMobileButtons:'Buttons (arrows below)',settingsMobileSwipe:'Swipe on screen',
+      settingsVibrationTitle:'Vibration',settingsVibrationDesc:'Vibration on collisions and bonus collection (mobile only)',
+      settingsMobileHint:'Buttons: arrows at the bottom of the screen. Swipe: swipe your finger across the game field.',
+      settingsSoundLabel:'Collection sound',soundClassic:'Classic',soundHappy:'Happy day',soundDeep:'Deep thump',
+      settingsVolumeLabel:'Volume',settingsSpawnVolumeLabel:'Spawn volume',
+      settingsSnakeStyleLabel:'Snake style',styleRound:'Round',styleSquare:'Square',
+      settingsFruitLabel:'Fruit',settingsBgLabel:'Field design',settingsGridLabel:'Grid size',
+      settingsLanguageLabel:'Language',backFromSettingsText:'BACK',
+      pauseTitle:'PAUSE',pauseResume:'RESUME',pauseRestart:'NEW GAME',pauseMenuBtn:'MAIN MENU',
+      confirmSingleYes:'Yes',confirmSingleNo:'Cancel',
+      backFromAchievementsText:'BACK',backFromQuestsText:'BACK',backFromShopText:'BACK'
+    },
+    tr: {
+      menuTitle:'YILAN',play:'OYNA',shop:'MAĞAZA',quests:'GÖREVLER',achievements:'BAŞARIMLAR',settings:'AYARLAR',
+      modeSelectTitle:'MOD SEÇ',modeClassic:'Klasik',modeInfinite:'Sonsuz',modeBombs:'Bombalar',modeDuo:'İki Oyuncu',modeFog:'Sis',
+      startGame:'OYNA',back:'GERİ',shopTitle:'MAĞAZA',shopTabSkins:'Görünümler',shopTabFruits:'Meyveler',shopTabBg:'Arka Planlar',shopTabUpgrades:'Güçlendirmeler',
+      questsTitle:'GÖREVLER',questsUpdateText:'Görevler her gün yenilenir',
+      achievementsTitle:'BAŞARIMLAR',achAll:'Tümü',achUnlocked:'Açılanlar',achLocked:'Kilitliler',achEasy:'Easy',achMedium:'Medium',achHard:'Hard',achEpic:'Epic',achResetBtn:'Tümünü sıfırla',
+      currentScore:'🍎 Mevcut',highScore:'🏆 En İyi Skor',restart:'Yeni Oyun',playing:'▶ Oynanıyor',paused:'⏸ Durduruldu',gameOver:'💔 Oyun Bitti',win:'🏆 Alan dolu! Kazandın!',
+      noNickname:'İsimsiz',modeClassicLabel:'🐍 Klasik',modeInfiniteLabel:'🌀 Sonsuz',modeBombsLabel:'💣 Bombalar',modeDuoLabel:'👥 İki Oyuncu',modeFogLabel:'🌫️ Sis',
+      all:'Tümü',unlocked:'Açılanlar',locked:'Kilitliler',totalGames:'Toplam oyun',totalScore:'Toplam puan',fruitsEaten:'Yenilen meyveler',deaths:'Ölümler',bestScore:'En iyi skor',favoriteMode:'Favori mod',
+      noAchievements:'Başarım yok',owned:'Satın alındı',free:'Ücretsiz',equipped:'Giyili',equip:'Giy',customSkin:'Özel Görünüm',default:'Standart',
+      duoControls:'P1: WASD | P2: Oklar',resume:'DEVAM ET',pauseRestart:'YENİ OYUN',pauseMainMenu:'ANA MENÜ',
+      nicknameTaken:'Bu isim zaten kullanılıyor!',nicknameSaved:'İsim kaydedildi!',
+      confirmTitle:'Başarımları Sıfırla',confirmText:'Tüm başarımları silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',confirmYes:'Evet, sıfırla',confirmNo:'İptal',
+      buyCustomSkin:'İkinci oyuncu için kullanmak üzere mağazadan "Özel Görünüm" satın alın',achievementUnlocked:'🏆 Başarım açıldı!',
+      revive:'💚 CANLANDIR (50⭐)',reviveUsed:'Canlandırma zaten kullanıldı',notEnoughCoins:'Yeterli coin yok!',
+      settingsTitle:'AYARLAR',settingsNickname:'İsim',settingsTabGameplay:'Oynanış',settingsTabSound:'Ses',settingsTabDesign:'Tasarım',settingsTabStats:'İstatistikler',
+      settingsFogTitle:'Sis Modu',settingsFogDesc:'Bu modda sadece yılanın kafasının etrafındaki alan görünür. Gerisi sisle gizlidir.',settingsFogEnable:'Sisi aç',settingsFogRadiusLabel:'Görüş yarıçapı',settingsFogCells:'hücre',
+      settingsFlashlightTitle:'Bonus "El Feneri"',settingsFlashlightDesc:'Görüş yarıçapını 10 saniye boyunca 3 hücre artırır. Sadece sis modunda çalışır.',
+      settingsDifficultyTitle:'Zorluk',settingsDifficultyDesc:'Bu ayarlar oyunu zorlaştırır. Dikkatli kullanın!',
+      settingsSpeedTitle:'Yerken hız artışı',settingsSpeedDesc:'Her meyve yılanı 3ms hızlandırır. Ölüm hızı sıfırlar. Puan ve coinlerde x2 çarpan!',
+      settingsBonusesTitle:'Bonuslar',settingsBonusesDesc:'Bonuslar her 5 yenilen meyvede sahada belirir ve 7 saniye sonra kaybolur',
+      settingsShieldTitle:'Kalkan',settingsShieldDesc:'Darbeye karşı korur. Duvara çarptığında — içinden geçer! 10 saniye.',
+      settingsMagnetTitle:'Mıknatıs',settingsMagnetDesc:'3 hücre yarıçapındaki meyveleri çeker. 15 saniye.',
+      settingsDiamondTitle:'Elmas',settingsDiamondDesc:'Meyve için puan ve coinleri ikiye katlar. 20 saniye.',
+      settingsEnergyTitle:'Enerji İçeceği',settingsEnergyDesc:'Yılanı 10 saniye boyunca %15 hızlandırır.',
+      settingsDuoTitle:'İki Oyuncu Modu',settingsDuoStyleLabel:'2. oyuncu yılan tasarımı',
+      settingsMobileTitle:'Mobil Kontrol',settingsMobileButtons:'Düğmeler (aşağıda oklar)',settingsMobileSwipe:'Ekranda kaydırma',
+      settingsVibrationTitle:'Titreşim',settingsVibrationDesc:'Çarpışmalarda ve bonus toplamada titreşim (sadece mobil)',
+      settingsMobileHint:'Düğmeler: ekranın altındaki oklar. Kaydırma: parmağınızı oyun alanında kaydırın.',
+      settingsSoundLabel:'Toplama sesi',soundClassic:'Klasik',soundHappy:'Mutlu gün',soundDeep:'Derin vuruş',
+      settingsVolumeLabel:'Ses',settingsSpawnVolumeLabel:'Oluşma sesi',
+      settingsSnakeStyleLabel:'Yılan stili',styleRound:'Yuvarlak',styleSquare:'Kare',
+      settingsFruitLabel:'Meyve',settingsBgLabel:'Alan tasarımı',settingsGridLabel:'Izgara boyutu',
+      settingsLanguageLabel:'Dil',backFromSettingsText:'GERİ',
+      pauseTitle:'DURAKLATMA',pauseResume:'DEVAM ET',pauseRestart:'YENİ OYUN',pauseMenuBtn:'ANA MENÜ',
+      confirmSingleYes:'Evet',confirmSingleNo:'İptal',
+      backFromAchievementsText:'GERİ',backFromQuestsText:'GERİ',backFromShopText:'GERİ'
+    }
   };
 
   function t(key){return translations[currentLang]?.[key] || key;}
@@ -435,7 +545,138 @@
     }
   }
 
-  function updateUILanguage(){document.getElementById('menuTitle').textContent=t('menuTitle');document.getElementById('playText').textContent=t('play');document.getElementById('shopText').textContent=t('shop');document.getElementById('questsText').textContent=t('quests');document.getElementById('achievementsText').textContent=t('achievements');document.getElementById('settingsText').textContent=t('settings');document.getElementById('modeSelectTitle').textContent=t('modeSelectTitle');document.getElementById('modeClassic').textContent=t('modeClassic');document.getElementById('modeInfinite').textContent=t('modeInfinite');document.getElementById('modeBombs').textContent=t('modeBombs');document.getElementById('modeDuo').textContent=t('modeDuo');document.getElementById('modeFog').textContent=t('modeFog');document.getElementById('startGameText').textContent=t('startGame');document.getElementById('backFromModeSelectText').textContent=t('back');document.getElementById('shopTitle').textContent=t('shopTitle');document.getElementById('questsTitle').textContent=t('questsTitle');document.getElementById('backFromShopText').textContent=t('back');document.getElementById('backFromQuestsText').textContent=t('back');document.getElementById('achievementsTitle').textContent=t('achievementsTitle');document.getElementById('backFromAchievementsText').textContent=t('back');document.getElementById('backFromSettingsText').textContent=t('back');document.getElementById('currentScoreLabel').textContent=t('currentScore');document.getElementById('highScoreLabel').textContent=t('highScore');document.getElementById('restartText').textContent=t('restart');updateModeIndicator();updateGameStatus();updateNicknameDisplay();renderShop();renderAchievements();renderStats();renderQuests();}
+  function updateUILanguage(){
+    // Основное меню
+    document.getElementById('menuTitle').textContent=t('menuTitle');
+    document.getElementById('playText').textContent=t('play');
+    document.getElementById('shopText').textContent=t('shop');
+    document.getElementById('questsText').textContent=t('quests');
+    document.getElementById('achievementsText').textContent=t('achievements');
+    document.getElementById('settingsText').textContent=t('settings');
+    
+    // Выбор режима
+    document.getElementById('modeSelectTitle').textContent=t('modeSelectTitle');
+    document.getElementById('modeClassic').textContent=t('modeClassic');
+    document.getElementById('modeInfinite').textContent=t('modeInfinite');
+    document.getElementById('modeBombs').textContent=t('modeBombs');
+    document.getElementById('modeDuo').textContent=t('modeDuo');
+    document.getElementById('modeFog').textContent=t('modeFog');
+    document.getElementById('startGameText').textContent=t('startGame');
+    document.getElementById('backFromModeSelectText').textContent=t('back');
+    
+    // Магазин
+    document.getElementById('shopTitle').textContent=t('shopTitle');
+    document.getElementById('shopTabSkins').textContent=t('shopTabSkins');
+    document.getElementById('shopTabFruits').textContent=t('shopTabFruits');
+    document.getElementById('shopTabBg').textContent=t('shopTabBg');
+    document.getElementById('shopTabUpgrades').textContent=t('shopTabUpgrades');
+    document.getElementById('backFromShopText').textContent=t('backFromShopText');
+    
+    // Задания
+    document.getElementById('questsTitle').textContent=t('questsTitle');
+    document.getElementById('questsUpdateText').textContent=t('questsUpdateText');
+    document.getElementById('backFromQuestsText').textContent=t('backFromQuestsText');
+    
+    // Достижения
+    document.getElementById('achievementsTitle').textContent=t('achievementsTitle');
+    document.getElementById('achAll').textContent=t('achAll');
+    document.getElementById('achUnlocked').textContent=t('achUnlocked');
+    document.getElementById('achLocked').textContent=t('achLocked');
+    document.getElementById('achEasy').textContent=t('achEasy');
+    document.getElementById('achMedium').textContent=t('achMedium');
+    document.getElementById('achHard').textContent=t('achHard');
+    document.getElementById('achEpic').textContent=t('achEpic');
+    document.getElementById('achResetBtn').textContent=t('achResetBtn');
+    document.getElementById('backFromAchievementsText').textContent=t('backFromAchievementsText');
+    
+    // Подтверждение
+    document.getElementById('confirmTitle').textContent=t('confirmTitle');
+    document.getElementById('confirmText').textContent=t('confirmText');
+    document.getElementById('confirmYesText').textContent=t('confirmYes');
+    document.getElementById('confirmNoText').textContent=t('confirmNo');
+    document.getElementById('confirmSingleYesText').textContent=t('confirmSingleYes');
+    document.getElementById('confirmSingleNoText').textContent=t('confirmSingleNo');
+    
+    // Пауза
+    document.getElementById('pauseTitle').textContent=t('pauseTitle');
+    document.getElementById('pauseResume').textContent=t('pauseResume');
+    document.getElementById('pauseRestart').textContent=t('pauseRestart');
+    document.getElementById('pauseMenuBtn').textContent=t('pauseMenuBtn');
+    
+    // Настройки
+    document.getElementById('settingsTitle').textContent=t('settingsTitle');
+    document.getElementById('settingsNickname').textContent=t('settingsNickname');
+    document.getElementById('settingsTabGameplay').textContent=t('settingsTabGameplay');
+    document.getElementById('settingsTabSound').textContent=t('settingsTabSound');
+    document.getElementById('settingsTabDesign').textContent=t('settingsTabDesign');
+    document.getElementById('settingsTabStats').textContent=t('settingsTabStats');
+    document.getElementById('backFromSettingsText').textContent=t('backFromSettingsText');
+    document.getElementById('settingsLanguageLabel').textContent=t('settingsLanguageLabel');
+    
+    // Геймплей настройки
+    document.getElementById('settingsFogTitle').textContent=t('settingsFogTitle');
+    document.getElementById('settingsFogDesc').textContent=t('settingsFogDesc');
+    document.getElementById('settingsFogEnable').textContent=t('settingsFogEnable');
+    document.getElementById('settingsFogRadiusLabel').textContent=t('settingsFogRadiusLabel');
+    document.getElementById('settingsFogCells').textContent=t('settingsFogCells');
+    document.getElementById('settingsFlashlightTitle').textContent=t('settingsFlashlightTitle');
+    document.getElementById('settingsFlashlightDesc').textContent=t('settingsFlashlightDesc');
+    document.getElementById('settingsDifficultyTitle').textContent=t('settingsDifficultyTitle');
+    document.getElementById('settingsDifficultyDesc').textContent=t('settingsDifficultyDesc');
+    document.getElementById('settingsSpeedTitle').textContent=t('settingsSpeedTitle');
+    document.getElementById('settingsSpeedDesc').textContent=t('settingsSpeedDesc');
+    document.getElementById('settingsBonusesTitle').textContent=t('settingsBonusesTitle');
+    document.getElementById('settingsBonusesDesc').textContent=t('settingsBonusesDesc');
+    document.getElementById('settingsShieldTitle').textContent=t('settingsShieldTitle');
+    document.getElementById('settingsShieldDesc').textContent=t('settingsShieldDesc');
+    document.getElementById('settingsMagnetTitle').textContent=t('settingsMagnetTitle');
+    document.getElementById('settingsMagnetDesc').textContent=t('settingsMagnetDesc');
+    document.getElementById('settingsDiamondTitle').textContent=t('settingsDiamondTitle');
+    document.getElementById('settingsDiamondDesc').textContent=t('settingsDiamondDesc');
+    document.getElementById('settingsEnergyTitle').textContent=t('settingsEnergyTitle');
+    document.getElementById('settingsEnergyDesc').textContent=t('settingsEnergyDesc');
+    document.getElementById('settingsDuoTitle').textContent=t('settingsDuoTitle');
+    document.getElementById('settingsDuoStyleLabel').textContent=t('settingsDuoStyleLabel');
+    document.getElementById('settingsMobileTitle').textContent=t('settingsMobileTitle');
+    document.getElementById('settingsMobileButtons').textContent=t('settingsMobileButtons');
+    document.getElementById('settingsMobileSwipe').textContent=t('settingsMobileSwipe');
+    document.getElementById('settingsVibrationTitle').textContent=t('settingsVibrationTitle');
+    document.getElementById('settingsVibrationDesc').textContent=t('settingsVibrationDesc');
+    document.getElementById('settingsMobileHint').textContent=t('settingsMobileHint');
+    
+    // Звук настройки
+    document.getElementById('settingsSoundLabel').textContent=t('settingsSoundLabel');
+    document.getElementById('soundClassic').textContent=t('soundClassic');
+    document.getElementById('soundHappy').textContent=t('soundHappy');
+    document.getElementById('soundDeep').textContent=t('soundDeep');
+    document.getElementById('settingsVolumeLabel').textContent=t('settingsVolumeLabel');
+    document.getElementById('settingsSpawnVolumeLabel').textContent=t('settingsSpawnVolumeLabel');
+    
+    // Дизайн настройки
+    document.getElementById('settingsSnakeStyleLabel').textContent=t('settingsSnakeStyleLabel');
+    document.getElementById('styleRound').textContent=t('styleRound');
+    document.getElementById('styleSquare').textContent=t('styleSquare');
+    document.getElementById('settingsFruitLabel').textContent=t('settingsFruitLabel');
+    document.getElementById('settingsBgLabel').textContent=t('settingsBgLabel');
+    document.getElementById('settingsGridLabel').textContent=t('settingsGridLabel');
+    
+    // Игровой интерфейс
+    document.getElementById('currentScoreLabel').textContent=t('currentScore');
+    document.getElementById('highScoreLabel').textContent=t('highScore');
+    document.getElementById('restartText').textContent=t('restart');
+    
+    updateModeIndicator();
+    updateGameStatus();
+    updateNicknameDisplay();
+    renderShop();
+    renderAchievements();
+    renderStats();
+    renderQuests();
+    updateFieldDesignSelect();
+    updateFruitSelect();
+    updateDuoCustomSkinSection();
+  }
+
   function updateCustomSkinPreviewFn(){if(!customSkinPreview)return;customSkinPreview.innerHTML='';for(let i=0;i<7;i++){const div=document.createElement('div');div.className='custom-skin-preview-segment';div.style.background=segmentColors[i]||'#6fbf4c';if(customGlow&&customGlow.checked)div.style.boxShadow=`0 0 10px ${customGlowColor.value}`;customSkinPreview.appendChild(div);}}
   function updateSegmentEditor(){if(!segmentEditor)return;segmentEditor.innerHTML='';for(let i=0;i<7;i++){const input=document.createElement('input');input.type='color';input.value=segmentColors[i]||'#6fbf4c';input.className='segment-color';input.addEventListener('input',(e)=>{segmentColors[i]=e.target.value;updateCustomSkinPreviewFn();});segmentEditor.appendChild(input);}}
 
@@ -651,7 +892,7 @@
   function spawnParticles(x,y,color,count=10){for(let i=0;i<count;i++){particles.push({x:x*CELL_SIZE+CELL_SIZE/2,y:y*CELL_SIZE+CELL_SIZE/2,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.5)*6,life:1,color:color,size:Math.random()*3+1.5});}}
   function spawnFruitParticles(x,y,color){for(let i=0;i<15;i++){const angle=Math.random()*Math.PI*2;const speed=2+Math.random()*3;particles.push({x:x*CELL_SIZE+CELL_SIZE/2,y:y*CELL_SIZE+CELL_SIZE/2,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:1,color:color,size:Math.random()*3+2});}}
   function triggerShake(){gameContainer.classList.add('shake');setTimeout(()=>gameContainer.classList.remove('shake'),500);vibrate(100, 2);}
-  function updateBonusIndicators(){bonusIndicators.innerHTML='';if(shieldActive)bonusIndicators.innerHTML+=`<div class="bonus-indicator shield-active">🛡 P1 ${(shieldTimer/10).toFixed(1)}с</div>`;if(magnetActive)bonusIndicators.innerHTML+=`<div class="bonus-indicator magnet-active">🧲 P1 ${(magnetTimer/10).toFixed(1)}с</div>`;if(diamondActive)bonusIndicators.innerHTML+=`<div class="bonus-indicator diamond-active">💎 P1 ${(diamondTimer/10).toFixed(1)}с</div>`;if(speedActive)bonusIndicators.innerHTML+=`<div class="bonus-indicator speed-active">⚡ P1 ${(speedTimer/10).toFixed(1)}с</div>`;if(flashlightActive)bonusIndicators.innerHTML+=`<div class="bonus-indicator flashlight-active">🔦 Фонарик ${(flashlightTimer/10).toFixed(1)}с</div>`;if(shieldActive2)bonusIndicators.innerHTML+=`<div class="bonus-indicator shield-active">🛡 P2 ${(shieldTimer2/10).toFixed(1)}с</div>`;if(magnetActive2)bonusIndicators.innerHTML+=`<div class="bonus-indicator magnet-active">🧲 P2 ${(magnetTimer2/10).toFixed(1)}с</div>`;if(diamondActive2)bonusIndicators.innerHTML+=`<div class="bonus-indicator diamond-active">💎 P2 ${(diamondTimer2/10).toFixed(1)}с</div>`;if(speedActive2)bonusIndicators.innerHTML+=`<div class="bonus-indicator speed-active">⚡ P2 ${(speedTimer2/10).toFixed(1)}с</div>`;}
+  function updateBonusIndicators(){bonusIndicators.innerHTML='';if(shieldActive)bonusIndicators.innerHTML+=`<div class="bonus-indicator shield-active">🛡 P1 ${(shieldTimer/10).toFixed(1)}с</div>`;if(magnetActive)bonusIndicators.innerHTML+=`<div class="bonus-indicator magnet-active">🧲 P1 ${(magnetTimer/10).toFixed(1)}с</div>`;if(diamondActive)bonusIndicators.innerHTML+=`<div class="bonus-indicator diamond-active">💎 P1 ${(diamondTimer/10).toFixed(1)}с</div>`;if(speedActive)bonusIndicators.innerHTML+=`<div class="bonus-indicator speed-active">⚡ P1 ${(speedTimer/10).toFixed(1)}с</div>`;if(flashlightActive)bonusIndicators.innerHTML+=`<div class="bonus-indicator flashlight-active">🔦 ${currentLang==='ru'?'Фонарик':currentLang==='tr'?'El Feneri':'Flashlight'} ${(flashlightTimer/10).toFixed(1)}с</div>`;if(shieldActive2)bonusIndicators.innerHTML+=`<div class="bonus-indicator shield-active">🛡 P2 ${(shieldTimer2/10).toFixed(1)}с</div>`;if(magnetActive2)bonusIndicators.innerHTML+=`<div class="bonus-indicator magnet-active">🧲 P2 ${(magnetTimer2/10).toFixed(1)}с</div>`;if(diamondActive2)bonusIndicators.innerHTML+=`<div class="bonus-indicator diamond-active">💎 P2 ${(diamondTimer2/10).toFixed(1)}с</div>`;if(speedActive2)bonusIndicators.innerHTML+=`<div class="bonus-indicator speed-active">⚡ P2 ${(speedTimer2/10).toFixed(1)}с</div>`;}
 
   function applyMagnetPull(player){const magnetOk=player===1?magnetActive:magnetActive2;if(!magnetOk||!food)return;const head=player===1?snake[0]:snake2[0];if(!head)return;const dx=food.x-head.x,dy=food.y-head.y,distance=Math.abs(dx)+Math.abs(dy);if(distance<=MAGNET_RANGE&&distance>1){let newX=food.x,newY=food.y;for(let step=0;step<MAGNET_SPEED;step++){if(newX===head.x&&newY===head.y)break;const sdx=newX-head.x,sdy=newY-head.y;if(Math.abs(sdx)>Math.abs(sdy))newX-=Math.sign(sdx);else if(Math.abs(sdy)>0)newY-=Math.sign(sdy);else if(Math.abs(sdx)>0)newX-=Math.sign(sdx);}const occupied=snake.some(s=>s.x===newX&&s.y===newY)||bombs.some(b=>b.x===newX&&b.y===newY)||bonuses.some(b=>b.x===newX&&b.y===newY)||(snake2.length&&snake2.some(s=>s.x===newX&&s.y===newY))||(goldenFood&&goldenFood.x===newX&&goldenFood.y===newY);if(!occupied){food.x=newX;food.y=newY;}}}
   function applyMagnetPullDuo(){if(!food)return;const head1=snake[0],head2=snake2[0];if(!head1||!head2)return;const dist1=Math.abs(food.x-head1.x)+Math.abs(food.y-head1.y),dist2=Math.abs(food.x-head2.x)+Math.abs(food.y-head2.y);if(magnetActive&&magnetActive2&&dist1<=MAGNET_RANGE&&dist2<=MAGNET_RANGE){if(dist1<=dist2){applyMagnetPull(1);}else{applyMagnetPull(2);}}else{if(magnetActive)applyMagnetPull(1);if(magnetActive2)applyMagnetPull(2);}}
@@ -1024,7 +1265,6 @@
   function initialStart(){
     loadHighScores();highScoreSpan.textContent=getCurrentHighScore();loadCoins();loadOwnedSkins();loadOwnedFruits();loadOwnedBackgrounds();loadCustomSkin();loadAchievements();loadStats();loadDailyQuests();loadQuestProgress();loadUpgrades();
     const ss=loadSettings();GRID_SIZE=ss.gridSize||20;CELL_SIZE=canvas.width/GRID_SIZE;snakeStyle=ss.snakeStyle!==undefined?ss.snakeStyle:0;snakeStyleSelect.value=snakeStyle;p2SnakeStyle=ss.p2SnakeStyle!==undefined?ss.p2SnakeStyle:0;p2SnakeStyleSelect.value=p2SnakeStyle;p2UseCustomSkin=ss.p2UseCustomSkin||false;fieldDesign=ss.fieldDesign||0;fieldDesignSelect.value=fieldDesign;fruitType=ownedFruits.includes(ss.fruitType)?ss.fruitType:ownedFruits[0];currentSoundType=ss.soundType||0;soundSelect.value=currentSoundType;soundVolume=(ss.volume||70)/100;volumeSlider.value=ss.volume||70;volumeValue.textContent=ss.volume||70;fruitSpawnVolume=(ss.fruitSpawnVolume||50)/100;fruitSpawnVolumeSlider.value=ss.fruitSpawnVolume||50;fruitSpawnVolumeValue.textContent=ss.fruitSpawnVolume||50;
-    // Автоопределение языка, но с возможностью сохранения
     if(ss.language) { currentLang = ss.language; } else { currentLang = detectUserLanguage(); }
     languageSelect.value=currentLang;
     playerNickname=ss.nickname||'';mobileControlMode=ss.mobileControlMode||'buttons';if(mobileControlType)mobileControlType.value=mobileControlMode;enableShield=ss.enableShield!==undefined?ss.enableShield:true;enableMagnet=ss.enableMagnet!==undefined?ss.enableMagnet:true;enableDiamond=ss.enableDiamond!==undefined?ss.enableDiamond:true;enableSpeedBonus=ss.enableSpeedBonus!==undefined?ss.enableSpeedBonus:true;enableSpeedIncrease=ss.enableSpeedIncrease||false;fogMode=ss.fogMode||false;fogRadius=ss.fogRadius||4;enableVibration=ss.enableVibration!==undefined?ss.enableVibration:true;enableFlashlight=ss.enableFlashlight!==undefined?ss.enableFlashlight:true;if(enableFogModeCheck)enableFogModeCheck.checked=fogMode;if(fogRadiusSlider){fogRadiusSlider.value=fogRadius;if(fogRadiusDisplay)fogRadiusDisplay.textContent=fogRadius;}if(enableVibrationCheck)enableVibrationCheck.checked=enableVibration;if(enableFlashlightCheck)enableFlashlightCheck.checked=enableFlashlight;const es=document.getElementById('enableShield');if(es)es.checked=enableShield;const em=document.getElementById('enableMagnet');if(em)em.checked=enableMagnet;const ed=document.getElementById('enableDiamond');if(ed)ed.checked=enableDiamond;const esp=document.getElementById('enableSpeed');if(esp)esp.checked=enableSpeedBonus;if(enableSpeedIncreaseCheck)enableSpeedIncreaseCheck.checked=enableSpeedIncrease;isMuted=ss.isMuted||false;if(isMuted){previousVolume=soundVolume;soundVolume=0;volumeSlider.value=0;volumeValue.textContent='0';}
